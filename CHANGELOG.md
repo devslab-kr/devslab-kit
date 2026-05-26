@@ -23,19 +23,33 @@ The library major aligns with the Spring Boot major: `4.x.y` targets Spring Boot
 - Tenant: `TenantContext`, `TenantContextHolder`, `TenantResolver`, `TenantMode` (api) +
   `DefaultTenantContextHolder`, `FixedTenantResolver` (core). The one fully wired vertical
   used to prove the AutoConfig override pattern.
-- Identity contracts (api-only): `CurrentUser`, `CurrentUserProvider`, `UserStatus`.
-- Access contracts (api-only): `Permission`, `Role`, `PermissionChecker`,
-  `PermissionDeniedException`.
-- Menu contracts (api-only): `MenuItem`, `MenuTree`, `MenuProvider`.
-- Audit contracts (api-only): `AuditEvent`, `AuditActor`, `AuditAction`, `AuditTarget`,
+- Identity (api): `CurrentUser`, `CurrentUserProvider`, `UserStatus`, `LoginCommand`,
+  `LoginResult`, `UserAccountView`, `PasswordHasher`, `LoginFailureReason`,
+  `AccountLoginException`, `LoginSucceededEvent`, `LoginFailedEvent`,
+  `UserAccountCreatedEvent`.
+  Identity (core, first-pass): `PlatformUserAccountEntity` + `JpaPlatformUserAccountRepository`,
+  `BCryptPasswordHasher`, `LocalLoginService`, `PlatformUserAccountService`,
+  `DefaultCurrentUserProvider`, `V1__platform_user_account.sql`.
+- Access (api): `Permission`, `Role`, `PermissionChecker`, `PermissionDeniedException`.
+  Access (core, first-pass): `Platform{Role,Permission,UserRole,RolePermission}Entity`
+  + Jpa repos, `UserRoleService`, `RolePermissionService`, `DefaultPermissionChecker`,
+  `V2__platform_access.sql`.
+- Menu (api): `MenuItem`, `MenuTree`, `MenuProvider`.
+  Menu (core, first-pass): `PlatformMenuEntity` + `JpaPlatformMenuRepository`,
+  `MenuTreeBuilder`, `PermissionBasedMenuFilter`, `DefaultMenuProvider`,
+  `V3__platform_menu.sql`.
+- Audit (api): `AuditEvent`, `AuditActor`, `AuditAction`, `AuditTarget`,
   `AuditEventPublisher`.
-- `DevslabKitProperties` (`devslab.kit.*` prefix) + `TenantAutoConfiguration` with
-  `@ConditionalOnMissingBean` overrides.
-- `devslab-kit-sample-app` verifies the starter loads and resolves the configured tenant.
+  Audit (core, first-pass): `PlatformAuditLogEntity` + `JpaPlatformAuditLogRepository`,
+  `AuditLogService` (Jackson-serialized metadata), `DefaultAuditEventPublisher`,
+  `V4__platform_audit_log.sql`.
+- `DevslabKitProperties` (`devslab.kit.*` prefix) + 5 `AutoConfiguration`s with
+  `@ConditionalOnMissingBean` overrides: `Tenant`, `Identity`, `Access`, `Menu`, `Audit`.
+- `devslab-kit-sample-app` smoke-tests all 8 starter beans (`TenantResolver`,
+  `TenantContextHolder`, `CurrentUserProvider`, `PasswordHasher`, `LocalLoginService`,
+  `PermissionChecker`, `MenuProvider`, `AuditEventPublisher`) plus a BCrypt round-trip.
 
 ### Notes
-- `-identity-core`, `-access-core`, `-menu-core`, `-audit-core` are module skeletons only
-  (no source files yet). Concrete implementations land in subsequent PRs.
 - This is still the pre-`0.1.0` scaffold; the public surface may shift before `0.1.0`.
 - Targeting Spring Boot 4.0.6 (release) and Java 21 instead of SB 4.1-SNAPSHOT / Java 25.
   The combination of SB SNAPSHOT + Java 25 was tripping up IntelliJ Gradle integration on
