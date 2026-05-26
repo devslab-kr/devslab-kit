@@ -47,9 +47,18 @@ public class IdentityAutoConfiguration {
             JpaPlatformUserAccountRepository repository,
             PasswordHasher passwordHasher,
             ApplicationEventPublisher eventPublisher,
-            Clock clock
+            Clock clock,
+            DevslabKitProperties properties
     ) {
-        return new LocalLoginService(repository, passwordHasher, eventPublisher, clock);
+        DevslabKitProperties.Identity identity = properties.getIdentity();
+        return new LocalLoginService(
+                repository,
+                passwordHasher,
+                eventPublisher,
+                clock,
+                identity.getMaxFailedAttempts(),
+                identity.getLockoutDuration()
+        );
     }
 
     @Bean

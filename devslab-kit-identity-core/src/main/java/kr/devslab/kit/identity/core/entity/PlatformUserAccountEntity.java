@@ -50,6 +50,12 @@ public class PlatformUserAccountEntity {
     @Column(name = "provider_type", nullable = false, length = 32)
     private String providerType;
 
+    @Column(name = "failed_login_count", nullable = false)
+    private int failedLoginCount;
+
+    @Column(name = "locked_until")
+    private Instant lockedUntil;
+
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
@@ -78,6 +84,8 @@ public class PlatformUserAccountEntity {
         this.status = status;
         this.locked = locked;
         this.providerType = providerType;
+        this.failedLoginCount = 0;
+        this.lockedUntil = null;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
