@@ -1,0 +1,5 @@
+description = "devslab-kit :: identity public contracts"
+
+dependencies {
+    api(project(":devslab-kit-core"))
+}
