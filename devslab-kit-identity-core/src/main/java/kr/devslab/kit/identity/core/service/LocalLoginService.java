@@ -1,6 +1,7 @@
 package kr.devslab.kit.identity.core.service;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.Set;
@@ -26,20 +27,26 @@ public class LocalLoginService {
     private final PasswordHasher passwordHasher;
     private final ApplicationEventPublisher eventPublisher;
     private final Clock clock;
+    private final int maxFailedAttempts;
+    private final Duration lockoutDuration;
 
     public LocalLoginService(
             JpaPlatformUserAccountRepository repository,
             PasswordHasher passwordHasher,
             ApplicationEventPublisher eventPublisher,
-            Clock clock
+            Clock clock,
+            int maxFailedAttempts,
+            Duration lockoutDuration
     ) {
         this.repository = repository;
         this.passwordHasher = passwordHasher;
         this.eventPublisher = eventPublisher;
         this.clock = clock;
+        this.maxFailedAttempts = Math.max(1, maxFailedAttempts);
+        this.lockoutDuration = lockoutDuration == null ? Duration.ofMinutes(15) : lockoutDuration;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public LoginResult login(LoginCommand command) {
         Instant now = Instant.now(clock);
         TenantId tenantId = command.tenantId();
@@ -53,6 +60,14 @@ public class LocalLoginService {
         }
         PlatformUserAccountEntity account = maybeAccount.get();
 
+        // Auto-unlock if lockout window has elapsed
+        if (account.isLocked() && account.getLockedUntil() != null && !now.isBefore(account.getLockedUntil())) {
+            account.setLocked(false);
+            account.setLockedUntil(null);
+            account.setFailedLoginCount(0);
+            account.setUpdatedAt(now);
+        }
+
         if (account.isLocked()) {
             failAndThrow(tenantId, loginId, LoginFailureReason.ACCOUNT_LOCKED, now);
         }
@@ -65,7 +80,23 @@ public class LocalLoginService {
         }
 
         if (!passwordHasher.matches(command.rawPassword(), account.getPasswordHash())) {
-            failAndThrow(tenantId, loginId, LoginFailureReason.BAD_CREDENTIALS, now);
+            int next = account.getFailedLoginCount() + 1;
+            account.setFailedLoginCount(next);
+            account.setUpdatedAt(now);
+            LoginFailureReason reason = LoginFailureReason.BAD_CREDENTIALS;
+            if (next >= maxFailedAttempts) {
+                account.setLocked(true);
+                account.setLockedUntil(now.plus(lockoutDuration));
+                reason = LoginFailureReason.ACCOUNT_LOCKED;
+            }
+            failAndThrow(tenantId, loginId, reason, now);
+        }
+
+        // Success — reset counters
+        if (account.getFailedLoginCount() != 0 || account.getLockedUntil() != null) {
+            account.setFailedLoginCount(0);
+            account.setLockedUntil(null);
+            account.setUpdatedAt(now);
         }
 
         UserId userId = UserId.of(account.getId());

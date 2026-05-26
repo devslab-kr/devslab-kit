@@ -36,6 +36,8 @@ public class DevslabKitProperties {
 
         private boolean enabled = true;
         private Mode mode = Mode.LOCAL;
+        private int maxFailedAttempts = 5;
+        private java.time.Duration lockoutDuration = java.time.Duration.ofMinutes(15);
 
         public boolean isEnabled() {
             return enabled;
@@ -51,6 +53,22 @@ public class DevslabKitProperties {
 
         public void setMode(Mode mode) {
             this.mode = mode;
+        }
+
+        public int getMaxFailedAttempts() {
+            return maxFailedAttempts;
+        }
+
+        public void setMaxFailedAttempts(int maxFailedAttempts) {
+            this.maxFailedAttempts = maxFailedAttempts;
+        }
+
+        public java.time.Duration getLockoutDuration() {
+            return lockoutDuration;
+        }
+
+        public void setLockoutDuration(java.time.Duration lockoutDuration) {
+            this.lockoutDuration = lockoutDuration;
         }
 
         public enum Mode {
