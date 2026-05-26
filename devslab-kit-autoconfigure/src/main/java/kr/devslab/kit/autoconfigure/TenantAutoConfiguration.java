@@ -11,9 +11,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ImportRuntimeHints;
 
 @AutoConfiguration
 @EnableConfigurationProperties(DevslabKitProperties.class)
+@ImportRuntimeHints(DevslabKitRuntimeHints.class)
 @ConditionalOnProperty(
         prefix = "devslab.kit.tenant",
         name = "enabled",
