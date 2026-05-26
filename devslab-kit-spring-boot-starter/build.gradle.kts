@@ -1,6 +1,0 @@
-description = "devslab-kit :: Spring Boot starter (dependency bundle)"
-
-dependencies {
-    api(project(":devslab-kit-autoconfigure"))
-    api(project(":devslab-kit-tenant-core"))
-}

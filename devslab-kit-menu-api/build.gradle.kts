@@ -1,7 +1,0 @@
-description = "devslab-kit :: menu public contracts"
-
-dependencies {
-    api(project(":devslab-kit-core"))
-    api(project(":devslab-kit-access-api"))
-    api(project(":devslab-kit-identity-api"))
-}

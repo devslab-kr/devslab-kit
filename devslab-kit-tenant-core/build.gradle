@@ -1,0 +1,5 @@
+description = 'devslab-kit :: tenant default implementation'
+
+dependencies {
+    api project(':devslab-kit-tenant-api')
+}
