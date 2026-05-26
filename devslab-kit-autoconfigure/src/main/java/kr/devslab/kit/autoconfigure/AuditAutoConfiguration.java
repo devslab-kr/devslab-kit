@@ -29,6 +29,12 @@ public class AuditAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
     public AuditLogService auditLogService(JpaPlatformAuditLogRepository repository, ObjectMapper objectMapper) {
         return new AuditLogService(repository, objectMapper);
     }
