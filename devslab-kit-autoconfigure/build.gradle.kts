@@ -12,6 +12,7 @@ dependencies {
     api(project(":devslab-kit-menu-core"))
     api(project(":devslab-kit-audit-api"))
     api(project(":devslab-kit-audit-core"))
+    api(project(":devslab-kit-admin-api"))
 
     implementation("org.springframework.boot:spring-boot-autoconfigure")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")

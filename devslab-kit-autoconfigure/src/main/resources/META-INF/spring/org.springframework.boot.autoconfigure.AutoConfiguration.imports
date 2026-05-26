@@ -3,3 +3,4 @@ kr.devslab.kit.autoconfigure.IdentityAutoConfiguration
 kr.devslab.kit.autoconfigure.AccessAutoConfiguration
 kr.devslab.kit.autoconfigure.MenuAutoConfiguration
 kr.devslab.kit.autoconfigure.AuditAutoConfiguration
+kr.devslab.kit.autoconfigure.AdminApiAutoConfiguration
