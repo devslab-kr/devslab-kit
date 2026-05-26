@@ -10,7 +10,7 @@ The library major aligns with the Spring Boot major: `4.x.y` targets Spring Boot
 ## [Unreleased]
 
 ### Added
-- Initial project scaffold (Spring Boot 4 + Java 25 + Gradle).
+- Initial project scaffold (Spring Boot 4 + Java 21 + Gradle).
 - Base dependencies: Spring Web MVC, Spring Security, Spring Data JPA, Spring Data Redis,
   Flyway (PostgreSQL), Spring Boot Actuator, GraalVM Native, Testcontainers (PostgreSQL + Redis),
   Docker Compose support.
@@ -37,3 +37,7 @@ The library major aligns with the Spring Boot major: `4.x.y` targets Spring Boot
 - `-identity-core`, `-access-core`, `-menu-core`, `-audit-core` are module skeletons only
   (no source files yet). Concrete implementations land in subsequent PRs.
 - This is still the pre-`0.1.0` scaffold; the public surface may shift before `0.1.0`.
+- Targeting Spring Boot 4.0.6 (release) and Java 21 instead of SB 4.1-SNAPSHOT / Java 25.
+  The combination of SB SNAPSHOT + Java 25 was tripping up IntelliJ Gradle integration on
+  some setups; pinning to released versions keeps the import path predictable. Will revisit
+  Java 25 once SB 4.1.x ships a release.
