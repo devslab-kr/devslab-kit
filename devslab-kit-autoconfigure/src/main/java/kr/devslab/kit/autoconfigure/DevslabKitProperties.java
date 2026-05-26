@@ -80,6 +80,24 @@ public class DevslabKitProperties {
         private TenantMode mode = TenantMode.SINGLE;
         private String defaultTenantId = "default";
         private Resolver resolver = Resolver.FIXED;
+        private String headerName = "X-Tenant-Id";
+        private int subdomainIndex = 0;
+
+        public String getHeaderName() {
+            return headerName;
+        }
+
+        public void setHeaderName(String headerName) {
+            this.headerName = headerName;
+        }
+
+        public int getSubdomainIndex() {
+            return subdomainIndex;
+        }
+
+        public void setSubdomainIndex(int subdomainIndex) {
+            this.subdomainIndex = subdomainIndex;
+        }
 
         public boolean isEnabled() {
             return enabled;
