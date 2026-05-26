@@ -1,1 +1,2 @@
 kr.devslab.kit.autoconfigure.TenantAutoConfiguration
+kr.devslab.kit.autoconfigure.IdentityAutoConfiguration
