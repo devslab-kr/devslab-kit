@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: devslab-kit-sample-app
+
+devslab:
+  kit:
+    tenant:
+      enabled: true
+      mode: single
+      default-tenant-id: default
+      resolver: fixed
