@@ -2,13 +2,23 @@ package kr.devslab.kit.autoconfigure;
 
 import jakarta.persistence.EntityManager;
 import java.time.Clock;
+import java.util.List;
 import kr.devslab.kit.access.PermissionChecker;
+import kr.devslab.kit.access.core.repository.JpaPlatformGroupRepository;
+import kr.devslab.kit.access.core.repository.JpaPlatformGroupRoleRepository;
 import kr.devslab.kit.access.core.repository.JpaPlatformPermissionRepository;
 import kr.devslab.kit.access.core.repository.JpaPlatformRolePermissionRepository;
+import kr.devslab.kit.access.core.repository.JpaPlatformUserGroupRepository;
 import kr.devslab.kit.access.core.repository.JpaPlatformUserRoleRepository;
 import kr.devslab.kit.access.core.service.DefaultPermissionChecker;
+import kr.devslab.kit.access.core.service.DefaultPolicyEvaluator;
+import kr.devslab.kit.access.core.service.GroupMembershipService;
+import kr.devslab.kit.access.core.service.GroupRoleService;
+import kr.devslab.kit.access.core.service.GroupService;
 import kr.devslab.kit.access.core.service.RolePermissionService;
 import kr.devslab.kit.access.core.service.UserRoleService;
+import kr.devslab.kit.access.policy.Policy;
+import kr.devslab.kit.access.policy.PolicyEvaluator;
 import kr.devslab.kit.identity.CurrentUserProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -44,11 +54,36 @@ public class AccessAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
+    public GroupService groupService(JpaPlatformGroupRepository repository, Clock clock) {
+        return new GroupService(repository, clock);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public GroupMembershipService groupMembershipService(JpaPlatformUserGroupRepository repository, Clock clock) {
+        return new GroupMembershipService(repository, clock);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public GroupRoleService groupRoleService(JpaPlatformGroupRoleRepository repository, Clock clock) {
+        return new GroupRoleService(repository, clock);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public PolicyEvaluator policyEvaluator(List<Policy> policies) {
+        return new DefaultPolicyEvaluator(policies);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
     @ConditionalOnBean(CurrentUserProvider.class)
     public PermissionChecker permissionChecker(
             CurrentUserProvider currentUserProvider,
-            JpaPlatformPermissionRepository permissionRepository
+            JpaPlatformPermissionRepository permissionRepository,
+            PolicyEvaluator policyEvaluator
     ) {
-        return new DefaultPermissionChecker(currentUserProvider, permissionRepository);
+        return new DefaultPermissionChecker(currentUserProvider, permissionRepository, policyEvaluator);
     }
 }
