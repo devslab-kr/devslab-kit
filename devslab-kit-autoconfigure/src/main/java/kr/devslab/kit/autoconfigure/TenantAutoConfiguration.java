@@ -1,12 +1,19 @@
 package kr.devslab.kit.autoconfigure;
 
+import jakarta.persistence.EntityManager;
+import java.time.Clock;
 import kr.devslab.kit.tenant.TenantContextHolder;
 import kr.devslab.kit.tenant.TenantResolver;
+import kr.devslab.kit.tenant.TenantService;
 import kr.devslab.kit.tenant.core.DefaultTenantContextHolder;
 import kr.devslab.kit.tenant.core.FixedTenantResolver;
 import kr.devslab.kit.tenant.core.HeaderTenantResolver;
 import kr.devslab.kit.tenant.core.SubdomainTenantResolver;
+import kr.devslab.kit.tenant.core.repository.JpaPlatformTenantRepository;
+import kr.devslab.kit.tenant.core.service.DefaultTenantService;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -47,5 +54,13 @@ public class TenantAutoConfiguration {
                             + "Add one and the @ConditionalOnMissingBean default will step aside."
             );
         };
+    }
+
+    @Bean
+    @ConditionalOnClass(EntityManager.class)
+    @ConditionalOnBean(JpaPlatformTenantRepository.class)
+    @ConditionalOnMissingBean
+    public TenantService tenantService(JpaPlatformTenantRepository repository, Clock clock) {
+        return new DefaultTenantService(repository, clock);
     }
 }
