@@ -47,6 +47,9 @@ public class PlatformMenuEntity {
     @Column(name = "required_permission_code", length = 128)
     private String requiredPermissionCode;
 
+    @Column(name = "icon", length = 64)
+    private String icon;
+
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
@@ -59,6 +62,7 @@ public class PlatformMenuEntity {
             UUID parentId,
             int sortOrder,
             String requiredPermissionCode,
+            String icon,
             Instant createdAt
     ) {
         this.id = id;
@@ -69,6 +73,7 @@ public class PlatformMenuEntity {
         this.parentId = parentId;
         this.sortOrder = sortOrder;
         this.requiredPermissionCode = requiredPermissionCode;
+        this.icon = icon;
         this.createdAt = createdAt;
     }
 }

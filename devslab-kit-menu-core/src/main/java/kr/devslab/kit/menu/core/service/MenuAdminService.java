@@ -28,7 +28,8 @@ public class MenuAdminService {
             String path,
             MenuId parentId,
             int sortOrder,
-            String requiredPermissionCode
+            String requiredPermissionCode,
+            String icon
     ) {
         PlatformMenuEntity entity = new PlatformMenuEntity(
                 UUID.randomUUID(),
@@ -39,6 +40,7 @@ public class MenuAdminService {
                 parentId == null ? null : parentId.value(),
                 sortOrder,
                 requiredPermissionCode,
+                icon,
                 Instant.now(clock)
         );
         repository.save(entity);
@@ -46,13 +48,26 @@ public class MenuAdminService {
     }
 
     @Transactional
-    public void update(MenuId id, String label, String path, Integer sortOrder, String requiredPermissionCode) {
+    public void update(
+            MenuId id,
+            String label,
+            String path,
+            Integer sortOrder,
+            String requiredPermissionCode,
+            String icon
+    ) {
         PlatformMenuEntity e = repository.findById(id.value())
                 .orElseThrow(() -> new IllegalArgumentException("Menu not found: " + id));
         if (label != null) e.setLabel(label);
         if (path != null) e.setPath(path);
         if (sortOrder != null) e.setSortOrder(sortOrder);
         if (requiredPermissionCode != null) e.setRequiredPermissionCode(requiredPermissionCode);
+        if (icon != null) e.setIcon(icon);
+    }
+
+    @Transactional(readOnly = true)
+    public java.util.Optional<PlatformMenuEntity> findById(MenuId id) {
+        return repository.findById(id.value());
     }
 
     @Transactional
