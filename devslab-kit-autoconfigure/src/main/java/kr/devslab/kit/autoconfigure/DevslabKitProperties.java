@@ -193,12 +193,30 @@ public class DevslabKitProperties {
 
         private boolean enabled = true;
 
+        /**
+         * Bounded capacity of the per-publisher work queue that
+         * {@link kr.devslab.kit.audit.core.service.DefaultAuditEventPublisher}
+         * uses to write events without blocking the request thread. When the
+         * queue is saturated the publisher falls back to running the write
+         * inline on the caller (CallerRunsPolicy) so events are never lost,
+         * trading a slow request for a dropped audit row.
+         */
+        private int asyncQueueCapacity = 1024;
+
         public boolean isEnabled() {
             return enabled;
         }
 
         public void setEnabled(boolean enabled) {
             this.enabled = enabled;
+        }
+
+        public int getAsyncQueueCapacity() {
+            return asyncQueueCapacity;
+        }
+
+        public void setAsyncQueueCapacity(int asyncQueueCapacity) {
+            this.asyncQueueCapacity = asyncQueueCapacity;
         }
     }
 }
