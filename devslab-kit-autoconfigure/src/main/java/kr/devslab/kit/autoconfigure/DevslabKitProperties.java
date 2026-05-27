@@ -180,12 +180,29 @@ public class DevslabKitProperties {
 
         private boolean enabled = true;
 
+        /**
+         * How long a {@link kr.devslab.kit.menu.MenuProvider} keeps a
+         * per-user menu tree before re-querying the database. Set to
+         * {@code PT0S} (or any zero / negative duration) to disable the
+         * cache entirely — useful in tests where menu / permission
+         * mutations should be visible immediately.
+         */
+        private java.time.Duration cacheTtl = java.time.Duration.ofMinutes(5);
+
         public boolean isEnabled() {
             return enabled;
         }
 
         public void setEnabled(boolean enabled) {
             this.enabled = enabled;
+        }
+
+        public java.time.Duration getCacheTtl() {
+            return cacheTtl;
+        }
+
+        public void setCacheTtl(java.time.Duration cacheTtl) {
+            this.cacheTtl = cacheTtl;
         }
     }
 
