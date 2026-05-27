@@ -43,6 +43,15 @@ public class PlatformAuditLogEntity {
     @Column(name = "metadata_json", columnDefinition = "text")
     private String metadataJson;
 
+    @Column(name = "outcome", length = 16)
+    private String outcome;
+
+    @Column(name = "ip_address", length = 64)
+    private String ipAddress;
+
+    @Column(name = "user_agent", length = 512)
+    private String userAgent;
+
     @Column(name = "occurred_at", nullable = false)
     private Instant occurredAt;
 
@@ -55,6 +64,9 @@ public class PlatformAuditLogEntity {
             String targetType,
             String targetId,
             String metadataJson,
+            String outcome,
+            String ipAddress,
+            String userAgent,
             Instant occurredAt
     ) {
         this.id = id;
@@ -65,6 +77,9 @@ public class PlatformAuditLogEntity {
         this.targetType = targetType;
         this.targetId = targetId;
         this.metadataJson = metadataJson;
+        this.outcome = outcome;
+        this.ipAddress = ipAddress;
+        this.userAgent = userAgent;
         this.occurredAt = occurredAt;
     }
 }

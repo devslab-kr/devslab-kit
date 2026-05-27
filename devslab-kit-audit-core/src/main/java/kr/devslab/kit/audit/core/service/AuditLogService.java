@@ -26,6 +26,15 @@ public class AuditLogService {
     public void record(AuditEvent event) {
         AuditActor actor = event.actor();
         AuditTarget target = event.target();
+        // outcome / ip / userAgent are honoured if the publisher stuffs them
+        // into the AuditEvent metadata map under those keys; otherwise the row
+        // stays NULL and the response layer treats it as a SUCCESS row. The
+        // AuditEvent record itself doesn't carry these yet — adding them as
+        // first-class fields lives in a follow-up PR.
+        var metadata = event.metadata();
+        String outcome = stringFromMetadata(metadata, "outcome");
+        String ipAddress = stringFromMetadata(metadata, "ip");
+        String userAgent = stringFromMetadata(metadata, "userAgent");
         PlatformAuditLogEntity entity = new PlatformAuditLogEntity(
                 UUID.randomUUID(),
                 event.action().code(),
@@ -34,10 +43,21 @@ public class AuditLogService {
                 actor == null ? null : actor.displayName(),
                 target == null ? null : target.type(),
                 target == null ? null : target.id(),
-                serializeMetadata(event.metadata()),
+                serializeMetadata(metadata),
+                outcome,
+                ipAddress,
+                userAgent,
                 event.occurredAt()
         );
         repository.save(entity);
+    }
+
+    private String stringFromMetadata(Map<String, Object> metadata, String key) {
+        if (metadata == null) {
+            return null;
+        }
+        Object value = metadata.get(key);
+        return value == null ? null : value.toString();
     }
 
     private String serializeMetadata(Map<String, Object> metadata) {
