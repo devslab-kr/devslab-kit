@@ -36,6 +36,7 @@ public class PermissionBasedMenuFilter {
                 item.code(),
                 item.label(),
                 item.path(),
+                item.icon(),
                 item.requiredPermission(),
                 visibleChildren
         );

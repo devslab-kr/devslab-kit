@@ -92,7 +92,7 @@ public class DiagnosticsController {
                 .filter(java.util.Objects::nonNull)
                 .toList();
         return new kr.devslab.kit.menu.MenuItem(
-                item.id(), item.code(), item.label(), item.path(),
+                item.id(), item.code(), item.label(), item.path(), item.icon(),
                 item.requiredPermission(), visibleChildren);
     }
 

@@ -60,6 +60,7 @@ class MenuTreeBuilderTest {
                 parentId,
                 sortOrder,
                 null,
+                null,
                 Instant.now()
         );
     }

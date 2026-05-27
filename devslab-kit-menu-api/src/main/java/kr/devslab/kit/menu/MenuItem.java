@@ -10,6 +10,7 @@ public record MenuItem(
         String code,
         String label,
         String path,
+        String icon,
         Optional<Permission> requiredPermission,
         List<MenuItem> children
 ) {

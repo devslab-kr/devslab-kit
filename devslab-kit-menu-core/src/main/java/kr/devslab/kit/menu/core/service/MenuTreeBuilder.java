@@ -42,6 +42,7 @@ public class MenuTreeBuilder {
                 entity.getCode(),
                 entity.getLabel(),
                 entity.getPath(),
+                entity.getIcon(),
                 requiredPermission,
                 children
         );
