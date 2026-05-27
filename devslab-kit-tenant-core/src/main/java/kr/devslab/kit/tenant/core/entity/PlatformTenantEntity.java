@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.Instant;
 import kr.devslab.kit.tenant.TenantMode;
+import kr.devslab.kit.tenant.TenantStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,17 +32,18 @@ public class PlatformTenantEntity {
     @Column(name = "mode", nullable = false, length = 16)
     private TenantMode mode;
 
-    @Column(name = "active", nullable = false)
-    private boolean active;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 16)
+    private TenantStatus status;
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
-    public PlatformTenantEntity(String id, String name, TenantMode mode, boolean active, Instant createdAt) {
+    public PlatformTenantEntity(String id, String name, TenantMode mode, TenantStatus status, Instant createdAt) {
         this.id = id;
         this.name = name;
         this.mode = mode;
-        this.active = active;
+        this.status = status;
         this.createdAt = createdAt;
     }
 }

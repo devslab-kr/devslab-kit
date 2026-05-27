@@ -8,6 +8,7 @@ import kr.devslab.kit.core.id.TenantId;
 import kr.devslab.kit.tenant.TenantMetadata;
 import kr.devslab.kit.tenant.TenantMode;
 import kr.devslab.kit.tenant.TenantService;
+import kr.devslab.kit.tenant.TenantStatus;
 import kr.devslab.kit.tenant.core.entity.PlatformTenantEntity;
 import kr.devslab.kit.tenant.core.repository.JpaPlatformTenantRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +30,7 @@ public class DefaultTenantService implements TenantService {
             throw new IllegalStateException("Tenant already exists: " + id);
         }
         PlatformTenantEntity entity = new PlatformTenantEntity(
-                id.value(), name, mode, true, Instant.now(clock));
+                id.value(), name, mode, TenantStatus.ACTIVE, Instant.now(clock));
         repository.save(entity);
         return toMetadata(entity);
     }
@@ -44,18 +45,13 @@ public class DefaultTenantService implements TenantService {
 
     @Override
     @Transactional
-    public void deactivate(TenantId id) {
+    public void setStatus(TenantId id, TenantStatus status) {
+        if (status == null) {
+            throw new IllegalArgumentException("status must not be null");
+        }
         PlatformTenantEntity entity = repository.findById(id.value())
                 .orElseThrow(() -> new IllegalArgumentException("Tenant not found: " + id));
-        entity.setActive(false);
-    }
-
-    @Override
-    @Transactional
-    public void activate(TenantId id) {
-        PlatformTenantEntity entity = repository.findById(id.value())
-                .orElseThrow(() -> new IllegalArgumentException("Tenant not found: " + id));
-        entity.setActive(true);
+        entity.setStatus(status);
     }
 
     @Override
@@ -81,7 +77,7 @@ public class DefaultTenantService implements TenantService {
                 TenantId.of(e.getId()),
                 e.getName(),
                 e.getMode(),
-                e.isActive(),
+                e.getStatus(),
                 e.getCreatedAt()
         );
     }
