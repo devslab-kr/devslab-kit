@@ -7,6 +7,7 @@ import java.util.Set;
 import kr.devslab.kit.access.policy.Policy;
 import kr.devslab.kit.access.policy.PolicyContext;
 import kr.devslab.kit.access.policy.PolicyDecision;
+import kr.devslab.kit.access.policy.PolicyEvaluation;
 import kr.devslab.kit.access.policy.PolicyEvaluator;
 
 public class DefaultPolicyEvaluator implements PolicyEvaluator {
@@ -34,6 +35,18 @@ public class DefaultPolicyEvaluator implements PolicyEvaluator {
             return PolicyDecision.NOT_APPLICABLE;
         }
         return policy.evaluate(context);
+    }
+
+    @Override
+    public PolicyEvaluation evaluateDetailed(String policyName, PolicyContext context) {
+        if (policyName == null) {
+            return PolicyEvaluation.notApplicable("policyName was null");
+        }
+        Policy policy = policiesByName.get(policyName);
+        if (policy == null) {
+            return PolicyEvaluation.notApplicable("no policy registered for name: " + policyName);
+        }
+        return policy.evaluateDetailed(context);
     }
 
     public Set<String> registeredNames() {
