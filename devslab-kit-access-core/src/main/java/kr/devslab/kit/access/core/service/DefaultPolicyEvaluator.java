@@ -3,6 +3,7 @@ package kr.devslab.kit.access.core.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import kr.devslab.kit.access.policy.Policy;
 import kr.devslab.kit.access.policy.PolicyContext;
 import kr.devslab.kit.access.policy.PolicyDecision;
@@ -33,5 +34,9 @@ public class DefaultPolicyEvaluator implements PolicyEvaluator {
             return PolicyDecision.NOT_APPLICABLE;
         }
         return policy.evaluate(context);
+    }
+
+    public Set<String> registeredNames() {
+        return policiesByName.keySet();
     }
 }
