@@ -38,6 +38,24 @@ public class DevslabKitProperties {
         private Mode mode = Mode.LOCAL;
         private int maxFailedAttempts = 5;
         private java.time.Duration lockoutDuration = java.time.Duration.ofMinutes(15);
+        private final Jwt jwt = new Jwt();
+
+        public Jwt getJwt() {
+            return jwt;
+        }
+
+        public static class Jwt {
+            private String secret = "change-me-please-this-is-not-a-real-secret-32b!";
+            private java.time.Duration ttl = java.time.Duration.ofHours(8);
+            private String issuer = "devslab-kit";
+
+            public String getSecret() { return secret; }
+            public void setSecret(String secret) { this.secret = secret; }
+            public java.time.Duration getTtl() { return ttl; }
+            public void setTtl(java.time.Duration ttl) { this.ttl = ttl; }
+            public String getIssuer() { return issuer; }
+            public void setIssuer(String issuer) { this.issuer = issuer; }
+        }
 
         public boolean isEnabled() {
             return enabled;

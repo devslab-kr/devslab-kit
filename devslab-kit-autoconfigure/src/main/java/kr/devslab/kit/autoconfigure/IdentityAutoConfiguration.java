@@ -1,11 +1,13 @@
 package kr.devslab.kit.autoconfigure;
 
 import java.time.Clock;
+import kr.devslab.kit.identity.AuthTokenService;
 import kr.devslab.kit.identity.CurrentUserProvider;
 import kr.devslab.kit.identity.PasswordHasher;
 import kr.devslab.kit.identity.core.repository.JpaPlatformUserAccountRepository;
 import kr.devslab.kit.identity.core.service.BCryptPasswordHasher;
 import kr.devslab.kit.identity.core.service.DefaultCurrentUserProvider;
+import kr.devslab.kit.identity.core.service.JjwtAuthTokenService;
 import kr.devslab.kit.identity.core.service.LocalLoginService;
 import kr.devslab.kit.identity.core.service.PlatformUserAccountService;
 import jakarta.persistence.EntityManager;
@@ -71,5 +73,12 @@ public class IdentityAutoConfiguration {
     @ConditionalOnMissingBean
     public CurrentUserProvider currentUserProvider() {
         return new DefaultCurrentUserProvider();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public AuthTokenService authTokenService(Clock clock, DevslabKitProperties properties) {
+        DevslabKitProperties.Identity.Jwt jwt = properties.getIdentity().getJwt();
+        return new JjwtAuthTokenService(jwt.getSecret(), jwt.getTtl(), jwt.getIssuer(), clock);
     }
 }

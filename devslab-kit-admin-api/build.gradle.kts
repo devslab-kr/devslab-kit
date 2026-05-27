@@ -12,6 +12,7 @@ dependencies {
     api(project(":devslab-kit-tenant-api"))
 
     api("org.springframework.boot:spring-boot-starter-webmvc")
+    api("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
     compileOnly("org.projectlombok:lombok")
