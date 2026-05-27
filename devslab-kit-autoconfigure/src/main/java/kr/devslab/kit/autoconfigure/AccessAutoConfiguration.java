@@ -15,6 +15,7 @@ import kr.devslab.kit.access.core.service.DefaultPolicyEvaluator;
 import kr.devslab.kit.access.core.service.GroupMembershipService;
 import kr.devslab.kit.access.core.service.GroupRoleService;
 import kr.devslab.kit.access.core.service.GroupService;
+import kr.devslab.kit.access.core.service.PermissionGrantQueryService;
 import kr.devslab.kit.access.core.service.RolePermissionService;
 import kr.devslab.kit.access.core.service.UserRoleService;
 import kr.devslab.kit.access.policy.Policy;
@@ -85,5 +86,13 @@ public class AccessAutoConfiguration {
             PolicyEvaluator policyEvaluator
     ) {
         return new DefaultPermissionChecker(currentUserProvider, permissionRepository, policyEvaluator);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public PermissionGrantQueryService permissionGrantQueryService(
+            JpaPlatformPermissionRepository permissionRepository
+    ) {
+        return new PermissionGrantQueryService(permissionRepository);
     }
 }
