@@ -13,7 +13,7 @@ class DefaultPolicyEvaluatorTest {
 
     private final Policy alwaysAllow = new Policy() {
         public String name() { return "always-allow"; }
-        public PolicyDecision evaluate(PolicyContext ctx) { return PolicyDecision.ALLOW; }
+        public PolicyDecision evaluate(PolicyContext ctx) { return PolicyDecision.PERMIT; }
     };
 
     private final Policy alwaysDeny = new Policy() {
@@ -22,11 +22,11 @@ class DefaultPolicyEvaluatorTest {
     };
 
     @Test
-    void returnsAllowFromMatchingPolicy() {
+    void returnsPermitFromMatchingPolicy() {
         var evaluator = new DefaultPolicyEvaluator(List.of(alwaysAllow));
 
         assertThat(evaluator.evaluate("always-allow", PolicyContext.builder().build()))
-                .isEqualTo(PolicyDecision.ALLOW);
+                .isEqualTo(PolicyDecision.PERMIT);
     }
 
     @Test

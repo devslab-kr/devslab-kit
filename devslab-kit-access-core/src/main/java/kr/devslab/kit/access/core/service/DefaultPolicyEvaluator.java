@@ -39,4 +39,12 @@ public class DefaultPolicyEvaluator implements PolicyEvaluator {
     public Set<String> registeredNames() {
         return policiesByName.keySet();
     }
+
+    /**
+     * Returns the registered policies (used by {@code PolicyAdminController}
+     * to surface name + description in the admin UI's policy list).
+     */
+    public java.util.Collection<Policy> registeredPolicies() {
+        return policiesByName.values();
+    }
 }
