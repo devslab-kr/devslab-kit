@@ -10,9 +10,21 @@ public interface TenantService {
 
     void rename(TenantId id, String newName);
 
-    void deactivate(TenantId id);
+    /**
+     * Move a tenant to the given lifecycle state. The activate / deactivate
+     * shorthands below are kept for callers that don't need the full enum.
+     */
+    void setStatus(TenantId id, TenantStatus status);
 
-    void activate(TenantId id);
+    /** Convenience for {@code setStatus(id, TenantStatus.SUSPENDED)}. */
+    default void deactivate(TenantId id) {
+        setStatus(id, TenantStatus.SUSPENDED);
+    }
+
+    /** Convenience for {@code setStatus(id, TenantStatus.ACTIVE)}. */
+    default void activate(TenantId id) {
+        setStatus(id, TenantStatus.ACTIVE);
+    }
 
     void delete(TenantId id);
 
