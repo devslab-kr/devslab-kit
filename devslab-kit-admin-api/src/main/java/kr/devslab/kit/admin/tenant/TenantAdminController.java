@@ -28,20 +28,21 @@ public class TenantAdminController {
     }
 
     @PostMapping
-    public ResponseEntity<TenantMetadata> create(@Valid @RequestBody CreateTenantRequest req) {
+    public ResponseEntity<TenantResponse> create(@Valid @RequestBody CreateTenantRequest req) {
         TenantMode mode = req.mode() == null ? TenantMode.SINGLE : req.mode();
         TenantMetadata created = tenantService.create(TenantId.of(req.id()), req.name(), mode);
-        return ResponseEntity.status(201).body(created);
+        return ResponseEntity.status(201).body(TenantResponse.from(created));
     }
 
     @GetMapping
-    public List<TenantMetadata> list() {
-        return tenantService.findAll();
+    public List<TenantResponse> list() {
+        return tenantService.findAll().stream().map(TenantResponse::from).toList();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TenantMetadata> get(@PathVariable String id) {
+    public ResponseEntity<TenantResponse> get(@PathVariable String id) {
         return tenantService.findById(TenantId.of(id))
+                .map(TenantResponse::from)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -52,11 +53,6 @@ public class TenantAdminController {
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * Generic lifecycle setter used by the admin UI. The
-     * {@code /activate} / {@code /deactivate} shorthands below
-     * dispatch through {@link TenantService} default methods.
-     */
     @PutMapping("/{id}/status")
     public ResponseEntity<Void> updateStatus(
             @PathVariable String id,
