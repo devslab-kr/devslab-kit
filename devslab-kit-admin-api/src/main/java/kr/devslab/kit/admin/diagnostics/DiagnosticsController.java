@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import kr.devslab.kit.access.PermissionGrant;
 import kr.devslab.kit.access.core.repository.JpaPlatformPermissionRepository;
+import kr.devslab.kit.access.core.service.PermissionGrantQueryService;
 import kr.devslab.kit.admin.AdminApiPaths;
 import kr.devslab.kit.core.id.TenantId;
 import kr.devslab.kit.identity.AccountLoginException;
@@ -36,6 +38,7 @@ public class DiagnosticsController {
     private final LocalLoginService loginService;
     private final JpaPlatformUserAccountRepository userRepo;
     private final JpaPlatformPermissionRepository permissionRepo;
+    private final PermissionGrantQueryService grantQueryService;
     private final JpaPlatformMenuRepository menuRepo;
     private final MenuTreeBuilder menuTreeBuilder;
 
@@ -43,12 +46,14 @@ public class DiagnosticsController {
             LocalLoginService loginService,
             JpaPlatformUserAccountRepository userRepo,
             JpaPlatformPermissionRepository permissionRepo,
+            PermissionGrantQueryService grantQueryService,
             JpaPlatformMenuRepository menuRepo,
             MenuTreeBuilder menuTreeBuilder
     ) {
         this.loginService = loginService;
         this.userRepo = userRepo;
         this.permissionRepo = permissionRepo;
+        this.grantQueryService = grantQueryService;
         this.menuRepo = menuRepo;
         this.menuTreeBuilder = menuTreeBuilder;
     }
@@ -70,10 +75,16 @@ public class DiagnosticsController {
     public PermissionCheckResponse permissionCheck(@Valid @RequestBody PermissionCheckRequest req) {
         Set<String> codes = permissionRepo.findCodesForUserId(req.userId());
         boolean has = codes.contains(req.permissionCode());
-        // Surface the matched code under matchedVia so the UI can render it.
-        // The detailed "which role / which group granted it" path is queued
-        // as a follow-up once the access SPI exposes that detail.
-        List<String> matchedVia = has ? List.of(req.permissionCode()) : List.of();
+        // Resolve every grant path the user has on this permission so the UI
+        // can show "you got this via role:ADMIN" or "via group:eng-team>role:READ".
+        // Empty when has == false; can be multi-row when the user holds the
+        // permission both directly and through a group.
+        List<String> matchedVia = has
+                ? grantQueryService.findGrantsFor(req.userId(), req.permissionCode()).stream()
+                        .map(PermissionGrant::describe)
+                        .distinct()
+                        .toList()
+                : List.of();
         return new PermissionCheckResponse(has, matchedVia);
     }
 
