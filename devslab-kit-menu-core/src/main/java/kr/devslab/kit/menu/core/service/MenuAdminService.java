@@ -31,6 +31,9 @@ public class MenuAdminService {
             String requiredPermissionCode,
             String icon
     ) {
+        if (repository.findByTenantIdAndCode(tenantId.value(), code).isPresent()) {
+            throw new IllegalStateException("Menu already exists: tenant=" + tenantId + " code=" + code);
+        }
         PlatformMenuEntity entity = new PlatformMenuEntity(
                 UUID.randomUUID(),
                 tenantId.value(),
