@@ -2,6 +2,21 @@ spring:
   application:
     name: devslab-kit-sample-app
 
+  # Connect to the same Postgres / Redis that
+  # devslab-kit-admin-ui's docker-compose stands up by default. Override the
+  # DEVSLAB_* env vars when you need to point elsewhere (CI, staging, etc).
+  datasource:
+    url: ${DEVSLAB_DATASOURCE_URL:jdbc:postgresql://localhost:5432/devslab_kit}
+    username: ${DEVSLAB_DATASOURCE_USERNAME:devslab}
+    password: ${DEVSLAB_DATASOURCE_PASSWORD:devslab}
+  data:
+    redis:
+      host: ${DEVSLAB_REDIS_HOST:localhost}
+      port: ${DEVSLAB_REDIS_PORT:6379}
+
+  jpa:
+    open-in-view: false
+
 devslab:
   kit:
     tenant:
@@ -9,3 +24,30 @@ devslab:
       mode: single
       default-tenant-id: default
       resolver: fixed
+
+    identity:
+      jwt:
+        # 32+ byte key required by jjwt HS256. Override in prod via
+        # DEVSLAB_JWT_SECRET — the default below is sufficient for local
+        # development and the integration test setup, NOT for production.
+        secret: ${DEVSLAB_JWT_SECRET:dev-only-32byte-jwt-key-please-override!}
+        issuer: ${DEVSLAB_JWT_ISSUER:devslab-kit-sample}
+        ttl: ${DEVSLAB_JWT_TTL:PT8H}
+
+    audit:
+      enabled: true
+      async-queue-capacity: ${DEVSLAB_AUDIT_QUEUE:1024}
+
+    menu:
+      enabled: true
+      cache-ttl: ${DEVSLAB_MENU_CACHE_TTL:PT5M}
+
+# Sample-app-only seed runner: provisions a default tenant + admin user with
+# PLATFORM_ADMIN role + admin.* permissions on first boot, so the admin UI
+# can log in immediately for end-to-end testing. Disable in production.
+sample:
+  seed:
+    enabled: ${SAMPLE_SEED_ENABLED:true}
+    admin-login-id: ${SAMPLE_SEED_ADMIN_LOGIN_ID:admin}
+    admin-password: ${SAMPLE_SEED_ADMIN_PASSWORD:admin}
+    admin-email: ${SAMPLE_SEED_ADMIN_EMAIL:admin@example.com}
