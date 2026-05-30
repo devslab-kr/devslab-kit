@@ -9,6 +9,7 @@ import java.util.Optional;
 import kr.devslab.kit.access.core.service.DefaultPolicyEvaluator;
 import kr.devslab.kit.access.policy.PolicyContext;
 import kr.devslab.kit.access.policy.PolicyDecision;
+import kr.devslab.kit.access.policy.PolicyEvaluation;
 import kr.devslab.kit.access.policy.PolicyEvaluator;
 import kr.devslab.kit.admin.AdminApiPaths;
 import kr.devslab.kit.core.id.TenantId;
@@ -67,8 +68,8 @@ public class PolicyAdminController {
                         : Optional.ofNullable(req.resource().attributes()).orElseGet(Map::of))
                 .environmentAttributes(Optional.ofNullable(req.environment()).orElseGet(Map::of))
                 .build();
-        PolicyDecision decision = evaluator.evaluate(req.policyName(), ctx);
-        return new PolicyTestResponse(decision, null, List.of());
+        PolicyEvaluation result = evaluator.evaluateDetailed(req.policyName(), ctx);
+        return new PolicyTestResponse(result.decision(), result.reason(), result.matchedRules());
     }
 
     public record PolicyDescriptor(String name, String description) {
@@ -100,12 +101,11 @@ public class PolicyAdminController {
     /**
      * Wire shape matches the admin UI's {@code PolicyTestResponse} interface.
      *
-     * <p>{@code reason} and {@code matchedRules} are placeholders today —
-     * the current {@link Policy} SPI returns only a {@link PolicyDecision}
-     * enum, so we can't surface why a policy chose what it chose. Promoting
-     * the SPI to return a richer decision object (with reason + matched
-     * rules) is queued as a follow-up so this PR stays focused on the wire
-     * contract.
+     * <p>{@code reason} and {@code matchedRules} carry whatever the underlying
+     * policy chose to expose via {@link PolicyEvaluation#reason()} /
+     * {@link PolicyEvaluation#matchedRules()}; policies that only implement
+     * the coarse {@code evaluate} entry point land here with {@code reason}
+     * = null and an empty {@code matchedRules}.
      */
     public record PolicyTestResponse(
             PolicyDecision effect,
