@@ -76,4 +76,15 @@ public class AuditAutoConfiguration {
     ) {
         return new DefaultAuditEventPublisher(auditLogService, applicationEventPublisher, persistenceExecutor);
     }
+
+    /**
+     * Bridges identity login events onto the audit log. Registered here so
+     * it only activates when auditing is enabled and an
+     * {@link AuditEventPublisher} exists.
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public LoginAuditBridge loginAuditBridge(AuditEventPublisher auditEventPublisher) {
+        return new LoginAuditBridge(auditEventPublisher);
+    }
 }
