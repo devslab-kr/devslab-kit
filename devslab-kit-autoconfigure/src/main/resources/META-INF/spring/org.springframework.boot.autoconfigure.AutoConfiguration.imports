@@ -1,8 +1,10 @@
+kr.devslab.kit.autoconfigure.PersistenceAutoConfiguration
 kr.devslab.kit.autoconfigure.TenantAutoConfiguration
 kr.devslab.kit.autoconfigure.IdentityAutoConfiguration
 kr.devslab.kit.autoconfigure.AccessAutoConfiguration
 kr.devslab.kit.autoconfigure.MenuAutoConfiguration
 kr.devslab.kit.autoconfigure.AuditAutoConfiguration
 kr.devslab.kit.autoconfigure.AdminApiAutoConfiguration
+kr.devslab.kit.autoconfigure.AdminApiWebAutoConfiguration
 kr.devslab.kit.autoconfigure.BootstrapAutoConfiguration
 kr.devslab.kit.autoconfigure.MetricsAutoConfiguration

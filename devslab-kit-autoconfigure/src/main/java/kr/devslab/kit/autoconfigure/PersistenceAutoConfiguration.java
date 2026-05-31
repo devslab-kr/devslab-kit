@@ -20,10 +20,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *       consumer's own entity package (registered by their plain {@code @SpringBootApplication})
  *       is preserved.</li>
  *   <li>{@link DevslabKitJpaRepositoriesRegistrar} registers the kit's Spring Data
- *       repositories directly (subclassing Boot's own repository registrar, pinned to the
- *       kit package). Widening {@code AutoConfigurationPackages} alone does <em>not</em>
- *       pick up the kit's repositories — Boot's repository scan keys off the importing
- *       app's package, not every entry in {@code AutoConfigurationPackages}.</li>
+ *       repositories directly (subclassing Boot's own repository registrar). Registering any
+ *       repository this way contributes {@code JpaRepositoryFactoryBean}s, which trips Boot's
+ *       {@code @ConditionalOnMissingBean} guard and makes its {@code DataJpaRepositoriesAutoConfiguration}
+ *       back off for the whole app — so this registrar scans <em>both</em> the kit root and the
+ *       consumer's {@code AutoConfigurationPackages}, becoming the single repository scan that
+ *       covers everything.</li>
  * </ul>
  *
  * <p>Deliberately declares neither {@code @EntityScan} (would <em>replace</em> the
