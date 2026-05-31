@@ -32,6 +32,10 @@ public class AdminSecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(reg -> reg
                         .requestMatchers(HttpMethod.POST, AdminApiPaths.BASE + "/auth/login").permitAll()
+                        // Setup-wizard probe — must answer before any account
+                        // exists, so it cannot require authentication. Leaks
+                        // only a single boolean (see BootstrapStatusController).
+                        .requestMatchers(HttpMethod.GET, AdminApiPaths.BOOTSTRAP_STATUS).permitAll()
                         .requestMatchers(AdminApiPaths.BASE + "/**").authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
