@@ -19,6 +19,13 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-autoconfigure")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
+    // Lombok generates the @ConfigurationProperties accessors (DevslabKitProperties).
+    // Declared before nothing in particular, but both Lombok and the Spring config
+    // processor run as annotation processors — Lombok generates the getters/setters
+    // that the config processor then reads for metadata.
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+
     // Micrometer for custom metrics; consumer's spring-boot-actuator activates it at runtime.
     compileOnly("io.micrometer:micrometer-core")
 }
