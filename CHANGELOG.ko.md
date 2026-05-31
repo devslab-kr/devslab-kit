@@ -11,6 +11,10 @@ English: [CHANGELOG.md](CHANGELOG.md)
 
 ## [Unreleased]
 
+## [0.1.0] — 2026-05-31
+
+첫 공개 릴리스.
+
 ### Added
 - **Maven Central 배포** — 모든 라이브러리 모듈을 vanniktech maven-publish 플러그인으로
   Maven Central에 배포합니다 (Central Portal, 서명, `v*` 태그 시 자동 릴리스).
@@ -77,7 +81,6 @@ English: [CHANGELOG.md](CHANGELOG.md)
   `MenuProvider`, `AuditEventPublisher`)과 BCrypt 왕복을 스모크 테스트합니다.
 
 ### Notes
-- 아직 `0.1.0` 이전 스캐폴드이며, `0.1.0` 전에 공개 표면이 바뀔 수 있습니다.
 - SB 4.1-SNAPSHOT / Java 25 대신 Spring Boot 4.0.6(릴리스)와 Java 21을 대상으로 합니다.
   SB SNAPSHOT + Java 25 조합이 일부 환경에서 IntelliJ Gradle 통합을 깨뜨려, 릴리스 버전으로
   고정해 import 경로를 예측 가능하게 유지합니다. SB 4.1.x 릴리스가 나오면 Java 25를 재검토합니다.
