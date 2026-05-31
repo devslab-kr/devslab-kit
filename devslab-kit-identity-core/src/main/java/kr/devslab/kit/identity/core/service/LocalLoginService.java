@@ -108,7 +108,8 @@ public class LocalLoginService {
                 tenantId,
                 loginId,
                 account.getStatus(),
-                Set.of()
+                Set.of(),
+                account.isMustChangePassword()
         );
         return new LoginResult(currentUser);
     }

@@ -37,6 +37,18 @@ public class PlatformUserAccountAdminService {
 
     @Transactional
     public UserAccountView create(TenantId tenantId, String loginId, String email, String rawPassword, String providerType) {
+        return create(tenantId, loginId, email, rawPassword, providerType, false);
+    }
+
+    @Transactional
+    public UserAccountView create(
+            TenantId tenantId,
+            String loginId,
+            String email,
+            String rawPassword,
+            String providerType,
+            boolean mustChangePassword
+    ) {
         if (repository.findByTenantIdAndLoginId(tenantId.value(), loginId).isPresent()) {
             throw new IllegalStateException("User already exists: tenant=" + tenantId + " loginId=" + loginId);
         }
@@ -55,6 +67,7 @@ public class PlatformUserAccountAdminService {
                 now,
                 now
         );
+        entity.setMustChangePassword(mustChangePassword);
         repository.save(entity);
         eventPublisher.publishEvent(new UserAccountCreatedEvent(UserId.of(id), tenantId, loginId, now));
         return toView(entity);
