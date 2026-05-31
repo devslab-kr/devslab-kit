@@ -2,8 +2,8 @@ package kr.devslab.kit.cache.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -20,12 +20,18 @@ import org.testcontainers.utility.DockerImageName;
  * no {@code Serializable}, no serializer config, no {@code SerializationException}.
  *
  * <p>Runs against a real Redis (Testcontainers) because serialization is the
- * whole risk; a mock would prove nothing. Drives the kit's own
- * {@link RedisCacheConfiguration} bean methods directly with a real
- * {@link LettuceConnectionFactory} — deliberately bypassing Spring Boot's
- * autoconfiguration, whose {@code RedisAutoConfiguration} is deprecated for
- * removal in Spring Boot 4 and would trip this module's {@code -Werror}. The
- * config class is package-private; this test shares its package.
+ * whole risk; a mock would prove nothing. The connection factory is created and
+ * started <em>per test</em> ({@link BeforeEach}), not once in a static
+ * {@code @BeforeAll}: a {@link LettuceConnectionFactory} built in a static
+ * context doesn't reliably finish its async client init before the cache's first
+ * write, which silently drops it (an isolated diagnostic confirmed the
+ * serializer + cache + Redis I/O are otherwise correct). Per-test setup gives
+ * each test a freshly-started, fully-initialized factory.
+ *
+ * <p>Drives the kit's {@link DevslabKitRedisCacheConfiguration} bean method
+ * directly with a real {@link LettuceConnectionFactory} — deliberately bypassing
+ * Spring Boot's autoconfiguration. The config class is package-private; this
+ * test shares its package.
  */
 @Testcontainers
 class RedisCacheRoundTripTest {
@@ -34,22 +40,21 @@ class RedisCacheRoundTripTest {
     static final GenericContainer<?> REDIS =
             new GenericContainer<>(DockerImageName.parse("redis:7-alpine")).withExposedPorts(6379);
 
-    private static LettuceConnectionFactory connectionFactory;
-    private static CacheManager cacheManager;
+    private LettuceConnectionFactory connectionFactory;
+    private CacheManager cacheManager;
 
-    @BeforeAll
-    static void setUp() {
+    @BeforeEach
+    void setUp() {
         connectionFactory = new LettuceConnectionFactory(REDIS.getHost(), REDIS.getMappedPort(6379));
         connectionFactory.afterPropertiesSet();
         connectionFactory.start();
 
-        DevslabKitRedisCacheConfiguration config = new DevslabKitRedisCacheConfiguration();
-        // Call the autoconfig bean method directly (config class is package-private).
-        cacheManager = config.devslabKitRedisCacheManager(connectionFactory, new CacheProperties());
+        cacheManager = new DevslabKitRedisCacheConfiguration()
+                .devslabKitRedisCacheManager(connectionFactory, new CacheProperties());
     }
 
-    @AfterAll
-    static void tearDown() {
+    @AfterEach
+    void tearDown() {
         if (connectionFactory != null) {
             connectionFactory.destroy();
         }
@@ -72,7 +77,6 @@ class RedisCacheRoundTripTest {
         Customer original = new Customer("c-1", "Aisha", 7);
         cache.put("c-1", original);
 
-        // Read back via a fresh get — deserialized from Redis bytes, not a local ref.
         Customer fromCache = cache.get("c-1", Customer.class);
         assertThat(fromCache).isEqualTo(original);
         assertThat(fromCache.name()).isEqualTo("Aisha");
@@ -91,6 +95,6 @@ class RedisCacheRoundTripTest {
     void missReturnsNull() {
         Cache cache = cacheManager.getCache("customers");
         assertThat(cache).isNotNull();
-        assertThat(cache.get("does-not-exist")).isNull();
+        assertThat(cache.get("absent-key-" + System.nanoTime())).isNull();
     }
 }
