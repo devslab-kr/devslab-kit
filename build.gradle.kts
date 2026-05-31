@@ -1,40 +1,27 @@
-import com.vanniktech.maven.publish.MavenPublishBaseExtension
-
-// vanniktech maven-publish on the buildscript classpath so this root script can
-// `import` its extension type and configure publishing for the library modules.
-// (Declaring it `apply false` in plugins {} does not reliably expose the classes
-// to the root script's compilation under Gradle 9.x — buildscript {} does.)
-buildscript {
-    repositories {
-        mavenCentral()
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath("com.vanniktech:gradle-maven-publish-plugin:0.36.0")
-    }
-}
-
+// Root build — not published. Each publishable artifact lives in its own
+// subproject and applies the publishing plugin (see settings.gradle.kts).
+//
+// Plugin versions are declared here with `apply false` so subprojects can apply
+// them without repeating version numbers, keeping module version drift at zero.
+// This mirrors the devslab-kr sibling libraries (ssrf-guard, api-log).
 plugins {
     id("org.springframework.boot") version "4.0.6" apply false
     id("io.spring.dependency-management") version "1.1.7" apply false
     id("org.graalvm.buildtools.native") version "1.1.0" apply false
+    id("com.vanniktech.maven.publish") version "0.36.0" apply false
 }
 
 allprojects {
-    group = "kr.devslab"
-    version = "0.1.0"
-
-    repositories {
-        mavenCentral()
-    }
+    group = providers.gradleProperty("GROUP").get()
+    // -PVERSION on the release workflow overrides this with the tag version.
+    version = providers.gradleProperty("VERSION").get()
 }
 
-// Every module ships to Maven Central except the runnable reference app.
+// Shared config for every library module. The runnable sample-app is excluded —
+// it isn't published and applies the Spring Boot application plugin itself.
 val nonPublishedModules = setOf("devslab-kit-sample-app")
 
 subprojects {
-    val proj = this
-
     apply(plugin = "java-library")
     apply(plugin = "io.spring.dependency-management")
 
@@ -60,6 +47,7 @@ subprojects {
     }
 
     tasks.withType<JavaCompile>().configureEach {
+        options.encoding = "UTF-8"
         options.compilerArgs.add("-parameters")
     }
 
@@ -67,26 +55,20 @@ subprojects {
         useJUnitPlatform()
     }
 
-    // --- Maven Central publishing for the library modules (not the sample app) ---
-    if (proj.name !in nonPublishedModules) {
+    if (name !in nonPublishedModules) {
         apply(plugin = "com.vanniktech.maven.publish")
 
-        configure<MavenPublishBaseExtension> {
-            // SONATYPE_HOST / SONATYPE_AUTOMATIC_RELEASE and the POM_* metadata
-            // come from gradle.properties. signAllPublications() enables GPG
-            // signing (with the org key) for releases and is a no-op for
-            // -SNAPSHOT, so publishToMavenLocal needs no key.
-            //
-            // Do NOT also set RELEASE_SIGNING_ENABLED in gradle.properties: it
-            // configures signing too, and combining the two double-sets the
-            // signing property, which Gradle 9 rejects as "value is final".
-            signAllPublications()
-            coordinates(proj.group.toString(), proj.name, proj.version.toString())
-            pom {
-                name.set(proj.name)
-                // Each module sets its own `description` in build.gradle.kts; read
-                // it lazily since module scripts evaluate after this block runs.
-                description.set(proj.provider { proj.description ?: "devslab-kit :: ${proj.name}" })
+        // Library modules publish under the Spring Boot BOM, so their api()/
+        // implementation() deps carry no explicit version. Gradle's module-
+        // metadata validator rejects version-less deps at publish time;
+        // versionMapping { fromResolutionResult() } freezes the BOM-resolved
+        // versions into the generated .pom/.module so consumers don't need our
+        // BOM. (Same fix as the api-log / ssrf-guard starters.)
+        extensions.configure<PublishingExtension>("publishing") {
+            publications.withType<MavenPublication>().configureEach {
+                versionMapping {
+                    allVariants { fromResolutionResult() }
+                }
             }
         }
     }
