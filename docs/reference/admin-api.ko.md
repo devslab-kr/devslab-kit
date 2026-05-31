@@ -34,7 +34,22 @@ curl -s localhost:8080/admin/api/v1/auth/login \
 이후 호출에는 `Authorization: Bearer <jwt>`로 보냅니다. 토큰은 테넌트, 역할,
 `mustChangePassword` 플래그를 담습니다([접근 제어](../guides/access.md) 참고).
 
-!!! tip "API 보호"
-    엔드포인트는 Spring Security와 kit의 `PermissionChecker`(`admin.*` 권한)로
-    보호됩니다. 모든 빈이 `@ConditionalOnMissingBean`이므로, 직접 시큐리티 체인이나
-    `PermissionChecker`를 제공해 보호 방식을 바꿀 수 있습니다.
+## 인가 (Authorization)
+
+인증만으로는 충분하지 않습니다. 모든 엔드포인트는 매핑된 `admin.*` 권한도
+요구합니다. 읽기 엔드포인트는 해당 `*.read`, 변경 엔드포인트는 `*.write`를
+요구합니다 — 예를 들어 `GET /users`는 `admin.user.read`, `POST /users`는
+`admin.user.write`가 필요합니다. `auth/login`과 `bootstrap/status`는 공개이며,
+`auth/change-password`는 유효한 토큰만 있으면 됩니다.
+
+강제는 kit의 보안 체인에서 호출자의 **실효 권한**을 기준으로 이뤄집니다 — 토큰에서
+읽는 게 아니라, 호출자가 가진 역할·그룹에서 매 요청마다 해석합니다([`PermissionChecker`](../guides/access.md)가
+쓰는 것과 동일한 권한 해석). 따라서 권한 부여/회수가 호출자의 다음 요청에 즉시
+반영되고 JWT는 작게 유지됩니다. 최초 관리자 부트스트랩이 모든 `admin.*` 권한을
+`PLATFORM_ADMIN`에 시드하므로 시드된 관리자는 즉시 전체 API를 사용할 수 있습니다.
+
+!!! tip "보안 커스터마이징"
+    보안 체인과 JWT 필터는 모두 `@ConditionalOnMissingBean`이므로, 직접
+    `SecurityFilterChain`이나 `JwtAuthenticationFilter`를 제공해 보호 방식을 바꿀 수
+    있습니다. 직접 작성한 코드 안에서의 인가 검사는 kit의 `PermissionChecker`를
+    주입해 사용하세요([접근 제어](../guides/access.md) 참고).
