@@ -55,4 +55,41 @@ class JjwtAuthTokenServiceTest {
 
         assertThat(parsed.mustChangePassword()).isFalse();
     }
+
+    /**
+     * Regression lock for the parser-clock bug: {@code parse()} must validate
+     * expiry against the <em>injected</em> clock, not the real system clock.
+     *
+     * <p>The clock is fixed far in the past, so the token's 8h window closed
+     * years ago in wall-clock terms. If {@code parse()} (re)introduces the
+     * default system clock, it sees the token as long expired and returns
+     * empty — and this assertion fails. It passes only while the injected clock
+     * governs expiry. Deterministic regardless of when CI runs.
+     */
+    @Test
+    void parseHonorsInjectedClock_acceptsTokenThatRealClockWouldReject() {
+        Clock past = Clock.fixed(Instant.parse("2020-01-01T00:00:00Z"), ZoneOffset.UTC);
+        JjwtAuthTokenService pastService =
+                new JjwtAuthTokenService(SECRET, Duration.ofHours(8), "devslab-kit-test", past);
+
+        AuthToken token = pastService.issue(user(false));
+
+        assertThat(pastService.parse(token.value())).isPresent();
+    }
+
+    /** And the symmetric case: a token past its TTL per the injected clock is rejected. */
+    @Test
+    void parseRejectsTokenExpiredPerInjectedClock() {
+        Clock t0 = Clock.fixed(Instant.parse("2026-05-31T00:00:00Z"), ZoneOffset.UTC);
+        JjwtAuthTokenService issuerService =
+                new JjwtAuthTokenService(SECRET, Duration.ofHours(1), "devslab-kit-test", t0);
+        AuthToken token = issuerService.issue(user(false));
+
+        // A reader whose clock sits 2h later — past the 1h TTL — must reject it.
+        Clock later = Clock.fixed(Instant.parse("2026-05-31T02:00:00Z"), ZoneOffset.UTC);
+        JjwtAuthTokenService readerService =
+                new JjwtAuthTokenService(SECRET, Duration.ofHours(1), "devslab-kit-test", later);
+
+        assertThat(readerService.parse(token.value())).isEmpty();
+    }
 }

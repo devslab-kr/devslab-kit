@@ -75,6 +75,12 @@ public class JjwtAuthTokenService implements AuthTokenService {
             Claims claims = Jwts.parser()
                     .verifyWith(signingKey)
                     .requireIssuer(issuer)
+                    // Validate expiration/not-before against the SAME injected clock
+                    // that issue() uses. JJWT's parser otherwise defaults to the real
+                    // system clock, which (a) makes the injected Clock untestable and
+                    // (b) is asymmetric with issue(). io.jsonwebtoken.Clock is a
+                    // {@code Date now()} functional interface, so adapt java.time.Clock.
+                    .clock(() -> Date.from(Instant.now(clock)))
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
