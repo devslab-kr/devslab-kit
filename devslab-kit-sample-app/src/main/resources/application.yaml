@@ -42,12 +42,19 @@ devslab:
       enabled: true
       cache-ttl: ${DEVSLAB_MENU_CACHE_TTL:PT5M}
 
-# Sample-app-only seed runner: provisions a default tenant + admin user with
-# PLATFORM_ADMIN role + admin.* permissions on first boot, so the admin UI
-# can log in immediately for end-to-end testing. Disable in production.
-sample:
-  seed:
-    enabled: ${SAMPLE_SEED_ENABLED:true}
-    admin-login-id: ${SAMPLE_SEED_ADMIN_LOGIN_ID:admin}
-    admin-password: ${SAMPLE_SEED_ADMIN_PASSWORD:admin}
-    admin-email: ${SAMPLE_SEED_ADMIN_EMAIL:admin@example.com}
+    # First-admin bootstrap (ADR 0001). The starter's own runner provisions a
+    # default tenant + PLATFORM_ADMIN role + admin.* permissions + admin user on
+    # first boot, so the admin UI can log in immediately for end-to-end testing.
+    #
+    # This stands in for a local-dev profile: a fixed admin/admin with the
+    # forced password change turned OFF so you log straight in. In staging /
+    # production, inject DEVSLAB_BOOTSTRAP_ADMIN_PASSWORD (or leave it blank for
+    # a random one logged once) and set must-change-password to true — or set
+    # enabled=false and provision the first admin out-of-band.
+    bootstrap:
+      enabled: ${DEVSLAB_BOOTSTRAP_ENABLED:true}
+      tenant-id: ${DEVSLAB_BOOTSTRAP_TENANT_ID:default}
+      admin-login-id: ${DEVSLAB_BOOTSTRAP_ADMIN_LOGIN_ID:admin}
+      admin-password: ${DEVSLAB_BOOTSTRAP_ADMIN_PASSWORD:admin}
+      admin-email: ${DEVSLAB_BOOTSTRAP_ADMIN_EMAIL:admin@example.com}
+      must-change-password: ${DEVSLAB_BOOTSTRAP_MUST_CHANGE_PASSWORD:false}

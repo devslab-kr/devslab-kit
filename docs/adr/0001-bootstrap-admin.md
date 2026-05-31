@@ -1,8 +1,13 @@
 # ADR 0001 — First-admin bootstrap across environments
 
-- **Status:** Proposed
-- **Date:** 2026-05-30
+- **Status:** Accepted
+- **Date:** 2026-05-30 (accepted 2026-05-31)
 - **Languages:** [English](0001-bootstrap-admin.md) · [한국어](0001-bootstrap-admin.ko.md)
+- **Implemented by:** the first-admin bootstrap feature — `must_change_password`
+  (V11) + self-service `POST /admin/api/v1/auth/change-password` +
+  `BootstrapAutoConfiguration` / `DevslabKitBootstrapRunner`, with the
+  `sample-app` switched off its old seed runner. The admin-ui forced-change
+  guard + screen lands as a follow-up in `devslab-kit-admin-ui`.
 
 ## Context
 

@@ -28,6 +28,7 @@ public class JjwtAuthTokenService implements AuthTokenService {
     private static final String CLAIM_LOGIN_ID = "loginId";
     private static final String CLAIM_STATUS = "status";
     private static final String CLAIM_ROLES = "roles";
+    private static final String CLAIM_MUST_CHANGE_PASSWORD = "mustChangePassword";
 
     private final SecretKey signingKey;
     private final Duration ttl;
@@ -59,6 +60,7 @@ public class JjwtAuthTokenService implements AuthTokenService {
                 .claim(CLAIM_LOGIN_ID, user.loginId())
                 .claim(CLAIM_STATUS, user.status().name())
                 .claim(CLAIM_ROLES, user.roles())
+                .claim(CLAIM_MUST_CHANGE_PASSWORD, user.mustChangePassword())
                 .signWith(signingKey, Jwts.SIG.HS256)
                 .compact();
         return new AuthToken(token, now, exp);
@@ -79,13 +81,15 @@ public class JjwtAuthTokenService implements AuthTokenService {
             UUID userId = UUID.fromString(claims.getSubject());
             @SuppressWarnings("unchecked")
             Set<String> roles = Set.copyOf(((java.util.Collection<String>) claims.getOrDefault(CLAIM_ROLES, Set.of())));
+            Boolean mustChangePassword = claims.get(CLAIM_MUST_CHANGE_PASSWORD, Boolean.class);
             CurrentUser user = new CurrentUser(
                     UserId.of(userId),
                     PublicId.of(claims.get(CLAIM_PUBLIC_ID, String.class)),
                     TenantId.of(claims.get(CLAIM_TENANT, String.class)),
                     claims.get(CLAIM_LOGIN_ID, String.class),
                     UserStatus.valueOf(claims.get(CLAIM_STATUS, String.class)),
-                    roles
+                    roles,
+                    mustChangePassword != null && mustChangePassword
             );
             return Optional.of(user);
         } catch (JwtException | IllegalArgumentException ex) {

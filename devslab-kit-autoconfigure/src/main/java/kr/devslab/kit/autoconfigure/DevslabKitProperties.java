@@ -11,9 +11,14 @@ public class DevslabKitProperties {
     private final Tenant tenant = new Tenant();
     private final Menu menu = new Menu();
     private final Audit audit = new Audit();
+    private final Bootstrap bootstrap = new Bootstrap();
 
     public Identity getIdentity() {
         return identity;
+    }
+
+    public Bootstrap getBootstrap() {
+        return bootstrap;
     }
 
     public Access getAccess() {
@@ -234,6 +239,132 @@ public class DevslabKitProperties {
 
         public void setAsyncQueueCapacity(int asyncQueueCapacity) {
             this.asyncQueueCapacity = asyncQueueCapacity;
+        }
+    }
+
+    /**
+     * First-admin bootstrap (ADR 0001). Disabled by default so a no-config
+     * production deploy provisions nothing. When enabled, an idempotent runner
+     * creates a tenant, an admin role with the full {@code admin.*} permission
+     * set, and a single admin user on first boot — just enough to log in to the
+     * dashboard and take over.
+     *
+     * <p>Drive it per environment from profile-specific config (e.g.
+     * {@code application-local.yml} sets {@code admin-password: admin} with
+     * {@code must-change-password: false}; staging/prod inject a secret and
+     * leave the forced rotation on). Never commit a fixed password to the
+     * shared {@code application.yml}.
+     */
+    public static class Bootstrap {
+
+        /** Master switch. Default OFF — bootstrap runs only when explicitly enabled. */
+        private boolean enabled = false;
+
+        /** Tenant the first admin belongs to; created if absent. */
+        private String tenantId = "default";
+
+        private String adminLoginId = "admin";
+
+        /**
+         * Admin password. Leave blank to generate a strong random one and log
+         * it exactly once on first boot (GitLab / Jenkins style). A fixed value
+         * only ever exists because an operator wrote it here.
+         */
+        private String adminPassword;
+
+        private String adminEmail = "admin@example.com";
+
+        /** Code of the role granted to the bootstrap admin; created if absent. */
+        private String roleCode = "PLATFORM_ADMIN";
+
+        /** Display name used when the role has to be created. */
+        private String roleName = "Platform Admin";
+
+        /**
+         * When true (default), the bootstrap admin must rotate its password on
+         * first login. Local-dev typically sets this to {@code false} to skip
+         * the extra round-trip.
+         */
+        private boolean mustChangePassword = true;
+
+        /**
+         * Backstop, not the primary control: if the active profiles include
+         * {@code prod}/{@code production} and an explicitly-configured password
+         * is a well-known weak value ({@code admin}, {@code password}, …), fail
+         * startup. The primary control is that no fixed default exists at all.
+         */
+        private boolean failOnDefaultPasswordInProd = true;
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public String getTenantId() {
+            return tenantId;
+        }
+
+        public void setTenantId(String tenantId) {
+            this.tenantId = tenantId;
+        }
+
+        public String getAdminLoginId() {
+            return adminLoginId;
+        }
+
+        public void setAdminLoginId(String adminLoginId) {
+            this.adminLoginId = adminLoginId;
+        }
+
+        public String getAdminPassword() {
+            return adminPassword;
+        }
+
+        public void setAdminPassword(String adminPassword) {
+            this.adminPassword = adminPassword;
+        }
+
+        public String getAdminEmail() {
+            return adminEmail;
+        }
+
+        public void setAdminEmail(String adminEmail) {
+            this.adminEmail = adminEmail;
+        }
+
+        public String getRoleCode() {
+            return roleCode;
+        }
+
+        public void setRoleCode(String roleCode) {
+            this.roleCode = roleCode;
+        }
+
+        public String getRoleName() {
+            return roleName;
+        }
+
+        public void setRoleName(String roleName) {
+            this.roleName = roleName;
+        }
+
+        public boolean isMustChangePassword() {
+            return mustChangePassword;
+        }
+
+        public void setMustChangePassword(boolean mustChangePassword) {
+            this.mustChangePassword = mustChangePassword;
+        }
+
+        public boolean isFailOnDefaultPasswordInProd() {
+            return failOnDefaultPasswordInProd;
+        }
+
+        public void setFailOnDefaultPasswordInProd(boolean failOnDefaultPasswordInProd) {
+            this.failOnDefaultPasswordInProd = failOnDefaultPasswordInProd;
         }
     }
 }

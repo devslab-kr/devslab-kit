@@ -10,6 +10,7 @@ import kr.devslab.kit.identity.core.service.DefaultCurrentUserProvider;
 import kr.devslab.kit.identity.core.service.JjwtAuthTokenService;
 import kr.devslab.kit.identity.core.service.LocalLoginService;
 import kr.devslab.kit.identity.core.service.PlatformUserAccountService;
+import kr.devslab.kit.identity.core.service.SelfServicePasswordService;
 import jakarta.persistence.EntityManager;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -67,6 +68,16 @@ public class IdentityAutoConfiguration {
     @ConditionalOnMissingBean
     public PlatformUserAccountService platformUserAccountService(JpaPlatformUserAccountRepository repository) {
         return new PlatformUserAccountService(repository);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public SelfServicePasswordService selfServicePasswordService(
+            JpaPlatformUserAccountRepository repository,
+            PasswordHasher passwordHasher,
+            Clock clock
+    ) {
+        return new SelfServicePasswordService(repository, passwordHasher, clock);
     }
 
     @Bean

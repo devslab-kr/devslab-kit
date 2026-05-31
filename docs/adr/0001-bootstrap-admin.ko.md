@@ -1,8 +1,13 @@
 # ADR 0001 — 환경별 최초 관리자 부트스트랩
 
-- **상태:** 제안(Proposed)
-- **날짜:** 2026-05-30
+- **상태:** 수락(Accepted)
+- **날짜:** 2026-05-30 (2026-05-31 수락)
 - **언어:** [English](0001-bootstrap-admin.md) · [한국어](0001-bootstrap-admin.ko.md)
+- **구현:** 최초 관리자 부트스트랩 기능 — `must_change_password`(V11) +
+  self-service `POST /admin/api/v1/auth/change-password` +
+  `BootstrapAutoConfiguration` / `DevslabKitBootstrapRunner`, 그리고 `sample-app`을
+  기존 시드 러너에서 전환. admin-ui 강제변경 가드 + 화면은 `devslab-kit-admin-ui`
+  후속 작업으로 처리.
 
 ## 배경
 

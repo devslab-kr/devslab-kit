@@ -36,3 +36,14 @@ dependencies {
     testCompileOnly("org.projectlombok:lombok")
     testAnnotationProcessor("org.projectlombok:lombok")
 }
+
+// Pin the main class explicitly. Auto-detection (ResolveMainClassName) does not
+// resolve it in this multi-module setup where the `java` plugin is applied to
+// subprojects from the root after the Spring Boot plugin, leaving main-class
+// resolution — and therefore `./gradlew build` — to fail. The GraalVM native
+// plugin also pulls in the `application` plugin, whose `startScripts` task reads
+// `application.mainClass`. Setting it here feeds bootJar/bootRun (via
+// convention), startScripts, and nativeCompile.
+application {
+    mainClass.set("kr.devslab.kit.sample.SampleApplication")
+}

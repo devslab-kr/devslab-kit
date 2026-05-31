@@ -56,6 +56,14 @@ public class PlatformUserAccountEntity {
     @Column(name = "locked_until")
     private Instant lockedUntil;
 
+    /**
+     * When {@code true}, the account holder must rotate their password before
+     * using the rest of the system. Set by the bootstrap runner for the first
+     * admin (see ADR 0001) and cleared by the self-service change-password flow.
+     */
+    @Column(name = "must_change_password", nullable = false)
+    private boolean mustChangePassword;
+
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 

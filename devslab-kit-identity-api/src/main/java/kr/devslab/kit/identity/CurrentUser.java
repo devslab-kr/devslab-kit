@@ -11,10 +11,23 @@ public record CurrentUser(
         TenantId tenantId,
         String loginId,
         UserStatus status,
-        Set<String> roles
+        Set<String> roles,
+        boolean mustChangePassword
 ) {
 
     public CurrentUser {
         roles = roles == null ? Set.of() : Set.copyOf(roles);
+    }
+
+    /** Convenience overload for callers that don't carry the forced-rotation flag. */
+    public CurrentUser(
+            UserId id,
+            PublicId publicId,
+            TenantId tenantId,
+            String loginId,
+            UserStatus status,
+            Set<String> roles
+    ) {
+        this(id, publicId, tenantId, loginId, status, roles, false);
     }
 }

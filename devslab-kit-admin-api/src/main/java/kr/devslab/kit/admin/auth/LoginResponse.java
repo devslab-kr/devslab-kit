@@ -17,7 +17,8 @@ public record LoginResponse(String token, Instant expiresAt, UserSummary user) {
                         user.tenantId().value(),
                         user.loginId(),
                         user.status().name(),
-                        user.roles()
+                        user.roles(),
+                        user.mustChangePassword()
                 )
         );
     }
@@ -28,7 +29,8 @@ public record LoginResponse(String token, Instant expiresAt, UserSummary user) {
             String tenantId,
             String loginId,
             String status,
-            Set<String> roles
+            Set<String> roles,
+            boolean mustChangePassword
     ) {
     }
 }
