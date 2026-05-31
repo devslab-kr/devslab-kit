@@ -12,7 +12,7 @@ dependencies {
     // compileOnly here means the kit never forces Redis as a transitive
     // dependency — the in-memory default stays zero-dependency. See ADR 0002 §4.
     // (spring-boot-starter-data-redis brings Spring Data Redis + Jackson 3
-    //  tools.jackson transitively, which the Jackson3JsonRedisSerializer needs.)
+    //  tools.jackson transitively, which GenericJacksonJsonRedisSerializer needs.)
     compileOnly("org.springframework.boot:spring-boot-starter-data-redis")
 
     compileOnly("org.projectlombok:lombok")
@@ -26,15 +26,4 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.testcontainers:testcontainers-junit-jupiter")
-}
-
-// The build compiles with -Werror (inherited from the toolchain/convention).
-// Spring Boot 4 / Spring Data Redis 4 mark a lot of their cache + autoconfig
-// API @Deprecated(forRemoval=true) while the replacements settle, and this is
-// the one module that touches that surface (Jackson3JsonRedisSerializer,
-// RedisCacheManager, the test's connection wiring). Turn off just the `removal`
-// lint category here so those advisory warnings don't fail the build; every
-// other lint stays on.
-tasks.withType<JavaCompile>().configureEach {
-    options.compilerArgs.add("-Xlint:-removal")
 }
