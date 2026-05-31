@@ -1,0 +1,139 @@
+site_name: devslab-kit
+site_url: https://devslab-kit.devslab.kr/
+site_description: >-
+  Spring Boot 4 platform starter — authentication, RBAC + groups + ABAC,
+  multi-tenancy, dynamic menus, audit logging, and an admin REST API.
+site_author: devslab
+copyright: Copyright &copy; 2026 devslab. Licensed under Apache 2.0.
+
+repo_url: https://github.com/devslab-kr/devslab-kit
+repo_name: devslab-kr/devslab-kit
+edit_uri: edit/main/docs/
+
+docs_dir: docs
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - navigation.tracking
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - content.action.edit
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil
+
+extra_css:
+  - stylesheets/extra.css
+
+plugins:
+  - search
+  - i18n:
+      docs_structure: suffix
+      languages:
+        - locale: en
+          default: true
+          name: English
+          build: true
+        - locale: ko
+          name: 한국어
+          build: true
+          nav_translations:
+            Home: 홈
+            Getting Started: 시작하기
+            Installation: 설치
+            Quick Start: 빠른 시작
+            Guides: 가이드
+            Multi-tenancy: 멀티테넌시
+            Access (RBAC + ABAC): 접근 제어 (RBAC + ABAC)
+            Dynamic Menus: 동적 메뉴
+            Audit Logging: 감사 로깅
+            Caching: 캐시
+            First-admin Bootstrap: 최초 관리자 부트스트랩
+            Reference: 레퍼런스
+            Configuration: 설정
+            Admin REST API: 관리자 REST API
+            Decisions: 결정 기록
+            Changelog: 변경 이력
+            Roadmap: 로드맵
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - footnotes
+  - tables
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      base_path:
+        - .
+      check_paths: true
+  - toc:
+      permalink: true
+      toc_depth: 3
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/devslab-kr/devslab-kit
+    - icon: fontawesome/brands/java
+      link: https://central.sonatype.com/artifact/kr.devslab/devslab-kit-spring-boot-starter
+  alternate:
+    - name: English
+      link: /
+      lang: en
+    - name: 한국어
+      link: /ko/
+      lang: ko
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Installation: getting-started/installation.md
+      - Quick Start: getting-started/quick-start.md
+  - Guides:
+      - Multi-tenancy: guides/tenancy.md
+      - Access (RBAC + ABAC): guides/access.md
+      - Dynamic Menus: guides/menus.md
+      - Audit Logging: guides/audit.md
+      - Caching: guides/cache.md
+      - First-admin Bootstrap: guides/bootstrap.md
+  - Reference:
+      - Configuration: reference/configuration.md
+      - Admin REST API: reference/admin-api.md
+  - Decisions:
+      - "ADR 0001 — First-admin bootstrap": adr/0001-bootstrap-admin.md
+      - "ADR 0002 — Pluggable cache": adr/0002-distributed-cache.md
+  - Changelog: changelog.md
+  - Roadmap: roadmap.md

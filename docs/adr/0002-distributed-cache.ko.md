@@ -2,7 +2,6 @@
 
 - **상태:** 수락(Accepted)
 - **날짜:** 2026-05-31 (2026-05-31 수락)
-- **언어:** [English](0002-distributed-cache.md) · [한국어](0002-distributed-cache.ko.md)
 - **구현:** `devslab-kit-cache-api` + `devslab-kit-cache-core` —
   `CacheProperties`(`devslab.kit.cache.*`), `CacheAutoConfiguration`(`type`
   스위치 + 가드된 `@EnableCaching`, none/in-memory 백엔드). Redis 백엔드 + JSON

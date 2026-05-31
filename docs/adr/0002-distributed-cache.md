@@ -2,7 +2,6 @@
 
 - **Status:** Accepted
 - **Date:** 2026-05-31 (accepted 2026-05-31)
-- **Languages:** [English](0002-distributed-cache.md) · [한국어](0002-distributed-cache.ko.md)
 - **Implemented by:** `devslab-kit-cache-api` + `devslab-kit-cache-core` —
   `CacheProperties` (`devslab.kit.cache.*`), `CacheAutoConfiguration` (the
   `type` switch + guarded `@EnableCaching`, none/in-memory backends). The Redis
