@@ -11,6 +11,10 @@ The library major aligns with the Spring Boot major: `4.x.y` targets Spring Boot
 
 ## [Unreleased]
 
+## [0.1.0] — 2026-05-31
+
+First public release.
+
 ### Added
 - **Maven Central publishing** — every library module ships to Maven Central via
   the vanniktech maven-publish plugin (Central Portal, signed, auto-release on a
@@ -87,7 +91,6 @@ The library major aligns with the Spring Boot major: `4.x.y` targets Spring Boot
   `PermissionChecker`, `MenuProvider`, `AuditEventPublisher`) plus a BCrypt round-trip.
 
 ### Notes
-- This is still the pre-`0.1.0` scaffold; the public surface may shift before `0.1.0`.
 - Targeting Spring Boot 4.0.6 (release) and Java 21 instead of SB 4.1-SNAPSHOT / Java 25.
   The combination of SB SNAPSHOT + Java 25 was tripping up IntelliJ Gradle integration on
   some setups; pinning to released versions keeps the import path predictable. Will revisit
