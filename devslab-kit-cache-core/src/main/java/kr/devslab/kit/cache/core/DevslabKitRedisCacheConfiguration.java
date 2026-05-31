@@ -24,29 +24,34 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  * <p>Values are serialized with {@link GenericJackson2JsonRedisSerializer}'s
  * no-arg constructor, which builds an {@code ObjectMapper} that embeds type
  * information so a cached {@code record} reads back as the same record (not a
- * {@code Map}). That decision — the serializer + its type handling — lives here,
- * in the kit, exactly once, which is the whole point: consumers configure
- * nothing. Keys use {@link StringRedisSerializer} with the configured prefix so
- * entries are readable in {@code redis-cli}.
+ * {@code Map}). That decision lives here, in the kit, exactly once — consumers
+ * configure nothing. Keys use {@link StringRedisSerializer} with the configured
+ * prefix so entries are readable in {@code redis-cli}.
  *
- * <p>Spring Data Redis 4.0 marks this serializer {@code @Deprecated(forRemoval)}
- * ahead of a Jackson-3 replacement that isn't in the 4.0 line yet; the module
- * compiles with {@code -Xlint:-removal} for that reason (see its build file).
- * When the kit moves to the SDR line that ships the Jackson-3 serializer, this
- * is the single spot to swap it — the bean contract doesn't change.
+ * <p>This class is named {@code DevslabKitRedisCacheConfiguration} — NOT
+ * {@code RedisCacheConfiguration} — on purpose: Spring Data Redis's own
+ * {@link RedisCacheConfiguration} (imported above) is used as the cache-defaults
+ * builder, and giving this class the same simple name shadows that import and
+ * scrambles type resolution inside the class body (javac then mis-sees the
+ * value serializer's type). The distinct name keeps the import unambiguous.
+ *
+ * <p>Spring Data Redis 4.0 marks the serializer {@code @Deprecated(forRemoval)}
+ * ahead of a Jackson-3 replacement not in the 4.0 line yet; the module compiles
+ * with {@code -Xlint:-removal} for that reason (see its build file). This is the
+ * single spot to swap it when the kit moves to that SDR line — the bean contract
+ * doesn't change.
  *
  * <p>Guarded by {@link ConditionalOnClass} on {@link RedisConnectionFactory}:
- * when Redis isn't on the classpath this whole configuration is skipped, so the
- * {@code compileOnly} Redis dependency in {@code -cache-core} never leaks onto a
- * consumer who stays in-memory. A misconfigured {@code type=redis} with no Redis
- * connection wired surfaces as the usual missing-{@code RedisConnectionFactory}
- * error (it's a constructor parameter of the cache-manager bean) rather than
- * silently degrading.
+ * with Redis off the classpath this whole configuration is skipped, so the
+ * {@code compileOnly} Redis dependency never leaks onto an in-memory consumer. A
+ * misconfigured {@code type=redis} with no Redis wired surfaces as the usual
+ * missing-{@code RedisConnectionFactory} error (a constructor parameter) rather
+ * than silently degrading.
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(RedisConnectionFactory.class)
 @ConditionalOnProperty(prefix = "devslab.kit.cache", name = "type", havingValue = "redis")
-class RedisCacheConfiguration {
+class DevslabKitRedisCacheConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(CacheManager.class)
@@ -54,10 +59,6 @@ class RedisCacheConfiguration {
             RedisConnectionFactory connectionFactory,
             CacheProperties properties
     ) {
-        // No-arg ctor: an ObjectMapper preconfigured for default typing, so
-        // polymorphic / generic values round-trip with their concrete type.
-        // Inlined into fromSerializer so its generic type (RedisSerializer<Object>)
-        // is inferred directly at the call site.
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeKeysWith(RedisSerializationContext.SerializationPair
                         .fromSerializer(new StringRedisSerializer()))

@@ -43,11 +43,9 @@ class RedisCacheRoundTripTest {
         connectionFactory.afterPropertiesSet();
         connectionFactory.start();
 
-        RedisCacheConfiguration config = new RedisCacheConfiguration();
-        // Same wiring the autoconfig bean methods perform, called directly.
-        var objectMapper = config.devslabKitCacheObjectMapper();
-        cacheManager = config.devslabKitRedisCacheManager(
-                connectionFactory, new CacheProperties(), objectMapper);
+        DevslabKitRedisCacheConfiguration config = new DevslabKitRedisCacheConfiguration();
+        // Call the autoconfig bean method directly (config class is package-private).
+        cacheManager = config.devslabKitRedisCacheManager(connectionFactory, new CacheProperties());
     }
 
     @AfterAll
