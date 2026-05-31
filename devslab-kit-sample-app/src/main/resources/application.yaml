@@ -40,7 +40,14 @@ devslab:
 
     menu:
       enabled: true
-      cache-ttl: ${DEVSLAB_MENU_CACHE_TTL:PT5M}
+
+    # Pluggable cache (ADR 0002). Default in-memory (single-node). Flip type to
+    # `redis` to use the Redis that docker-compose already starts — the per-user
+    # menu tree and any of your own @Cacheable methods then cache as JSON across
+    # replicas, with the kit owning serialization (no Serializable, no config).
+    cache:
+      type: ${DEVSLAB_CACHE_TYPE:in-memory}
+      ttl: ${DEVSLAB_CACHE_TTL:PT10M}
 
     # First-admin bootstrap (ADR 0001). The starter's own runner provisions a
     # default tenant + PLATFORM_ADMIN role + admin.* permissions + admin user on

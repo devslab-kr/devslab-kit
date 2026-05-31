@@ -1,8 +1,6 @@
 package kr.devslab.kit.autoconfigure;
 
 import jakarta.persistence.EntityManager;
-import java.time.Clock;
-import java.time.Duration;
 import kr.devslab.kit.access.PermissionChecker;
 import kr.devslab.kit.menu.MenuProvider;
 import kr.devslab.kit.menu.core.repository.JpaPlatformMenuRepository;
@@ -16,6 +14,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 
 @AutoConfiguration(afterName = {
@@ -46,11 +45,13 @@ public class MenuAutoConfiguration {
     }
 
     /**
-     * Wraps the database-backed {@link DefaultMenuProvider} in a
-     * {@link CachingMenuProvider} when {@code devslab.kit.menu.cache-ttl} is
-     * positive (default 5m). A zero / negative TTL skips the cache decorator
-     * entirely, which is the right behaviour for tests that mutate menus or
-     * permissions and expect the next read to see the change immediately.
+     * The database-backed {@link DefaultMenuProvider}, wrapped in a
+     * {@link CachingMenuProvider} riding the shared {@link CacheManager} when one
+     * is present (ADR 0002 §5). The cache backend — in-memory, Redis, or no-op —
+     * follows {@code devslab.kit.cache.type}; TTL and distribution are the cache
+     * manager's concern, not this provider's. When no {@code CacheManager} bean
+     * exists (caching disabled entirely), the bare database-backed provider is
+     * returned, so menus always work.
      */
     @Bean
     @ConditionalOnMissingBean
@@ -59,14 +60,13 @@ public class MenuAutoConfiguration {
             JpaPlatformMenuRepository repository,
             MenuTreeBuilder menuTreeBuilder,
             PermissionBasedMenuFilter filter,
-            DevslabKitProperties properties,
-            Clock clock
+            org.springframework.beans.factory.ObjectProvider<CacheManager> cacheManager
     ) {
         MenuProvider base = new DefaultMenuProvider(repository, menuTreeBuilder, filter);
-        Duration ttl = properties.getMenu().getCacheTtl();
-        if (ttl == null || ttl.isZero() || ttl.isNegative()) {
+        CacheManager cm = cacheManager.getIfAvailable();
+        if (cm == null) {
             return base;
         }
-        return new CachingMenuProvider(base, ttl, clock);
+        return new CachingMenuProvider(base, cm);
     }
 }
