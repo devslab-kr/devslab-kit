@@ -10,7 +10,7 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath("com.vanniktech:gradle-maven-publish-plugin:0.30.0")
+        classpath("com.vanniktech:gradle-maven-publish-plugin:0.36.0")
     }
 }
 
@@ -72,10 +72,14 @@ subprojects {
         apply(plugin = "com.vanniktech.maven.publish")
 
         configure<MavenPublishBaseExtension> {
-            // SONATYPE_HOST / SONATYPE_AUTOMATIC_RELEASE / RELEASE_SIGNING_ENABLED
-            // and the POM_* metadata come from gradle.properties. Signing is a
-            // no-op for -SNAPSHOT versions, so publishToMavenLocal needs no GPG
-            // key; a non-SNAPSHOT release tag signs with the org key.
+            // SONATYPE_HOST / SONATYPE_AUTOMATIC_RELEASE and the POM_* metadata
+            // come from gradle.properties. signAllPublications() enables GPG
+            // signing (with the org key) for releases and is a no-op for
+            // -SNAPSHOT, so publishToMavenLocal needs no key.
+            //
+            // Do NOT also set RELEASE_SIGNING_ENABLED in gradle.properties: it
+            // configures signing too, and combining the two double-sets the
+            // signing property, which Gradle 9 rejects as "value is final".
             signAllPublications()
             coordinates(proj.group.toString(), proj.name, proj.version.toString())
             pom {
