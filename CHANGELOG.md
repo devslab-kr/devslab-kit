@@ -10,6 +10,27 @@ The library major aligns with the Spring Boot major: `4.x.y` targets Spring Boot
 ## [Unreleased]
 
 ### Added
+- **First-admin bootstrap** (ADR 0001) — opt-in, property-driven provisioning so
+  a fresh database can reach a usable dashboard without a permanent backdoor.
+  `devslab.kit.bootstrap.*` (OFF by default) idempotently creates a tenant, a
+  `PLATFORM_ADMIN` role with the full `admin.*` permission set, and one admin
+  user on first boot. A blank password generates a strong random one logged
+  once; a prod safety pin refuses a weak password under a `prod`/`production`
+  profile.
+- **Forced password change** — `must_change_password` flag (`V11`) on the user
+  account, surfaced through `CurrentUser`, the JWT claim, and the login
+  response. Self-service `POST /admin/api/v1/auth/change-password` verifies the
+  old password, sets the new one, clears the flag, and re-issues a token.
+- **Bootstrap status probe** — unauthenticated `GET /admin/api/v1/bootstrap/status`
+  returning `{ initialized: boolean }`, the branch point for a future guided
+  first-run / setup wizard (ADR 0001 §6).
+
+### Changed
+- `sample-app` switched off its `SampleSeedRunner` onto the starter's
+  `devslab.kit.bootstrap.*` runner (local-dev shape: `admin/admin`,
+  `must-change-password=false`).
+
+### Added (initial scaffold)
 - Initial project scaffold (Spring Boot 4 + Java 21 + Gradle).
 - Base dependencies: Spring Web MVC, Spring Security, Spring Data JPA, Spring Data Redis,
   Flyway (PostgreSQL), Spring Boot Actuator, GraalVM Native, Testcontainers (PostgreSQL + Redis),
