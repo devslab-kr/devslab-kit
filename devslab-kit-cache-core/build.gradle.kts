@@ -7,15 +7,34 @@ dependencies {
     api("org.springframework:spring-context")
     api("org.springframework.boot:spring-boot-autoconfigure")
 
-    // Redis is OPTIONAL. The Redis-backed CacheManager (PR 2) only wires up when
-    // the consumer puts these on the classpath themselves (type=redis). Keeping
-    // them compileOnly here means the kit never forces Redis as a transitive
+    // Redis is OPTIONAL. The Redis-backed CacheManager only wires up when the
+    // consumer puts these on the classpath themselves (type=redis). Keeping them
+    // compileOnly here means the kit never forces Redis as a transitive
     // dependency — the in-memory default stays zero-dependency. See ADR 0002 §4.
+    // (spring-boot-starter-data-redis brings Spring Data Redis + Jackson 3
+    //  tools.jackson transitively, which the Jackson3JsonRedisSerializer needs.)
     compileOnly("org.springframework.boot:spring-boot-starter-data-redis")
-    compileOnly("com.fasterxml.jackson.core:jackson-databind")
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 
+    // The Redis path is exercised against a real Redis (Testcontainers): the
+    // serialization round-trip is the whole risk, so it gets an integration test
+    // rather than a mock. Redis deps are test-scoped here (compileOnly above for
+    // main), matching how a consumer who opts into type=redis would add them.
+    testImplementation("org.springframework.boot:spring-boot-starter-data-redis")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-testcontainers")
+    testImplementation("org.testcontainers:testcontainers-junit-jupiter")
+}
+
+// The build compiles with -Werror (inherited from the toolchain/convention).
+// Spring Boot 4 / Spring Data Redis 4 mark a lot of their cache + autoconfig
+// API @Deprecated(forRemoval=true) while the replacements settle, and this is
+// the one module that touches that surface (Jackson3JsonRedisSerializer,
+// RedisCacheManager, the test's connection wiring). Turn off just the `removal`
+// lint category here so those advisory warnings don't fail the build; every
+// other lint stays on.
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.add("-Xlint:-removal")
 }
