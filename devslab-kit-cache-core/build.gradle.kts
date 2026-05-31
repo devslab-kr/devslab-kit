@@ -14,6 +14,13 @@ dependencies {
     // (spring-boot-starter-data-redis brings Spring Data Redis + Jackson 3
     //  tools.jackson transitively, which GenericJacksonJsonRedisSerializer needs.)
     compileOnly("org.springframework.boot:spring-boot-starter-data-redis")
+    // Our RedisCacheConfiguration references Jackson 3 (JsonMapper) directly to
+    // build the value serializer. Spring Data Redis declares Jackson `optional`,
+    // so it isn't on the compile classpath transitively — declare it explicitly.
+    // compileOnly (like Redis itself): only needed when the consumer opts into
+    // type=redis, which already puts Jackson 3 on their runtime classpath via
+    // spring-boot-starter-data-redis. Version managed by the Spring Boot BOM.
+    compileOnly("tools.jackson.core:jackson-databind")
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
