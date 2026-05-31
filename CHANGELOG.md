@@ -7,9 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 The library major aligns with the Spring Boot major: `4.x.y` targets Spring Boot 4.x.
 
+한국어: [CHANGELOG.ko.md](CHANGELOG.ko.md)
+
 ## [Unreleased]
 
 ### Added
+- **Maven Central publishing** — every library module ships to Maven Central via
+  the vanniktech maven-publish plugin (Central Portal, signed, auto-release on a
+  `v*` tag). `release.yml` publishes the artifacts and opens a GitHub Release.
+- **Pluggable cache** (ADR 0002) — `devslab.kit.cache.type` = `in-memory` /
+  `redis` / `none`. The Redis backend owns JSON serialization (no `Serializable`,
+  no serializer wiring), and the per-user menu cache now rides this shared cache
+  manager instead of its own map.
 - **First-admin bootstrap** (ADR 0001) — opt-in, property-driven provisioning so
   a fresh database can reach a usable dashboard without a permanent backdoor.
   `devslab.kit.bootstrap.*` (OFF by default) idempotently creates a tenant, a
@@ -24,6 +33,13 @@ The library major aligns with the Spring Boot major: `4.x.y` targets Spring Boot
 - **Bootstrap status probe** — unauthenticated `GET /admin/api/v1/bootstrap/status`
   returning `{ initialized: boolean }`, the branch point for a future guided
   first-run / setup wizard (ADR 0001 §6).
+
+### Fixed
+- **JWT validation now honours the injected `Clock`** — `JjwtAuthTokenService.parse()`
+  validated token expiry against the real system clock instead of the injected one,
+  making validation untestable with a fixed clock and asymmetric with `issue()`.
+  Production behaviour is unchanged (the runtime uses `Clock.systemUTC()` on both
+  paths).
 
 ### Changed
 - `sample-app` switched off its `SampleSeedRunner` onto the starter's
