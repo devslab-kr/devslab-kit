@@ -9,6 +9,9 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7" apply false
     id("org.graalvm.buildtools.native") version "1.1.0" apply false
     id("com.vanniktech.maven.publish") version "0.36.0" apply false
+    // Root-level jacoco so we can register an aggregate JacocoReport task (below)
+    // that merges every module's coverage into one XML for Codecov.
+    jacoco
 }
 
 allprojects {
@@ -24,6 +27,7 @@ val nonPublishedModules = setOf("devslab-kit-sample-app")
 subprojects {
     apply(plugin = "java-library")
     apply(plugin = "io.spring.dependency-management")
+    apply(plugin = "jacoco")
 
     configure<JavaPluginExtension> {
         toolchain {
@@ -71,5 +75,38 @@ subprojects {
                 }
             }
         }
+    }
+}
+
+// Root-level aggregate coverage report for Codecov. Merges every module's JaCoCo
+// exec data — including the sample-app, whose Testcontainers integration tests are
+// where most of the -core code is actually exercised — into one XML, so the badge
+// reflects real cross-module coverage rather than the thin per-module unit tests.
+// Mirrors the ssrf-guard / easy-paging aggregate pattern.
+val testCodeCoverageReport = tasks.register<JacocoReport>("testCodeCoverageReport") {
+    group = "verification"
+    description = "Aggregates JaCoCo coverage from every subproject into one report."
+    dependsOn(subprojects.map { "${it.path}:test" })
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+}
+
+// Wire sources/classes/exec after all subprojects are evaluated (so their main
+// source sets exist). Exec data is referenced as a lazy fileTree — resolved when
+// the report task runs, by which point each :test has produced its test.exec
+// (a config-time .filter { exists() } would see nothing and yield an empty report).
+gradle.projectsEvaluated {
+    testCodeCoverageReport.configure {
+        sourceDirectories.setFrom(files(subprojects.map {
+            it.extensions.getByType<SourceSetContainer>()["main"].allSource.srcDirs
+        }))
+        classDirectories.setFrom(files(subprojects.map {
+            it.extensions.getByType<SourceSetContainer>()["main"].output
+        }))
+        executionData.setFrom(files(subprojects.map {
+            it.fileTree(it.layout.buildDirectory.dir("jacoco")) { include("*.exec") }
+        }))
     }
 }

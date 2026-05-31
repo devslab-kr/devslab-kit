@@ -2,6 +2,7 @@
 
 [![Maven Central](https://img.shields.io/maven-central/v/kr.devslab/devslab-kit-spring-boot-starter?logo=apachemaven)](https://central.sonatype.com/artifact/kr.devslab/devslab-kit-spring-boot-starter)
 [![Build](https://github.com/devslab-kr/devslab-kit/actions/workflows/build.yml/badge.svg)](https://github.com/devslab-kr/devslab-kit/actions/workflows/build.yml)
+[![codecov](https://codecov.io/gh/devslab-kr/devslab-kit/branch/main/graph/badge.svg)](https://codecov.io/gh/devslab-kr/devslab-kit)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 ![Java](https://img.shields.io/badge/Java-21%2B-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0-6DB33F?logo=springboot)
