@@ -1,72 +1,70 @@
 package kr.devslab.kit.menu.core.service;
 
-import java.time.Clock;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import kr.devslab.kit.cache.CacheNames;
 import kr.devslab.kit.identity.CurrentUser;
 import kr.devslab.kit.menu.MenuProvider;
 import kr.devslab.kit.menu.MenuTree;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 
 /**
- * {@link MenuProvider} decorator that caches the per-user menu tree for a
- * configurable TTL.
+ * {@link MenuProvider} decorator that caches the per-user menu tree on the
+ * kit's shared {@link CacheManager} (ADR 0002 §5).
  *
- * <p>Caching keyed by {@code CurrentUser.id()} — the menu tree the delegate
- * returns is already permission-filtered, so the result varies per user
- * even within the same tenant. Per-user keys keep the cache correct without
- * having to invalidate on tenant-wide menu edits (the TTL handles that).
+ * <p>Previously this kept its own {@code ConcurrentHashMap}, which went stale
+ * across replicas. Riding the shared cache manager means the menu cache inherits
+ * whatever backend the consumer chose with {@code devslab.kit.cache.type}: a
+ * {@code ConcurrentMapCacheManager} for {@code in-memory} (single node, same as
+ * before), a real distributed cache for {@code redis} (correct across replicas,
+ * with the kit's JSON serialization), or a {@code NoOpCacheManager} for
+ * {@code none} (every read hits the database — the right behaviour for tests
+ * that mutate menus and expect to see the change immediately, replacing the old
+ * "zero TTL disables the decorator" special case).
  *
- * <p>Implementation deliberately small: a {@link ConcurrentHashMap} with a
- * per-entry expiry timestamp, no background eviction thread, no LRU bound.
- * Entries expire lazily on read; stale entries linger until a read evicts
- * them. For the usage we have today (a few dozen admins per tenant, menus
- * loaded once per session) this is plenty. Swap in Caffeine or a Spring
- * Cache if the access pattern outgrows it.
+ * <p>Keyed by {@code CurrentUser.id()} — the delegate's tree is already
+ * permission-filtered, so it varies per user even within a tenant. TTL is owned
+ * by the cache backend ({@code devslab.kit.cache.ttl} for Redis), not this class.
  *
- * <p>Manual invalidation is exposed for admin tooling that mutates menus
- * and wants the next read to skip the cache.
+ * <p>Manual eviction is exposed for admin tooling that mutates menus and wants
+ * the next read recomputed.
  */
 public class CachingMenuProvider implements MenuProvider {
 
     private final MenuProvider delegate;
-    private final Duration ttl;
-    private final Clock clock;
-    private final Map<UUID, CacheEntry> cache = new ConcurrentHashMap<>();
+    private final CacheManager cacheManager;
 
-    public CachingMenuProvider(MenuProvider delegate, Duration ttl, Clock clock) {
+    public CachingMenuProvider(MenuProvider delegate, CacheManager cacheManager) {
         this.delegate = delegate;
-        this.ttl = ttl;
-        this.clock = clock;
+        this.cacheManager = cacheManager;
     }
 
     @Override
     public MenuTree menusFor(CurrentUser user) {
-        UUID key = user.id().value();
-        Instant now = Instant.now(clock);
-        CacheEntry hit = cache.get(key);
-        if (hit != null && hit.expiresAt().isAfter(now)) {
-            return hit.tree();
+        Cache cache = cacheManager.getCache(CacheNames.MENU);
+        if (cache == null) {
+            // Manager declined to provide the cache (e.g. a fixed-name manager
+            // that doesn't know MENU) — fall back to the live delegate rather
+            // than fail. Correctness over caching.
+            return delegate.menusFor(user);
         }
-        // Recompute via the delegate. ConcurrentHashMap.put has racing-thunderr
-        // semantics — two callers may both miss and both invoke the delegate
-        // briefly; both writes are idempotent. Worth it to avoid holding a
-        // lock across the DB round-trip.
-        MenuTree fresh = delegate.menusFor(user);
-        cache.put(key, new CacheEntry(fresh, now.plus(ttl)));
-        return fresh;
+        // get(key, valueLoader): atomic cache-or-compute. On a miss the loader
+        // runs the DB-backed delegate and the result is stored under the user id.
+        return cache.get(user.id().value(), () -> delegate.menusFor(user));
     }
 
-    public void invalidate(UUID userId) {
-        cache.remove(userId);
+    /** Evict one user's cached menu tree (e.g. after editing their visible menus). */
+    public void invalidate(java.util.UUID userId) {
+        Cache cache = cacheManager.getCache(CacheNames.MENU);
+        if (cache != null) {
+            cache.evict(userId);
+        }
     }
 
+    /** Evict every cached menu tree (e.g. after a tenant-wide menu change). */
     public void invalidateAll() {
-        cache.clear();
-    }
-
-    private record CacheEntry(MenuTree tree, Instant expiresAt) {
+        Cache cache = cacheManager.getCache(CacheNames.MENU);
+        if (cache != null) {
+            cache.clear();
+        }
     }
 }

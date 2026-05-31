@@ -53,7 +53,7 @@ public class SettingsAdminController {
         root.put("tenant", tenantView());
         root.put("identity", identityView());
         root.put("audit", auditView());
-        root.put("menu", menuView());
+        root.put("cache", cacheView());
         root.put("raw", rawDump());
         return root;
     }
@@ -90,11 +90,17 @@ public class SettingsAdminController {
         return audit;
     }
 
-    private Map<String, Object> menuView() {
-        Map<String, Object> menu = new LinkedHashMap<>();
-        menu.put("cacheTtlSeconds",
-                durationToSeconds(env.getProperty(PREFIX + "menu.cache-ttl"), 300L));
-        return menu;
+    /**
+     * The pluggable cache (ADR 0002). The menu cache now rides this shared
+     * CacheManager rather than its own per-cache TTL, so the menu section was
+     * replaced by this one.
+     */
+    private Map<String, Object> cacheView() {
+        Map<String, Object> cache = new LinkedHashMap<>();
+        cache.put("type", env.getProperty(PREFIX + "cache.type", "in-memory"));
+        cache.put("ttlSeconds", durationToSeconds(env.getProperty(PREFIX + "cache.ttl"), 600L));
+        cache.put("keyPrefix", env.getProperty(PREFIX + "cache.key-prefix", "devslab:"));
+        return cache;
     }
 
     /**
