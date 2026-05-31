@@ -30,6 +30,13 @@ dependencies {
     // rather than a mock. Redis deps are test-scoped here (compileOnly above for
     // main), matching how a consumer who opts into type=redis would add them.
     testImplementation("org.springframework.boot:spring-boot-starter-data-redis")
+    // Jackson 3 is `optional` in Spring Data Redis, so the Redis starter doesn't
+    // pull it transitively even at test scope. The Redis value serializer needs
+    // it at runtime (PolymorphicTypeValidator etc.) — declare it explicitly for
+    // the test runtime, mirroring the compileOnly on main. A real consumer who
+    // opts into type=redis gets Jackson 3 from spring-boot-starter-jackson, which
+    // SB4 apps always have.
+    testImplementation("tools.jackson.core:jackson-databind")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.testcontainers:testcontainers-junit-jupiter")
