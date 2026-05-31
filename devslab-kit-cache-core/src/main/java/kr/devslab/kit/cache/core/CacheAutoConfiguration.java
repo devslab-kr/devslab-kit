@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Bean;
  * one property to get distributed caching and writes zero serializer config.
  *
  * <p>This class wires the {@code none} and {@code in-memory} backends. The
- * {@code redis} backend lives in {@link RedisCacheConfiguration}, imported here
+ * {@code redis} backend lives in {@link DevslabKitRedisCacheConfiguration}, imported here
  * but inert unless Redis is on the classpath (ADR 0002 §2–§3).
  *
  * <p>Everything is {@link ConditionalOnMissingBean} on {@link CacheManager}: a
@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Bean;
 @AutoConfiguration
 @ConditionalOnProperty(prefix = "devslab.kit.cache", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(CacheProperties.class)
-@org.springframework.context.annotation.Import(RedisCacheConfiguration.class)
+@org.springframework.context.annotation.Import(DevslabKitRedisCacheConfiguration.class)
 public class CacheAutoConfiguration {
 
     /**

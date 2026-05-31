@@ -34,6 +34,16 @@ public class CacheProperties {
     /** Whether to cache {@code null} return values. Off by default so a cached null doesn't mask a real miss. */
     private boolean cacheNullValues = false;
 
+    /**
+     * Base package allowed for polymorphic deserialization when {@code type=redis}.
+     * The Redis value serializer enables JSON default typing (so records round-trip
+     * with their concrete type) but constrains it to an allow-list — {@code java.*}
+     * plus this package — to avoid the deserialization-gadget risk of unrestricted
+     * default typing. A consumer caching their own types sets this to their root
+     * package (e.g. {@code com.acme}); the default covers the kit's own types.
+     */
+    private String allowedPackage = "kr.devslab";
+
     public boolean isEnabled() {
         return enabled;
     }
@@ -72,5 +82,13 @@ public class CacheProperties {
 
     public void setCacheNullValues(boolean cacheNullValues) {
         this.cacheNullValues = cacheNullValues;
+    }
+
+    public String getAllowedPackage() {
+        return allowedPackage;
+    }
+
+    public void setAllowedPackage(String allowedPackage) {
+        this.allowedPackage = allowedPackage;
     }
 }
