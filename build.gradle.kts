@@ -1,3 +1,19 @@
+import com.vanniktech.maven.publish.MavenPublishBaseExtension
+
+// vanniktech maven-publish on the buildscript classpath so this root script can
+// `import` its extension type and configure publishing for the library modules.
+// (Declaring it `apply false` in plugins {} does not reliably expose the classes
+// to the root script's compilation under Gradle 9.x — buildscript {} does.)
+buildscript {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath("com.vanniktech:gradle-maven-publish-plugin:0.30.0")
+    }
+}
+
 plugins {
     id("org.springframework.boot") version "4.0.6" apply false
     id("io.spring.dependency-management") version "1.1.7" apply false
@@ -6,14 +22,19 @@ plugins {
 
 allprojects {
     group = "kr.devslab"
-    version = "0.0.1-SNAPSHOT"
+    version = "0.1.0-SNAPSHOT"
 
     repositories {
         mavenCentral()
     }
 }
 
+// Every module ships to Maven Central except the runnable reference app.
+val nonPublishedModules = setOf("devslab-kit-sample-app")
+
 subprojects {
+    val proj = this
+
     apply(plugin = "java-library")
     apply(plugin = "io.spring.dependency-management")
 
@@ -44,5 +65,25 @@ subprojects {
 
     tasks.withType<Test>().configureEach {
         useJUnitPlatform()
+    }
+
+    // --- Maven Central publishing for the library modules (not the sample app) ---
+    if (proj.name !in nonPublishedModules) {
+        apply(plugin = "com.vanniktech.maven.publish")
+
+        configure<MavenPublishBaseExtension> {
+            // SONATYPE_HOST / SONATYPE_AUTOMATIC_RELEASE / RELEASE_SIGNING_ENABLED
+            // and the POM_* metadata come from gradle.properties. Signing is a
+            // no-op for -SNAPSHOT versions, so publishToMavenLocal needs no GPG
+            // key; a non-SNAPSHOT release tag signs with the org key.
+            signAllPublications()
+            coordinates(proj.group.toString(), proj.name, proj.version.toString())
+            pom {
+                name.set(proj.name)
+                // Each module sets its own `description` in build.gradle.kts; read
+                // it lazily since module scripts evaluate after this block runs.
+                description.set(proj.provider { proj.description ?: "devslab-kit :: ${proj.name}" })
+            }
+        }
     }
 }
