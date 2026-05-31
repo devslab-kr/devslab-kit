@@ -53,7 +53,7 @@ public class AuditLogAdminController {
                 tenantId, actorLogin, action, targetType, outcome, from, to);
         Pageable pageable = PageRequest.of(
                 Math.max(0, page),
-                Math.min(MAX_PAGE_SIZE, Math.max(1, size == 0 ? DEFAULT_PAGE_SIZE : size)),
+                Math.clamp(size == 0 ? DEFAULT_PAGE_SIZE : size, 1, MAX_PAGE_SIZE),
                 Sort.by(Sort.Direction.DESC, "occurredAt"));
         return service.search(criteria, pageable).map(entity -> AuditLogResponse.from(entity, objectMapper));
     }
