@@ -9,7 +9,7 @@
     - **Boolean**은 `true` / `false`.
     - enum 형태의 문자열 옵션은 아래에 허용 값을 나열합니다. 그 외 값은 시작 시 거부됩니다.
 
-## Tenant — `devslab.kit.tenant.*`
+## Tenant — `devslab.kit.tenant.*` { #tenant }
 
 | 속성 | 타입 | 기본값 | 설명 |
 | --- | --- | --- | --- |
@@ -34,7 +34,7 @@
 
 [멀티테넌시 가이드](../guides/tenancy.md) 참고.
 
-## Identity — `devslab.kit.identity.*`
+## Identity — `devslab.kit.identity.*` { #identity }
 
 | 속성 | 타입 | 기본값 | 설명 |
 | --- | --- | --- | --- |
@@ -46,7 +46,7 @@
 
 [접근 제어 가이드](../guides/access.md) 참고.
 
-## Audit — `devslab.kit.audit.*`
+## Audit — `devslab.kit.audit.*` { #audit }
 
 | 속성 | 타입 | 기본값 | 설명 |
 | --- | --- | --- | --- |
@@ -63,7 +63,7 @@
 
 [메뉴 가이드](../guides/menus.md) 참고.
 
-## Cache — `devslab.kit.cache.*`
+## Cache — `devslab.kit.cache.*` { #cache }
 
 | 속성 | 타입 | 기본값 | 설명 |
 | --- | --- | --- | --- |

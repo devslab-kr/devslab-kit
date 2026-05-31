@@ -50,7 +50,7 @@ product's domain.
 
 </div>
 
-## Why a starter?
+## Why a starter? { #why-a-starter }
 
 Every product the team builds needs the same platform layer: who is the user, what
 can they do, which tenant are they in, what changed, and an admin surface to manage

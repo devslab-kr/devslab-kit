@@ -10,7 +10,7 @@ are viewable at runtime via `GET /admin/api/v1/settings` (secrets masked).
     - Enum-like string options list their allowed values below; anything else is
       rejected at startup.
 
-## Tenant — `devslab.kit.tenant.*`
+## Tenant — `devslab.kit.tenant.*` { #tenant }
 
 | Property | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -37,7 +37,7 @@ are viewable at runtime via `GET /admin/api/v1/settings` (secrets masked).
 
 See the [Multi-tenancy guide](../guides/tenancy.md).
 
-## Identity — `devslab.kit.identity.*`
+## Identity — `devslab.kit.identity.*` { #identity }
 
 | Property | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -49,7 +49,7 @@ See the [Multi-tenancy guide](../guides/tenancy.md).
 
 See the [Access guide](../guides/access.md).
 
-## Audit — `devslab.kit.audit.*`
+## Audit — `devslab.kit.audit.*` { #audit }
 
 | Property | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -66,7 +66,7 @@ See the [Audit guide](../guides/audit.md).
 
 See the [Menus guide](../guides/menus.md).
 
-## Cache — `devslab.kit.cache.*`
+## Cache — `devslab.kit.cache.*` { #cache }
 
 | Property | Type | Default | Description |
 | --- | --- | --- | --- |

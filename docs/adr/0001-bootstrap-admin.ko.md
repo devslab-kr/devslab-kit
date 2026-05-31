@@ -2,7 +2,6 @@
 
 - **상태:** 수락(Accepted)
 - **날짜:** 2026-05-30 (2026-05-31 수락)
-- **언어:** [English](0001-bootstrap-admin.md) · [한국어](0001-bootstrap-admin.ko.md)
 - **구현:** 최초 관리자 부트스트랩 기능 — `must_change_password`(V11) +
   self-service `POST /admin/api/v1/auth/change-password` +
   `BootstrapAutoConfiguration` / `DevslabKitBootstrapRunner`, 그리고 `sample-app`을
