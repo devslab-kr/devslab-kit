@@ -18,6 +18,8 @@ include(
     "devslab-kit-menu-core",
     "devslab-kit-audit-api",
     "devslab-kit-audit-core",
+    "devslab-kit-cache-api",
+    "devslab-kit-cache-core",
     "devslab-kit-admin-api",
     "devslab-kit-autoconfigure",
     "devslab-kit-spring-boot-starter",

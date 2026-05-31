@@ -1,8 +1,13 @@
 # ADR 0002 — Pluggable distributed cache (one property, zero serializer pain)
 
-- **Status:** Proposed
-- **Date:** 2026-05-31
+- **Status:** Accepted
+- **Date:** 2026-05-31 (accepted 2026-05-31)
 - **Languages:** [English](0002-distributed-cache.md) · [한국어](0002-distributed-cache.ko.md)
+- **Implemented by:** `devslab-kit-cache-api` + `devslab-kit-cache-core` —
+  `CacheProperties` (`devslab.kit.cache.*`), `CacheAutoConfiguration` (the
+  `type` switch + guarded `@EnableCaching`, none/in-memory backends). The Redis
+  backend + JSON serialization (PR 2), the menu-cache migration (PR 3), and the
+  sample-app/docs (PR 4) follow per the implementation plan below.
 
 ## Context
 
