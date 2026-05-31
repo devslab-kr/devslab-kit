@@ -1,0 +1,75 @@
+/* === Light scheme — devslab brand ========================================= */
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color:        #18181b;   /* zinc-900 */
+  --md-primary-fg-color--light: #27272a;   /* zinc-800 */
+  --md-primary-fg-color--dark:  #09090b;   /* zinc-950 */
+
+  --md-accent-fg-color:              #0891b2;   /* cyan-600 */
+  --md-accent-fg-color--transparent: rgba(8, 145, 178, 0.12);
+  --md-typeset-a-color:         #0e7490;   /* cyan-700 */
+}
+
+/* === Dark scheme — header blends into the zinc-900 body =================== */
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color:        #18181b;   /* zinc-900 — same as body bg */
+  --md-primary-fg-color--light: #27272a;   /* zinc-800 */
+  --md-primary-fg-color--dark:  #09090b;   /* zinc-950 */
+
+  --md-accent-fg-color:              #22d3ee;   /* cyan-400 — pops on dark */
+  --md-accent-fg-color--transparent: rgba(34, 211, 238, 0.12);
+  --md-typeset-a-color:         #22d3ee;   /* cyan-400 */
+
+  --md-default-bg-color:        #18181b;
+  --md-default-bg-color--light: #27272a;
+  --md-default-bg-color--lighter: #3f3f46;
+  --md-code-bg-color:           #09090b;   /* zinc-950 */
+}
+
+/* === Typeset links ========================================================= */
+.md-typeset a {
+  text-decoration: underline;
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.2em;
+  transition: text-decoration-thickness 150ms;
+}
+.md-typeset a:hover { text-decoration-thickness: 0.12em; }
+
+/* === Active nav link ======================================================= */
+.md-nav__item.md-nav__item--active > .md-nav__link {
+  color: var(--md-accent-fg-color);
+  font-weight: 700;
+}
+
+/* === Buttons =============================================================== */
+.md-button {
+  border: 1px solid var(--md-accent-fg-color);
+  color: var(--md-accent-fg-color);
+}
+.md-button:hover {
+  background-color: var(--md-accent-fg-color);
+  color: var(--md-default-bg-color);
+}
+.md-button--primary {
+  background-color: var(--md-accent-fg-color);
+  border-color: var(--md-accent-fg-color);
+  color: var(--md-default-bg-color);
+}
+
+/* === Header & tabs — hairline border ====================================== */
+.md-header,
+.md-tabs { box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06); }
+[data-md-color-scheme="slate"] .md-header,
+[data-md-color-scheme="slate"] .md-tabs { box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06); }
+
+/* === Bilingual language switcher — text instead of a globe glyph ========== */
+.md-header__option .md-select__button::before {
+  content: "EN";
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+[data-md-color-scheme="slate"] .md-header__option .md-select__button::before {
+  content: "한";
+  font-size: 1rem;
+  font-weight: 700;
+}
+.md-header__option .md-select__button svg { display: none; }
