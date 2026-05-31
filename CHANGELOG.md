@@ -11,7 +11,7 @@ The library major aligns with the Spring Boot major: `4.x.y` targets Spring Boot
 
 ## [Unreleased]
 
-## [0.1.0] — 2026-05-31
+## [0.1.0] — 2026-06-01
 
 First public release.
 
@@ -19,6 +19,22 @@ First public release.
 - **Maven Central publishing** — every library module ships to Maven Central via
   the vanniktech maven-publish plugin (Central Portal, signed, auto-release on a
   `v*` tag). `release.yml` publishes the artifacts and opens a GitHub Release.
+- **Zero-config JPA self-registration** — the starter contributes its own
+  `@Entity` types and Spring Data repositories to a consumer running a plain
+  `@SpringBootApplication` in any package, with no `@EntityScan`,
+  `@EnableJpaRepositories`, or `scanBasePackages`. It broadens scanning rather
+  than replacing it, so the consumer's own entities and repositories keep working
+  (proven by an external-consumer integration test under `com.example.consumer`).
+- **Zero-config admin API web layer** — the admin controllers, error handler, and
+  security chain auto-register too, so `/admin/api/v1/**` comes up from the starter
+  alone (servlet web apps), again with no component-scan configuration.
+- **Authorization enforced on the admin API** — every `/admin/api/v1/**` endpoint
+  requires the `admin.*` permission it maps to (read → `*.read`, mutating →
+  `*.write`), enforced by the kit's security chain against the caller's effective
+  permissions (resolved per request from their roles and groups, so a grant or
+  revocation takes effect on the next call). The first-admin bootstrap seeds every
+  `admin.*` permission onto `PLATFORM_ADMIN`, so the seeded admin can use the whole
+  API immediately. `login` and `bootstrap/status` stay public.
 - **Pluggable cache** (ADR 0002) — `devslab.kit.cache.type` = `in-memory` /
   `redis` / `none`. The Redis backend owns JSON serialization (no `Serializable`,
   no serializer wiring), and the per-user menu cache now rides this shared cache

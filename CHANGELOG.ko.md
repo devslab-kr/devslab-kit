@@ -11,7 +11,7 @@ English: [CHANGELOG.md](CHANGELOG.md)
 
 ## [Unreleased]
 
-## [0.1.0] — 2026-05-31
+## [0.1.0] — 2026-06-01
 
 첫 공개 릴리스.
 
@@ -19,6 +19,20 @@ English: [CHANGELOG.md](CHANGELOG.md)
 - **Maven Central 배포** — 모든 라이브러리 모듈을 vanniktech maven-publish 플러그인으로
   Maven Central에 배포합니다 (Central Portal, 서명, `v*` 태그 시 자동 릴리스).
   `release.yml`이 아티팩트를 배포하고 GitHub Release를 생성합니다.
+- **설정 없는 JPA 자동 등록** — 스타터가 자신의 `@Entity` 타입과 Spring Data
+  리포지토리를, 임의의 패키지에서 평범한 `@SpringBootApplication`으로 실행하는
+  소비자에게 자동 등록합니다. `@EntityScan`·`@EnableJpaRepositories`·`scanBasePackages`
+  불필요. 스캐닝을 대체하지 않고 넓히므로 소비자 자신의 엔티티·리포지토리도 그대로
+  동작합니다(`com.example.consumer`의 외부 소비자 통합 테스트로 검증).
+- **설정 없는 관리자 API 웹 레이어** — 관리자 컨트롤러·예외 핸들러·보안 체인도 자동
+  등록되어, 스타터만으로 `/admin/api/v1/**`가 올라옵니다(서블릿 웹 앱). 마찬가지로
+  컴포넌트 스캔 설정이 필요 없습니다.
+- **관리자 API 인가(authorization) 강제** — 모든 `/admin/api/v1/**` 엔드포인트가
+  매핑된 `admin.*` 권한을 요구합니다(읽기 → `*.read`, 변경 → `*.write`). kit의 보안
+  체인이 호출자의 실효 권한(매 요청마다 역할·그룹에서 해석)으로 강제하므로, 권한
+  부여/회수가 다음 호출에 즉시 반영됩니다. 최초 관리자 부트스트랩이 모든 `admin.*`
+  권한을 `PLATFORM_ADMIN`에 시드하므로 시드된 관리자는 즉시 전체 API를 사용할 수
+  있습니다. `login`과 `bootstrap/status`는 공개로 유지됩니다.
 - **플러그형 캐시** (ADR 0002) — `devslab.kit.cache.type` = `in-memory` / `redis` /
   `none`. Redis 백엔드가 JSON 직렬화를 직접 책임지므로 (`Serializable` 불필요, 직렬화기
   설정 불필요) 사용자별 메뉴 캐시도 자체 맵 대신 이 공유 캐시 매니저를 사용합니다.

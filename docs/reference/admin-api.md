@@ -34,8 +34,23 @@ curl -s localhost:8080/admin/api/v1/auth/login \
 Send it as `Authorization: Bearer <jwt>` on subsequent calls. The token carries the
 tenant, roles, and the `mustChangePassword` flag (see [Access](../guides/access.md)).
 
-!!! tip "Securing the API"
-    The endpoints are guarded by Spring Security and the kit's `PermissionChecker`
-    (the `admin.*` permissions). Because every bean is `@ConditionalOnMissingBean`,
-    you can supply your own security chain or `PermissionChecker` to change how the
-    surface is protected.
+## Authorization
+
+Authentication is not enough: every endpoint also requires the `admin.*` permission
+it maps to. Read endpoints require the matching `*.read`, mutating endpoints `*.write`
+— for example `GET /users` needs `admin.user.read` and `POST /users` needs
+`admin.user.write`. `auth/login` and `bootstrap/status` are public; `auth/change-password`
+only needs a valid token.
+
+Enforcement happens in the kit's security chain, checked against the caller's
+**effective permissions** — resolved per request from the roles and groups they hold
+(the same grant resolution the [`PermissionChecker`](../guides/access.md) uses), not
+read from the token. So granting or revoking a permission takes effect on the caller's
+next request, and the JWT stays small. The first-admin bootstrap seeds every `admin.*`
+permission onto `PLATFORM_ADMIN`, so the seeded admin can use the whole API at once.
+
+!!! tip "Customising security"
+    The security chain and the JWT filter are both `@ConditionalOnMissingBean`, so you
+    can supply your own `SecurityFilterChain` or `JwtAuthenticationFilter` to change how
+    the surface is protected. For authorization checks inside your own code, inject the
+    kit's `PermissionChecker` (see [Access](../guides/access.md)).
