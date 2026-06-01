@@ -21,6 +21,12 @@ dependencies {
 
     // Micrometer for custom metrics; consumer's spring-boot-actuator activates it at runtime.
     compileOnly("io.micrometer:micrometer-core")
+
+    // springdoc-openapi for the optional Swagger UI auto-configuration. compileOnly:
+    // OpenApiAutoConfiguration is @ConditionalOnClass(GroupedOpenApi), so it stays
+    // dormant unless the consumer puts springdoc on their own classpath. Version
+    // pinned in gradle.properties (not managed by the Spring Boot BOM).
+    compileOnly("org.springdoc:springdoc-openapi-starter-webmvc-api:${property("SPRINGDOC_VERSION")}")
 }
 
 mavenPublishing {

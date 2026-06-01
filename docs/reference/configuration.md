@@ -110,3 +110,34 @@ opt in explicitly.
 
 See the [First-admin Bootstrap guide](../guides/bootstrap.md) and
 [ADR 0001](../adr/0001-bootstrap-admin.md).
+
+## OpenAPI / Swagger UI — `devslab.kit.openapi.*` { #openapi }
+
+The kit auto-configures OpenAPI and Swagger UI **when springdoc is on the
+classpath** — it ships springdoc as `compileOnly`, so you opt in by adding the
+dependency:
+
+```kotlin
+implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
+```
+
+With that present, `/swagger-ui.html` and `/v3/api-docs` come up with no further
+wiring, and the kit's `/admin/api/v1/**` endpoints are collected into one group
+(`/v3/api-docs/admin`). springdoc `3.0.x` is the Spring Boot 4 line (`2.8.x`
+targets Spring Boot 3).
+
+| Property | Type | Default | Description |
+| --- | --- | --- | --- |
+| `enabled` | boolean | `true` | Master switch. Set `false` to disable the kit's OpenAPI wiring without removing the dependency. |
+| `admin-group` | string | `admin` | Swagger UI group name for the admin API. |
+| `title` | string | `devslab-kit Admin API` | Title shown in the OpenAPI document / Swagger UI. |
+| `version` | string | `v1` | Version string in the OpenAPI document. |
+
+Both the `OpenAPI` document bean and the admin `GroupedOpenApi` are
+`@ConditionalOnMissingBean`, so you can declare your own (e.g. to add security
+schemes or servers) and the kit backs off.
+
+!!! tip "Production"
+    API docs are usually not exposed in production. Set
+    `devslab.kit.openapi.enabled=false` (or omit the springdoc dependency from the
+    production build) to turn the surface off.

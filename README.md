@@ -43,6 +43,7 @@ specific product's domain.
 | **Cache** | A pluggable cache — `in-memory`, `redis`, or `none`. The Redis backend owns JSON serialization, so you never implement `Serializable` or wire a serializer (ADR 0002). The per-user menu cache rides this shared manager. |
 | **First-admin bootstrap** | Idempotently provisions a tenant, a `PLATFORM_ADMIN` role, the `admin.*` permissions, and an admin user on first boot — opt-in and property-driven (ADR 0001). |
 | **Admin REST API** | `/admin/api/v1/**` for every entity above, plus diagnostics and a live settings view. |
+| **OpenAPI / Swagger UI** | Add springdoc and `/swagger-ui` comes up with the admin API grouped — no wiring. Toggle off with `openapi.enabled=false`. |
 | **Override-friendly** | Every default bean is `@ConditionalOnMissingBean` — replace any piece by declaring your own. |
 | **GraalVM Native** | Reflection-heavy patterns are avoided; the sample app verifies `nativeCompile`. |
 
@@ -148,6 +149,8 @@ All keys are under the `devslab.kit.*` prefix. Defaults shown.
 | `bootstrap.admin-login-id` | `admin` | First admin login id. |
 | `bootstrap.admin-password` | — | Blank → a strong random one is logged once. |
 | `bootstrap.must-change-password` | `true` | Force a rotation on first login. |
+| `openapi.enabled` | `true` | Expose Swagger UI / OpenAPI when springdoc is on the classpath. Set `false` to disable (e.g. in production). |
+| `openapi.title` | `devslab-kit Admin API` | Title shown in the OpenAPI doc / Swagger UI. |
 
 The live, effective values are also viewable at runtime via
 `GET /admin/api/v1/settings` (secrets masked).

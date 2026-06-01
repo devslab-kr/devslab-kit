@@ -104,3 +104,31 @@
 
 [최초 관리자 부트스트랩 가이드](../guides/bootstrap.md),
 [ADR 0001](../adr/0001-bootstrap-admin.md) 참고.
+
+## OpenAPI / Swagger UI — `devslab.kit.openapi.*` { #openapi }
+
+킷은 **springdoc이 classpath에 있을 때** OpenAPI와 Swagger UI를 자동 구성합니다 —
+springdoc을 `compileOnly`로 가지고 있으므로, 의존성을 추가해 opt-in 합니다:
+
+```kotlin
+implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
+```
+
+추가하면 추가 설정 없이 `/swagger-ui.html`과 `/v3/api-docs`가 올라오고, 킷의
+`/admin/api/v1/**` 엔드포인트가 하나의 그룹(`/v3/api-docs/admin`)으로 묶입니다.
+springdoc `3.0.x`가 Spring Boot 4 라인입니다(`2.8.x`는 Spring Boot 3 대상).
+
+| 프로퍼티 | 타입 | 기본값 | 설명 |
+| --- | --- | --- | --- |
+| `enabled` | boolean | `true` | 마스터 스위치. `false`로 두면 의존성을 제거하지 않고도 킷의 OpenAPI 구성을 끕니다. |
+| `admin-group` | string | `admin` | 관리자 API의 Swagger UI 그룹 이름. |
+| `title` | string | `devslab-kit Admin API` | OpenAPI 문서 / Swagger UI에 표시될 제목. |
+| `version` | string | `v1` | OpenAPI 문서의 버전 문자열. |
+
+`OpenAPI` 문서 빈과 관리자 `GroupedOpenApi` 모두 `@ConditionalOnMissingBean`이므로,
+직접 선언하면(예: security scheme이나 server 추가) 킷이 물러납니다.
+
+!!! tip "프로덕션"
+    API 문서는 보통 프로덕션에 노출하지 않습니다.
+    `devslab.kit.openapi.enabled=false`로 끄거나(또는 프로덕션 빌드에서 springdoc
+    의존성을 빼서) 해당 표면을 비활성화하세요.

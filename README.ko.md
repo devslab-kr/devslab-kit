@@ -41,6 +41,7 @@
 | **캐시** | 플러그형 캐시 — `in-memory` · `redis` · `none`. Redis 백엔드가 JSON 직렬화를 직접 책임지므로 `Serializable` 구현이나 직렬화기 배선이 필요 없습니다(ADR 0002). 사용자별 메뉴 캐시도 이 공유 매니저를 사용합니다. |
 | **최초 관리자 부트스트랩** | 첫 부팅 시 테넌트, `PLATFORM_ADMIN` 역할, `admin.*` 권한, 관리자 사용자를 멱등하게 생성 — opt-in, 프로퍼티 기반(ADR 0001). |
 | **관리자 REST API** | 위 모든 엔티티 + 진단 + 실시간 설정 뷰를 위한 `/admin/api/v1/**`. |
+| **OpenAPI / Swagger UI** | springdoc만 추가하면 `/swagger-ui`가 관리자 API 그룹과 함께 자동으로 뜸 — 설정 불필요. `openapi.enabled=false`로 끔. |
 | **Override 친화적** | 모든 기본 빈이 `@ConditionalOnMissingBean` — 직접 선언하면 어느 조각이든 교체 가능. |
 | **GraalVM Native** | 리플렉션 중심 설계를 피하고, 샘플 앱이 `nativeCompile`을 검증. |
 
@@ -145,6 +146,8 @@ Docker Compose(Postgres + Redis)와 Testcontainers 기반 테스트까지 갖춘
 | `bootstrap.admin-login-id` | `admin` | 최초 관리자 로그인 id. |
 | `bootstrap.admin-password` | — | 비우면 강력한 랜덤 비밀번호를 한 번 로깅. |
 | `bootstrap.must-change-password` | `true` | 첫 로그인 시 변경 강제. |
+| `openapi.enabled` | `true` | springdoc이 classpath에 있으면 Swagger UI / OpenAPI 노출. `false`로 비활성화(예: 프로덕션). |
+| `openapi.title` | `devslab-kit Admin API` | OpenAPI 문서 / Swagger UI에 표시될 제목. |
 
 런타임의 실제 적용값은 `GET /admin/api/v1/settings`에서도 볼 수 있습니다(시크릿 마스킹).
 
