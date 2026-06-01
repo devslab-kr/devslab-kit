@@ -11,6 +11,27 @@ English: [CHANGELOG.md](CHANGELOG.md)
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-06-02
+
+### 변경됨 (Changed)
+- **킷의 Flyway 마이그레이션을 이제 전용 스키마 히스토리 테이블에서 실행합니다.** 기본
+  `classpath:db/migration`(`flyway_schema_history`)에서 `classpath:db/devslab-kit`
+  (`devslab_kit_schema_history`)로 옮겨, `KitFlywayAutoConfiguration`이 전용 Flyway로
+  프로그램적으로 적용합니다(`Flyway` 빈이 아니라서 소비자의 자동 구성 Flyway를 죽이지 않음).
+  소비자의 기본 `classpath:db/migration` + `flyway_schema_history`는 온전히 앱 몫으로 남아,
+  소비자는 자기 `V1__*.sql`을 **버전 충돌 없이** 실을 수 있고, 킷은 릴리스마다 마이그레이션을
+  추가해도 소비자의 순서를 건드리지 않습니다. 소비자 Flyway가 먼저(빈 스키마에서) 돌고 킷이
+  두 번째로 `baselineOnMigrate`로 돕니다. **소비자 쪽 설정은 전혀 필요 없습니다.**
+  - **업그레이드:** 기본 `flyway_schema_history`에 이미 킷 마이그레이션을 적용한 `0.2.x`
+    데이터베이스는 재생성해야 합니다(pre-1.0, 실제로는 데모/로컬 DB뿐). 새 DB는 조치 불필요.
+
+### 변경됨 — 호환성 깨짐 (Changed, breaking)
+- **admin API가 이제 모든 오류를 RFC 7807 `ProblemDetail`**(`application/problem+json`)로
+  반환합니다 — 기존 `ApiError` 본문을 대체. 필드는 `type` / `title` / `status` / `detail`이며,
+  필드별 검증 메시지는 `errors` 확장에 담깁니다. 사람이 읽는 메시지는 `detail`(없으면 `title`)에서
+  읽으세요 — 기존 최상위 `message` 필드는 사라졌고 `kr.devslab.kit.admin.ApiError` 레코드도
+  제거됐습니다. `devslab-kit-admin-ui`는 `detail`을 읽도록 함께 수정됐습니다.
+
 ## [0.2.1] — 2026-06-02
 
 ### 변경됨 (Changed)

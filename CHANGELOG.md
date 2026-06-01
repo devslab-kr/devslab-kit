@@ -11,6 +11,32 @@ The library major aligns with the Spring Boot major: `4.x.y` targets Spring Boot
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-06-02
+
+### Changed
+- **The kit's Flyway migrations now run on their own schema-history table.** They
+  moved from the default `classpath:db/migration` (`flyway_schema_history`) to
+  `classpath:db/devslab-kit` (`devslab_kit_schema_history`), run by a dedicated
+  programmatic Flyway in `KitFlywayAutoConfiguration` (not a `Flyway` bean, so the
+  consumer's auto-configured Flyway is left intact). The consumer's default
+  `classpath:db/migration` + `flyway_schema_history` is left entirely to the app, so
+  a consumer can ship its own `V1__*.sql` with **no version collision**, and the kit
+  can add migrations across releases without disturbing the consumer's ordering. The
+  consumer's Flyway runs first (on an empty schema); the kit runs second with
+  `baselineOnMigrate`. **No consumer configuration is required.**
+  - **Upgrade:** a `0.2.x` database that already applied the kit migrations on the
+    default `flyway_schema_history` must be recreated (pre-1.0; only demo/local DBs
+    exist). New databases need no action.
+
+### Changed (breaking)
+- **The admin API now returns RFC 7807 `ProblemDetail`** (`application/problem+json`)
+  for every error, replacing the bespoke `ApiError` body. The members are
+  `type` / `title` / `status` / `detail`, plus an `errors` extension carrying
+  per-field validation messages. Read the human-readable message from `detail`
+  (falling back to `title`) — the previous top-level `message` field is gone, and the
+  `kr.devslab.kit.admin.ApiError` record was removed. `devslab-kit-admin-ui` is
+  updated in lockstep to read `detail`.
+
 ## [0.2.1] — 2026-06-02
 
 ### Changed
