@@ -12,6 +12,7 @@ public class DevslabKitProperties {
     private final Menu menu = new Menu();
     private final Audit audit = new Audit();
     private final Bootstrap bootstrap = new Bootstrap();
+    private final OpenApi openApi = new OpenApi();
 
     public Identity getIdentity() {
         return identity;
@@ -35,6 +36,10 @@ public class DevslabKitProperties {
 
     public Audit getAudit() {
         return audit;
+    }
+
+    public OpenApi getOpenApi() {
+        return openApi;
     }
 
     public static class Identity {
@@ -353,6 +358,62 @@ public class DevslabKitProperties {
 
         public void setFailOnDefaultPasswordInProd(boolean failOnDefaultPasswordInProd) {
             this.failOnDefaultPasswordInProd = failOnDefaultPasswordInProd;
+        }
+    }
+
+    /**
+     * Swagger UI / OpenAPI exposure. Only takes effect when springdoc-openapi is on
+     * the consumer's classpath (the kit declares it {@code compileOnly}); a consumer
+     * opts in by adding {@code springdoc-openapi-starter-webmvc-ui}. When present and
+     * {@code enabled} (the default), the kit publishes a grouped OpenAPI spec and the
+     * Swagger UI. Set {@code devslab.kit.openapi.enabled=false} to turn it off without
+     * removing the dependency — e.g. in production, where the API docs are usually not
+     * exposed.
+     */
+    public static class OpenApi {
+
+        /** Master switch for the kit's OpenAPI/Swagger UI wiring. Default ON. */
+        private boolean enabled = true;
+
+        /** {@code GroupedOpenApi} group name for the admin API. */
+        private String adminGroup = "admin";
+
+        /** Title shown in the generated OpenAPI document / Swagger UI header. */
+        private String title = "devslab-kit Admin API";
+
+        /** Version string shown in the OpenAPI document. */
+        private String version = "v1";
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public String getAdminGroup() {
+            return adminGroup;
+        }
+
+        public void setAdminGroup(String adminGroup) {
+            this.adminGroup = adminGroup;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getVersion() {
+            return version;
+        }
+
+        public void setVersion(String version) {
+            this.version = version;
         }
     }
 }

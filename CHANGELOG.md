@@ -11,6 +11,16 @@ The library major aligns with the Spring Boot major: `4.x.y` targets Spring Boot
 
 ## [Unreleased]
 
+### Added
+- **OpenAPI / Swagger UI auto-configuration** — when springdoc-openapi is on the
+  classpath (declared `compileOnly` by the kit; a consumer opts in by adding
+  `springdoc-openapi-starter-webmvc-ui`), `/swagger-ui.html` and `/v3/api-docs`
+  come up with no wiring and the `/admin/api/v1/**` endpoints are collected into one
+  group. Disable without removing the dependency via `devslab.kit.openapi.enabled=false`
+  (typical in production). The `OpenAPI` document and admin `GroupedOpenApi` beans are
+  `@ConditionalOnMissingBean`, so a consumer can override either. Targets springdoc
+  `3.0.x` (the Spring Boot 4 line).
+
 ## [0.1.0] — 2026-06-01
 
 First public release.

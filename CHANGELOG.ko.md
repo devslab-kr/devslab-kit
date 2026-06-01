@@ -11,6 +11,15 @@ English: [CHANGELOG.md](CHANGELOG.md)
 
 ## [Unreleased]
 
+### 추가됨 (Added)
+- **OpenAPI / Swagger UI 자동 구성** — springdoc-openapi가 classpath에 있으면(킷은
+  `compileOnly`로 선언, 소비자가 `springdoc-openapi-starter-webmvc-ui`를 추가해 opt-in)
+  설정 없이 `/swagger-ui.html`과 `/v3/api-docs`가 올라오고 `/admin/api/v1/**`
+  엔드포인트가 하나의 그룹으로 묶입니다. 의존성을 제거하지 않고
+  `devslab.kit.openapi.enabled=false`로 끌 수 있습니다(프로덕션에서 일반적). `OpenAPI`
+  문서 빈과 관리자 `GroupedOpenApi` 빈은 `@ConditionalOnMissingBean`이라 소비자가
+  재정의 가능. springdoc `3.0.x`(Spring Boot 4 라인) 대상.
+
 ## [0.1.0] — 2026-06-01
 
 첫 공개 릴리스.
