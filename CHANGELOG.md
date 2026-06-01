@@ -11,6 +11,17 @@ The library major aligns with the Spring Boot major: `4.x.y` targets Spring Boot
 
 ## [Unreleased]
 
+## [0.2.1] — 2026-06-02
+
+### Changed
+- **OpenAPI / Swagger UI is now bundled in the starter** — `0.2.0` shipped springdoc
+  as `compileOnly`, so Swagger UI only appeared if the consumer added springdoc
+  themselves. The starter now depends on `springdoc-openapi-starter-webmvc-ui`
+  (`api`), so `/swagger-ui` and `/v3/api-docs` come up from the starter alone —
+  matching the kit's "add the starter, nothing else" promise. Turn it off with
+  `devslab.kit.openapi.enabled=false`, or `exclude` the `org.springdoc` dependency to
+  drop the jar (both documented in the configuration reference).
+
 ## [0.2.0] — 2026-06-02
 
 ### Added
