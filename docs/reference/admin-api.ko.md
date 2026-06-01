@@ -53,3 +53,22 @@ curl -s localhost:8080/admin/api/v1/auth/login \
     `SecurityFilterChain`이나 `JwtAuthenticationFilter`를 제공해 보호 방식을 바꿀 수
     있습니다. 직접 작성한 코드 안에서의 인가 검사는 kit의 `PermissionChecker`를
     주입해 사용하세요([접근 제어](../guides/access.md) 참고).
+
+## 오류 (Errors)
+
+모든 오류 응답은 RFC 7807 [`ProblemDetail`](https://www.rfc-editor.org/rfc/rfc7807)
+(`application/problem+json`) 형식입니다:
+
+```json
+{
+  "type": "about:blank",
+  "title": "Bad Request",
+  "status": 400,
+  "detail": "Validation failed",
+  "errors": ["loginId: must not be blank"]
+}
+```
+
+사람이 읽는 메시지는 `detail`(없으면 `title`)에서 읽으세요. 검증 실패에는 필드별 메시지 배열
+`errors`가 추가됩니다. 흔한 상태 코드: `401`(자격 증명 오류), `403`(필요한 `admin.*` 권한 없음),
+`400`(잘못된 입력), `409`(충돌).

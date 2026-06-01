@@ -19,6 +19,12 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-autoconfigure")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
+    // Flyway for the kit's own schema-history-table migration runner
+    // (KitFlywayAutoConfiguration). compileOnly: it is @ConditionalOnClass(Flyway),
+    // so it stays dormant unless the consumer puts Flyway on their classpath — which
+    // any consumer migrating the kit's relational schema already does.
+    compileOnly("org.flywaydb:flyway-core")
+
     // Micrometer for custom metrics; consumer's spring-boot-actuator activates it at runtime.
     compileOnly("io.micrometer:micrometer-core")
 

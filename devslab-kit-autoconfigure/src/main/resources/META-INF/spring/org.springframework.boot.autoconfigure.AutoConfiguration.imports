@@ -1,3 +1,4 @@
+kr.devslab.kit.autoconfigure.KitFlywayAutoConfiguration
 kr.devslab.kit.autoconfigure.PersistenceAutoConfiguration
 kr.devslab.kit.autoconfigure.TenantAutoConfiguration
 kr.devslab.kit.autoconfigure.IdentityAutoConfiguration

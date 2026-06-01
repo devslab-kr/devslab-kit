@@ -54,3 +54,23 @@ permission onto `PLATFORM_ADMIN`, so the seeded admin can use the whole API at o
     can supply your own `SecurityFilterChain` or `JwtAuthenticationFilter` to change how
     the surface is protected. For authorization checks inside your own code, inject the
     kit's `PermissionChecker` (see [Access](../guides/access.md)).
+
+## Errors
+
+Every error response is an RFC 7807 [`ProblemDetail`](https://www.rfc-editor.org/rfc/rfc7807)
+(`application/problem+json`):
+
+```json
+{
+  "type": "about:blank",
+  "title": "Bad Request",
+  "status": 400,
+  "detail": "Validation failed",
+  "errors": ["loginId: must not be blank"]
+}
+```
+
+Read the human-readable message from `detail` (falling back to `title`). Validation
+failures add an `errors` array of per-field messages. Common statuses: `401` (bad
+credentials), `403` (missing the required `admin.*` permission), `400` (bad input),
+`409` (conflict).

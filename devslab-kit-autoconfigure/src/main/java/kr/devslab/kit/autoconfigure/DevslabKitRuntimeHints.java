@@ -61,8 +61,9 @@ public class DevslabKitRuntimeHints implements RuntimeHintsRegistrar {
                     MemberCategory.INVOKE_DECLARED_METHODS);
         }
 
-        // Flyway migrations ship inside each -core jar
-        hints.resources().registerPattern("db/migration/*.sql");
+        // Flyway migrations ship inside each -core jar, under the kit's own
+        // dedicated location (separate from the consumer's classpath:db/migration).
+        hints.resources().registerPattern("db/devslab-kit/*.sql");
 
         // Spring Boot AutoConfiguration imports file (defensive — Spring usually handles this)
         hints.resources().registerPattern(
