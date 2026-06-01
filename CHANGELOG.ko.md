@@ -11,6 +11,8 @@ English: [CHANGELOG.md](CHANGELOG.md)
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-06-02
+
 ### 추가됨 (Added)
 - **OpenAPI / Swagger UI 자동 구성** — springdoc-openapi가 classpath에 있으면(킷은
   `compileOnly`로 선언, 소비자가 `springdoc-openapi-starter-webmvc-ui`를 추가해 opt-in)

@@ -11,6 +11,8 @@ The library major aligns with the Spring Boot major: `4.x.y` targets Spring Boot
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-06-02
+
 ### Added
 - **OpenAPI / Swagger UI auto-configuration** — when springdoc-openapi is on the
   classpath (declared `compileOnly` by the kit; a consumer opts in by adding

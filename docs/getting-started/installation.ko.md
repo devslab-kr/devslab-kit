@@ -17,13 +17,13 @@
 === "Gradle (Kotlin DSL)"
 
     ```kotlin
-    implementation("kr.devslab:devslab-kit-spring-boot-starter:0.1.0")
+    implementation("kr.devslab:devslab-kit-spring-boot-starter:0.2.0")
     ```
 
 === "Gradle (Groovy)"
 
     ```groovy
-    implementation 'kr.devslab:devslab-kit-spring-boot-starter:0.1.0'
+    implementation 'kr.devslab:devslab-kit-spring-boot-starter:0.2.0'
     ```
 
 === "Maven"
@@ -32,7 +32,7 @@
     <dependency>
       <groupId>kr.devslab</groupId>
       <artifactId>devslab-kit-spring-boot-starter</artifactId>
-      <version>0.1.0</version>
+      <version>0.2.0</version>
     </dependency>
     ```
 
@@ -43,14 +43,14 @@
 물러납니다(`@ConditionalOnMissingBean`).
 
 ```kotlin
-implementation("kr.devslab:devslab-kit-access-core:0.1.0")   // RBAC + 그룹 + ABAC
-implementation("kr.devslab:devslab-kit-cache-core:0.1.0")    // 플러그형 캐시
+implementation("kr.devslab:devslab-kit-access-core:0.2.0")   // RBAC + 그룹 + ABAC
+implementation("kr.devslab:devslab-kit-cache-core:0.2.0")    // 플러그형 캐시
 // …또는 계약만:
-implementation("kr.devslab:devslab-kit-access-api:0.1.0")
+implementation("kr.devslab:devslab-kit-access-api:0.2.0")
 ```
 
 동작하는 앱을 부팅하려면 [빠른 시작](quick-start.md)을 참고하세요.
 
 !!! note "1.0 이전"
-    `0.1.0`이 배포되기 전에는 소스에서 빌드하세요: `./gradlew publishToMavenLocal`이
-    모든 모듈을 로컬 `~/.m2`에 설치합니다.
+    `1.0` 전까지 API가 바뀔 수 있습니다. 미발행 변경(예: `main`)을 써보려면 소스에서
+    빌드하세요: `./gradlew publishToMavenLocal`이 모든 모듈을 로컬 `~/.m2`에 설치합니다.
