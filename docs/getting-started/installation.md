@@ -17,13 +17,13 @@ whole platform; depend on individual modules only if you want à la carte.
 === "Gradle (Kotlin DSL)"
 
     ```kotlin
-    implementation("kr.devslab:devslab-kit-spring-boot-starter:0.1.0")
+    implementation("kr.devslab:devslab-kit-spring-boot-starter:0.2.0")
     ```
 
 === "Gradle (Groovy)"
 
     ```groovy
-    implementation 'kr.devslab:devslab-kit-spring-boot-starter:0.1.0'
+    implementation 'kr.devslab:devslab-kit-spring-boot-starter:0.2.0'
     ```
 
 === "Maven"
@@ -32,7 +32,7 @@ whole platform; depend on individual modules only if you want à la carte.
     <dependency>
       <groupId>kr.devslab</groupId>
       <artifactId>devslab-kit-spring-boot-starter</artifactId>
-      <version>0.1.0</version>
+      <version>0.2.0</version>
     </dependency>
     ```
 
@@ -44,14 +44,15 @@ your own — the auto-configuration backs off (`@ConditionalOnMissingBean`) when
 do.
 
 ```kotlin
-implementation("kr.devslab:devslab-kit-access-core:0.1.0")   // RBAC + groups + ABAC
-implementation("kr.devslab:devslab-kit-cache-core:0.1.0")    // pluggable cache
+implementation("kr.devslab:devslab-kit-access-core:0.2.0")   // RBAC + groups + ABAC
+implementation("kr.devslab:devslab-kit-cache-core:0.2.0")    // pluggable cache
 // …or just the contract:
-implementation("kr.devslab:devslab-kit-access-api:0.1.0")
+implementation("kr.devslab:devslab-kit-access-api:0.2.0")
 ```
 
 See [Quick Start](quick-start.md) to boot a working app.
 
 !!! note "Pre-1.0"
-    Until `0.1.0` is published, build from source: `./gradlew publishToMavenLocal`
-    installs every module to your local `~/.m2`.
+    The API may still change before `1.0`. To try unreleased changes (e.g. `main`),
+    build from source: `./gradlew publishToMavenLocal` installs every module to your
+    local `~/.m2`.
