@@ -17,11 +17,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.flywaydb:flyway-database-postgresql")
 
-    // Swagger UI / OpenAPI. The kit's OpenApiAutoConfiguration activates only when
-    // springdoc is on the classpath (a consumer opts in by adding this); it then
-    // exposes /swagger-ui and groups the admin API. Version pinned in gradle.properties
-    // (the Spring Boot BOM doesn't manage springdoc).
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${property("SPRINGDOC_VERSION")}")
+    // No springdoc declared here on purpose: the starter bundles it, so Swagger UI
+    // comes up from the starter alone. The OpenApi*Tests prove /swagger-ui and
+    // /v3/api-docs work without the sample app adding springdoc itself.
 
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")

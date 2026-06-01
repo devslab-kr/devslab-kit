@@ -3,6 +3,14 @@ description = "devslab-kit :: Spring Boot starter (dependency bundle)"
 dependencies {
     api(project(":devslab-kit-autoconfigure"))
     api(project(":devslab-kit-tenant-core"))
+
+    // Bundle springdoc so a consumer gets Swagger UI just by adding the starter —
+    // OpenApiAutoConfiguration (in -autoconfigure, @ConditionalOnClass(GroupedOpenApi))
+    // then activates and serves /swagger-ui + /v3/api-docs with the admin API grouped.
+    // Turn it off with devslab.kit.openapi.enabled=false (the bean stays dormant), or
+    // exclude this dependency if you don't want the jar at all. Version pinned in
+    // gradle.properties (the Spring Boot BOM doesn't manage springdoc).
+    api("org.springdoc:springdoc-openapi-starter-webmvc-ui:${property("SPRINGDOC_VERSION")}")
 }
 
 mavenPublishing {

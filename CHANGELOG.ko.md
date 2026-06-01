@@ -11,6 +11,16 @@ English: [CHANGELOG.md](CHANGELOG.md)
 
 ## [Unreleased]
 
+## [0.2.1] — 2026-06-02
+
+### 변경됨 (Changed)
+- **OpenAPI / Swagger UI를 이제 스타터에 포함** — `0.2.0`은 springdoc을 `compileOnly`로
+  배포해, 소비자가 직접 springdoc을 추가해야만 Swagger UI가 떴습니다. 이제 스타터가
+  `springdoc-openapi-starter-webmvc-ui`를 `api`로 의존하므로 스타터만으로
+  `/swagger-ui`와 `/v3/api-docs`가 올라옵니다 — "스타터만 추가하면 다 됨" 약속에 부합.
+  `devslab.kit.openapi.enabled=false`로 끄거나 `org.springdoc` 의존성을 `exclude`해
+  jar를 제거할 수 있습니다(설정 레퍼런스에 문서화).
+
 ## [0.2.0] — 2026-06-02
 
 ### 추가됨 (Added)

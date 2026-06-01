@@ -113,22 +113,45 @@ See the [First-admin Bootstrap guide](../guides/bootstrap.md) and
 
 ## OpenAPI / Swagger UI — `devslab.kit.openapi.*` { #openapi }
 
-The kit auto-configures OpenAPI and Swagger UI **when springdoc is on the
-classpath** — it ships springdoc as `compileOnly`, so you opt in by adding the
-dependency:
+The starter **bundles springdoc**, so `/swagger-ui.html` and `/v3/api-docs` come up
+from the starter alone — no extra dependency, no wiring — and the kit's
+`/admin/api/v1/**` endpoints are collected into one group (`/v3/api-docs/admin`).
+springdoc `3.0.x` is the Spring Boot 4 line (`2.8.x` targets Spring Boot 3).
 
-```kotlin
-implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3")
-```
+Two ways to turn it off:
 
-With that present, `/swagger-ui.html` and `/v3/api-docs` come up with no further
-wiring, and the kit's `/admin/api/v1/**` endpoints are collected into one group
-(`/v3/api-docs/admin`). springdoc `3.0.x` is the Spring Boot 4 line (`2.8.x`
-targets Spring Boot 3).
+1. **Keep the jar, disable the surface** — `devslab.kit.openapi.enabled=false`. The
+   auto-configuration stays dormant; nothing is served. This is the usual production
+   choice.
+2. **Drop the jar entirely** — exclude springdoc from the starter dependency:
+
+    === "Gradle (Kotlin DSL)"
+
+        ```kotlin
+        implementation("kr.devslab:devslab-kit-spring-boot-starter:0.2.1") {
+            exclude(group = "org.springdoc")
+        }
+        ```
+
+    === "Maven"
+
+        ```xml
+        <dependency>
+          <groupId>kr.devslab</groupId>
+          <artifactId>devslab-kit-spring-boot-starter</artifactId>
+          <version>0.2.1</version>
+          <exclusions>
+            <exclusion>
+              <groupId>org.springdoc</groupId>
+              <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+        ```
 
 | Property | Type | Default | Description |
 | --- | --- | --- | --- |
-| `enabled` | boolean | `true` | Master switch. Set `false` to disable the kit's OpenAPI wiring without removing the dependency. |
+| `enabled` | boolean | `true` | Master switch. Set `false` to disable the kit's OpenAPI wiring while leaving the (bundled) dependency in place. |
 | `admin-group` | string | `admin` | Swagger UI group name for the admin API. |
 | `title` | string | `devslab-kit Admin API` | Title shown in the OpenAPI document / Swagger UI. |
 | `version` | string | `v1` | Version string in the OpenAPI document. |
@@ -139,5 +162,5 @@ schemes or servers) and the kit backs off.
 
 !!! tip "Production"
     API docs are usually not exposed in production. Set
-    `devslab.kit.openapi.enabled=false` (or omit the springdoc dependency from the
-    production build) to turn the surface off.
+    `devslab.kit.openapi.enabled=false` to turn the surface off (option 1 above), or
+    `exclude` springdoc to drop the jar (option 2).
