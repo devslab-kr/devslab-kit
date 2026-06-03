@@ -39,31 +39,50 @@ class UserAdminService {
 ## ABAC 정책
 
 RBAC는 "이 사용자가 권한을 가졌는가?"에 답합니다. ABAC는 더 세밀한 "…*이 특정 리소스에
-대해, 지금?*"에 답합니다. `PolicyEvaluator` SPI를 구현하면(기본은 모두 허용) kit이
-이를 참조합니다:
+대해, 지금?*"에 답합니다. **`Policy`** 빈을 하나 이상 구현하면, kit의
+`DefaultPolicyEvaluator`가 모든 `Policy` 빈을 모아 `name()`으로 디스패치합니다.
+(해당 이름의 정책이 없으면 평가 결과는 `NOT_APPLICABLE`.)
 
 ```java
-import kr.devslab.kit.access.policy.*;
+import java.util.Map;
+import kr.devslab.kit.access.policy.Policy;
+import kr.devslab.kit.access.policy.PolicyContext;
+import kr.devslab.kit.access.policy.PolicyDecision;
+import org.springframework.stereotype.Component;
 
-@Bean
-PolicyEvaluator policyEvaluator() {
-    return new PolicyEvaluator() {
-        @Override public PolicyDecision evaluate(PolicyContext ctx) {
-            // ctx.action(), ctx.resourceType(), ctx.subjectAttributes(),
-            // ctx.environment() … 을 보고 permit / deny PolicyDecision 반환
-            ...
-        }
-        @Override public List<Policy> policies() { return List.of(); }
-    };
+@Component
+class DocOwnerPolicy implements Policy {
+
+    @Override public String name() { return "doc-owner"; }
+
+    @Override
+    public PolicyDecision evaluate(PolicyContext ctx) {
+        // ctx 제공: userId(), tenantId(), resourceType(), resourceId(),
+        // resourceAttributes(), environmentAttributes()
+        Object owner = ctx.resourceAttributes().get("ownerLoginId");
+        return owner != null /* && 현재 사용자와 일치 */
+                ? PolicyDecision.PERMIT
+                : PolicyDecision.DENY;
+    }
 }
 ```
 
-그런 다음 ABAC 인지 오버로드로 게이트합니다:
+그런 다음 ABAC 인지 오버로드로 게이트하고, 컨텍스트는 빌더로 구성합니다:
 
 ```java
-access.check(Permission.of("doc.read"), "doc-owner-policy",
-    new PolicyContext(userId, tenantId, Map.of(), "read", "doc", docId, Map.of(), Map.of()));
+PolicyContext ctx = PolicyContext.builder()
+        .user(userId)
+        .tenant(tenantId)
+        .resource("doc", docId)
+        .resourceAttributes(Map.of("ownerLoginId", doc.ownerLoginId()))
+        .build();
+
+access.check(Permission.of("doc.read"), "doc-owner", ctx);
 ```
+
+이유 + 매칭된 규칙까지 담은 풍부한 결과(테스트 엔드포인트에 노출됨)가 필요하면
+`evaluateDetailed(PolicyContext)`를 오버라이드해 `PolicyEvaluation`을 반환하세요 —
+예: `PolicyEvaluation.deny("소유자 아님", List.of("ownership"))`.
 
 부작용 없이 `(subject, action, resource)` 튜플을 드라이런하려면 관리자 API의 `policies`
 엔드포인트를 쓰세요 — [관리자 REST API](../reference/admin-api.md) 참고.
