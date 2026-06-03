@@ -83,7 +83,7 @@
 
 [캐시 가이드](../guides/cache.md), [ADR 0002](../adr/0002-distributed-cache.md) 참고.
 
-## 최초 관리자 부트스트랩 — `devslab.kit.bootstrap.*`
+## 최초 관리자 부트스트랩 — `devslab.kit.bootstrap.*` { #bootstrap }
 
 빈 데이터베이스에 최초 관리자를 프로비저닝(ADR 0001). **기본 OFF**이며 명시적으로 켭니다.
 
