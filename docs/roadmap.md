@@ -4,16 +4,25 @@ A rough, non-binding view of where `devslab-kit` is headed. Priorities shift wit
 real usage — [open an issue](https://github.com/devslab-kr/devslab-kit/issues) to
 weigh in.
 
-## 0.1.0 — first public release
+## Where it is today
 
-The current focus: ship the platform that's already feature-complete.
+`devslab-kit` is published on Maven Central — latest **0.4.2** — alongside this
+documentation site and the companion
+[admin console](https://github.com/devslab-kr/devslab-kit-admin-ui). The platform is
+feature-complete for its scope:
 
 - Identity, Access (RBAC + groups + ABAC), multi-tenancy, dynamic menus, audit,
   pluggable cache, first-admin bootstrap, admin REST API.
-- Maven Central publishing + this documentation site.
-- Companion [admin console](https://github.com/devslab-kr/devslab-kit-admin-ui).
 
-## After 0.1.0 (candidates)
+Shipped since the first release (`0.1.0`):
+
+- **Config sync across environments** (`0.4.0`) — export/import definitional config
+  (permissions, roles, menus; opt-in users) as a code-keyed bundle, `merge`/`mirror`,
+  dry-run by default ([guide](guides/config-sync.md) · [ADR 0003](adr/0003-config-sync.md)).
+- **Flyway history-table separation + RFC 7807 ProblemDetail** (`0.3.0`).
+- **OpenAPI / Swagger UI for the admin API** (`0.2.0`).
+
+## Candidates (not committed)
 
 - **GraalVM native** — the sample app exercises `nativeCompile`; promote it to a
   verified, documented path.
@@ -22,13 +31,6 @@ The current focus: ship the platform that's already feature-complete.
 - **More tenant resolvers / cache backends** as real consumers need them
   (the "pull, don't push" rule — extract when there's a second consumer).
 - **Hardening** — more integration coverage, security review, performance passes.
-
-## Shipped since 0.1.0
-
-- **Config sync across environments** (`0.4.0`) — export/import definitional config
-  (permissions, roles, menus; opt-in users) as a code-keyed bundle, `merge`/`mirror`,
-  dry-run by default. See the [guide](guides/config-sync.md) and
-  [ADR 0003](adr/0003-config-sync.md).
 
 ## Versioning
 
