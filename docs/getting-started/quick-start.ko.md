@@ -59,7 +59,7 @@ devslab:
 ```bash
 curl -s localhost:8080/admin/api/v1/auth/login \
   -H 'Content-Type: application/json' \
-  -d '{"tenantId":"default","loginId":"admin","password":"<부트스트랩 비밀번호>"}'
+  -d '{"tenantId":"default","loginId":"admin","rawPassword":"<부트스트랩 비밀번호>"}'
 ```
 
 `bootstrap.admin-password`를 비우면 kit이 강력한 랜덤 비밀번호를 만들어 시작 시 한 번

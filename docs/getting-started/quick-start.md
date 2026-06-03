@@ -59,7 +59,7 @@ Call the admin API directly, or point the
 ```bash
 curl -s localhost:8080/admin/api/v1/auth/login \
   -H 'Content-Type: application/json' \
-  -d '{"tenantId":"default","loginId":"admin","password":"<bootstrap password>"}'
+  -d '{"tenantId":"default","loginId":"admin","rawPassword":"<bootstrap password>"}'
 ```
 
 A blank `bootstrap.admin-password` makes the kit generate a strong random one and
