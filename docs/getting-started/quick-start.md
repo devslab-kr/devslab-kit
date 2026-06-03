@@ -8,7 +8,8 @@ See [Installation](installation.md).
 
 ## 2. Configure
 
-Point the app at PostgreSQL (and optionally Redis), then set the platform knobs:
+Point the app at PostgreSQL (and optionally Redis), then set the platform knobs — in
+**`src/main/resources/application.yml`**:
 
 ```yaml
 spring:

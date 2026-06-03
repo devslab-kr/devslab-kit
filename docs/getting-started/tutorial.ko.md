@@ -16,15 +16,27 @@
 ## 1단계 — Spring Boot 프로젝트 만들기
 
 최소 Spring Boot 4 프로젝트를 생성합니다([start.spring.io](https://start.spring.io)에서 Gradle +
-Java 21 + Spring Boot 4.x). 또는 빈 폴더 `myapp/` 에 아래 두 파일만 만들어도 됩니다.
+Java 21 + Spring Boot 4.x). 또는 빈 폴더 `myapp/` 에 아래 파일들을 직접 만들어도 됩니다. 완성
+구조는 다음과 같고, 각 단계마다 파일 내용 위에 **전체 경로**를 표시합니다:
 
-**`settings.gradle.kts`**
+```text
+myapp/
+├─ settings.gradle.kts
+├─ build.gradle.kts
+├─ compose.yaml
+└─ src/
+   └─ main/
+      ├─ java/com/example/myapp/MyappApplication.java
+      └─ resources/application.yml
+```
+
+**`myapp/settings.gradle.kts`**
 
 ```kotlin
 rootProject.name = "myapp"
 ```
 
-**`build.gradle.kts`**
+**`myapp/build.gradle.kts`**
 
 ```kotlin
 plugins {
@@ -65,7 +77,7 @@ dependencies {
 
 Gradle 래퍼가 없으면 추가하세요: `gradle wrapper` (또는 다른 Spring 프로젝트의 `gradlew` 복사).
 
-메인 클래스도 필요합니다 — **`src/main/java/com/example/myapp/MyappApplication.java`**:
+메인 클래스도 필요합니다 — **`myapp/src/main/java/com/example/myapp/MyappApplication.java`**:
 
 ```java
 package com.example.myapp;
@@ -85,7 +97,7 @@ public class MyappApplication {
 
 ## 2단계 — Docker로 PostgreSQL 띄우기
 
-kit은 모든 것을 PostgreSQL에 저장합니다. 프로젝트 루트에 **`compose.yaml`** 생성:
+kit은 모든 것을 PostgreSQL에 저장합니다. **`myapp/compose.yaml`** 생성:
 
 ```yaml
 services:
@@ -106,7 +118,7 @@ services:
 
 ## 3단계 — 앱 설정
 
-**`src/main/resources/application.yml`** 생성:
+**`myapp/src/main/resources/application.yml`** 생성:
 
 ```yaml
 spring:

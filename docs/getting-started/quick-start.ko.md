@@ -8,7 +8,8 @@
 
 ## 2. 설정
 
-앱을 PostgreSQL(선택적으로 Redis)에 연결한 뒤 플랫폼 설정을 지정합니다:
+앱을 PostgreSQL(선택적으로 Redis)에 연결한 뒤, **`src/main/resources/application.yml`** 에
+플랫폼 설정을 지정합니다:
 
 ```yaml
 spring:
