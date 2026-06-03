@@ -31,6 +31,11 @@ You define permissions, group them into roles, and assign roles to users. (The
 first-admin [bootstrap](bootstrap.md) already seeds `PLATFORM_ADMIN` with the full
 `admin.*` set — this is how you add your own.)
 
+!!! tip "Seed them from config instead of clicking"
+    To avoid hand-creating starter roles in every environment, declare them under
+    `devslab.kit.bootstrap.seed` and the kit creates them idempotently on boot —
+    see [First-admin Bootstrap → Seed](bootstrap.md#seed).
+
 === "Admin console"
 
     In the [admin console](admin-console.md):

@@ -31,6 +31,10 @@
 [부트스트랩](bootstrap.md)이 이미 전체 `admin.*`을 가진 `PLATFORM_ADMIN`을 심어 둡니다 — 여기서는
 직접 추가하는 법입니다.)
 
+!!! tip "클릭 대신 설정으로 시드"
+    환경마다 스타터 역할을 손으로 만들지 않으려면 `devslab.kit.bootstrap.seed`에 선언하세요 —
+    kit이 부팅 시 멱등하게 생성합니다. [최초 관리자 부트스트랩 → 시드](bootstrap.md#seed) 참고.
+
 === "관리자 콘솔"
 
     [관리자 콘솔](admin-console.md)에서:

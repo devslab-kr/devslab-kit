@@ -36,6 +36,39 @@ devslab:
 
 See the [Configuration reference](../reference/configuration.md#bootstrap) for every key.
 
+## Seed starter roles & permissions { #seed }
+
+A fresh database has the admin but no application roles. Rather than make every
+consumer hand-create them in the console, **seed them from config** — the kit creates
+the permissions and roles idempotently on boot and grants each role its permissions:
+
+```yaml
+# src/main/resources/application.yml
+devslab:
+  kit:
+    bootstrap:
+      enabled: true
+      seed:
+        permissions: [tasks.read, tasks.write, tasks.update, tasks.delete]
+        roles:
+          viewer: [tasks.read]
+          editor: [tasks.read, tasks.write, tasks.update]
+          owner:  [tasks.read, tasks.write, tasks.update, tasks.delete]
+```
+
+`tasks.*` is a placeholder — list **your** domain's permission codes. Notes:
+
+- **Idempotent + additive.** Every boot creates what's missing and adds the listed
+  grants; it never revokes or deletes, so adding a permission/role here and
+  redeploying picks it up. (Destructive reconciliation is the dev-only job of
+  [config sync](config-sync.md) `mirror`.)
+- A permission a role lists but the `permissions` block omits is **auto-created** —
+  so `permissions` is only for codes you want to exist without granting them yet.
+- Permissions are global; roles are created in `tenant-id`.
+
+You can still create and manage everything in the [admin console](admin-console.md) —
+the seed just gives you a sensible starting point instead of a blank slate.
+
 ## The password
 
 - **Set explicitly** for a known value (e.g. local dev `admin`/`admin`).

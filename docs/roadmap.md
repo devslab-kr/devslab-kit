@@ -6,7 +6,7 @@ weigh in.
 
 ## Where it is today
 
-`devslab-kit` is published on Maven Central — latest **0.4.2** — alongside this
+`devslab-kit` is published on Maven Central — latest **0.5.0** — alongside this
 documentation site and the companion
 [admin console](https://github.com/devslab-kr/devslab-kit-admin-ui). The platform is
 feature-complete for its scope:

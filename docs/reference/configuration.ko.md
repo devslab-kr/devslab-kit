@@ -29,8 +29,10 @@
 
 - `fixed` — 항상 `default-tenant-id` 반환. `single` 모드의 자연스러운 선택.
 - `header` — 요청 헤더(`header` 속성, 기본 `X-Tenant-Id`)에서 테넌트 id를 읽음.
-- `jwt` — 인증된 JWT의 클레임에서 테넌트를 읽음.
 - `subdomain` — 요청 호스트의 서브도메인에서 유도(`acme.example.com` → `acme`).
+- `jwt` — _예약, 아직 미출시_: 선택하면 부팅 시 즉시 실패합니다
+  (`devslab-kit-oauth2-resource-server-starter` 대기). 로그인 JWT는 이미 `tenant` 클레임을
+  실으니, 그때까지는 커스텀 `TenantResolver` 빈으로 읽으세요.
 
 [멀티테넌시 가이드](../guides/tenancy.md) 참고.
 
@@ -95,6 +97,25 @@
 | `admin-password` | string | — | 관리자 비밀번호. **비우면** 강력한 랜덤 비밀번호를 생성해 시작 시 **한 번** 로깅. |
 | `admin-email` | string | — | 시드 관리자의 선택적 이메일. |
 | `must-change-password` | boolean | `true` | 첫 로그인 시 새 비밀번호 설정 강제. |
+| `seed.permissions` | list | `[]` | 부팅 시 생성할 권한 코드(멱등). |
+| `seed.roles` | map | `{}` | 역할 코드 → 권한 코드; 역할을 생성하고 나열된 권한을 부여. |
+
+시드는 **멱등·추가형**입니다 — 매 부팅 시 없는 권한/역할을 생성하고 나열된 grant를 추가하되,
+회수·삭제는 하지 않습니다(역할이 참조하는 권한은 자동 생성). 스타터 역할을 함께 배포해 consumer가
+직접 만들지 않게 하세요:
+
+```yaml
+devslab:
+  kit:
+    bootstrap:
+      enabled: true
+      seed:
+        permissions: [tasks.read, tasks.write, tasks.update, tasks.delete]
+        roles:
+          viewer: [tasks.read]
+          editor: [tasks.read, tasks.write, tasks.update]
+          owner:  [tasks.read, tasks.write, tasks.update, tasks.delete]
+```
 
 !!! warning "운영 환경"
     `identity.jwt.secret`은 항상 강력하게 설정하세요. 부트스트랩은 강력한
@@ -121,7 +142,7 @@
     === "Gradle (Kotlin DSL)"
 
         ```kotlin
-        implementation("kr.devslab:devslab-kit-spring-boot-starter:0.4.2") {
+        implementation("kr.devslab:devslab-kit-spring-boot-starter:0.5.0") {
             exclude(group = "org.springdoc")
         }
         ```
@@ -132,7 +153,7 @@
         <dependency>
           <groupId>kr.devslab</groupId>
           <artifactId>devslab-kit-spring-boot-starter</artifactId>
-          <version>0.4.2</version>
+          <version>0.5.0</version>
           <exclusions>
             <exclusion>
               <groupId>org.springdoc</groupId>

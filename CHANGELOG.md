@@ -11,6 +11,30 @@ The library major aligns with the Spring Boot major: `4.x.y` targets Spring Boot
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-06-03
+
+### Added
+- **Config-driven RBAC seed.** `devslab.kit.bootstrap.seed` provisions starter
+  permissions and roles (with grants) idempotently on boot, so consumers don't have
+  to hand-create them in the console. Declare your domain's permission codes and the
+  roles that group them:
+  ```yaml
+  devslab:
+    kit:
+      bootstrap:
+        enabled: true
+        seed:
+          permissions: [tasks.read, tasks.write, tasks.update, tasks.delete]
+          roles:
+            viewer: [tasks.read]
+            editor: [tasks.read, tasks.write, tasks.update]
+            owner:  [tasks.read, tasks.write, tasks.update, tasks.delete]
+  ```
+  Additive only — every boot creates what's missing and adds the listed grants, but
+  never revokes or deletes; a permission referenced by a role is auto-created.
+  Permissions are global; roles are created in `bootstrap.tenant-id`. See the
+  [bootstrap guide](guides/bootstrap.md#seed).
+
 ## [0.4.2] — 2026-06-03
 
 ### Added

@@ -57,7 +57,7 @@ repositories { mavenCentral() }
 dependencies {
     // 플랫폼: 인증, RBAC + 그룹 + ABAC, 멀티테넌시, 동적 메뉴, 감사 로깅,
     // 관리자 REST API — 전부 자동 구성.
-    implementation("kr.devslab:devslab-kit-spring-boot-starter:0.4.2")
+    implementation("kr.devslab:devslab-kit-spring-boot-starter:0.5.0")
 
     // devslab-kit은 어떤 Spring 스타터를 쓸지 강요하지 않습니다.
     // 이 튜토리얼에선 web + security + JPA + Flyway + PostgreSQL.
