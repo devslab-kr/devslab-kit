@@ -87,6 +87,32 @@ class AdminRbacEnforcementTests {
         assertThat(response.statusCode()).isEqualTo(403);
     }
 
+    @Test
+    void exposesAUsersRolesAndGroups() throws Exception {
+        String adminToken = login("admin", "admin");
+
+        // Resolve the seeded admin user's id from the user list.
+        HttpResponse<String> users = getWithToken(USERS, adminToken);
+        assertThat(users.statusCode()).isEqualTo(200);
+        String adminId = null;
+        for (var node : objectMapper.readTree(users.body())) {
+            if ("admin".equals(node.get("loginId").asText())) {
+                adminId = node.get("id").get("value").asText();
+                break;
+            }
+        }
+        assertThat(adminId).isNotNull();
+
+        // New endpoints: a user's roles and groups, returned as a stable [{value}] array.
+        HttpResponse<String> roles = getWithToken("/admin/api/v1/users/" + adminId + "/roles", adminToken);
+        assertThat(roles.statusCode()).isEqualTo(200);
+        assertThat(objectMapper.readTree(roles.body()).isArray()).isTrue();
+
+        HttpResponse<String> groups = getWithToken("/admin/api/v1/users/" + adminId + "/groups", adminToken);
+        assertThat(groups.statusCode()).isEqualTo(200);
+        assertThat(objectMapper.readTree(groups.body()).isArray()).isTrue();
+    }
+
     private String login(String loginId, String password) throws Exception {
         HttpResponse<String> response = post(LOGIN, loginBody(loginId, password));
         assertThat(response.statusCode()).isEqualTo(200);

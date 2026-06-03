@@ -17,13 +17,13 @@ whole platform; depend on individual modules only if you want à la carte.
 === "Gradle (Kotlin DSL)"
 
     ```kotlin
-    implementation("kr.devslab:devslab-kit-spring-boot-starter:0.4.1")
+    implementation("kr.devslab:devslab-kit-spring-boot-starter:0.4.2")
     ```
 
 === "Gradle (Groovy)"
 
     ```groovy
-    implementation 'kr.devslab:devslab-kit-spring-boot-starter:0.4.1'
+    implementation 'kr.devslab:devslab-kit-spring-boot-starter:0.4.2'
     ```
 
 === "Maven"
@@ -32,7 +32,7 @@ whole platform; depend on individual modules only if you want à la carte.
     <dependency>
       <groupId>kr.devslab</groupId>
       <artifactId>devslab-kit-spring-boot-starter</artifactId>
-      <version>0.4.1</version>
+      <version>0.4.2</version>
     </dependency>
     ```
 
@@ -44,10 +44,10 @@ your own — the auto-configuration backs off (`@ConditionalOnMissingBean`) when
 do.
 
 ```kotlin
-implementation("kr.devslab:devslab-kit-access-core:0.4.1")   // RBAC + groups + ABAC
-implementation("kr.devslab:devslab-kit-cache-core:0.4.1")    // pluggable cache
+implementation("kr.devslab:devslab-kit-access-core:0.4.2")   // RBAC + groups + ABAC
+implementation("kr.devslab:devslab-kit-cache-core:0.4.2")    // pluggable cache
 // …or just the contract:
-implementation("kr.devslab:devslab-kit-access-api:0.4.1")
+implementation("kr.devslab:devslab-kit-access-api:0.4.2")
 ```
 
 See [Quick Start](quick-start.md) to boot a working app.
