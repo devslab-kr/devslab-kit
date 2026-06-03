@@ -146,5 +146,6 @@ nav:
   - Decisions:
       - "ADR 0001 — First-admin bootstrap": adr/0001-bootstrap-admin.md
       - "ADR 0002 — Pluggable cache": adr/0002-distributed-cache.md
+      - "ADR 0003 — Config sync across environments": adr/0003-config-sync.md
   - Changelog: changelog.md
   - Roadmap: roadmap.md
