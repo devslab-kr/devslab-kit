@@ -79,6 +79,7 @@ plugins:
             Caching: 캐시
             First-admin Bootstrap: 최초 관리자 부트스트랩
             Config Sync: 설정 동기화
+            Admin Console: 관리자 콘솔
             Reference: 레퍼런스
             Configuration: 설정
             Admin REST API: 관리자 REST API
@@ -144,6 +145,7 @@ nav:
       - Caching: guides/cache.md
       - First-admin Bootstrap: guides/bootstrap.md
       - Config Sync: guides/config-sync.md
+      - Admin Console: guides/admin-console.md
   - Reference:
       - Configuration: reference/configuration.md
       - Admin REST API: reference/admin-api.md
