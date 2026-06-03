@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.env.Environment;
 
 /**
  * Config sync (ADR 0003) — **OFF by default**. The whole surface activates only when
@@ -48,4 +49,11 @@ public class ConfigSyncAutoConfiguration {
     ) {
         return new ConfigImportService(permissions, roles, rolePermissions, menus);
     }
+
+    /** Refuses to start if config sync is enabled under a production profile (ADR 0003 §5). */
+    @Bean
+    ConfigSyncProductionGuard configSyncProductionGuard(Environment environment) {
+        return new ConfigSyncProductionGuard(environment);
+    }
 }
+
