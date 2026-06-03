@@ -1,11 +1,12 @@
 # ADR 0003 — Platform config sync across environments (export/import, not a live push)
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-06-03
-- **Implemented by (proposed):** `devslab-kit-admin-api` config endpoints
+- **Implemented by:** `devslab-kit-admin-api` config endpoints
   (`config/export`, `config/import`), an export/import service in `-core`, gating in
   `devslab-kit-autoconfigure` (`devslab.kit.config-sync.*`), and a "Config Sync" page in
-  `devslab-kit-admin-ui`. Targets `0.4.0`. See the PR breakdown below.
+  `devslab-kit-admin-ui`. Targets `0.4.0`. Merged in #53, #54, #55 (kit) and
+  devslab-kit-admin-ui #20. See the PR breakdown below.
 
 ## Context
 
@@ -150,6 +151,11 @@ never cross the boundary.
    proven.
 6. **Docs**: a guide ("promote platform config across environments"), document the
    deploy-seeding usage, and flip this ADR to **Accepted**.
+
+**Status:** items 1–5 are merged — export/import (#53), gating + prod fail-fast (#54),
+`mirror` mode + opt-in user sync (#55), and the admin-ui "Config Sync" page
+(devslab-kit-admin-ui #20). Item 6's ADR flip lands with this note; the standalone
+how-to guide is the remaining piece.
 
 ## Alternatives considered
 
