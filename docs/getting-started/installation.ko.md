@@ -17,13 +17,13 @@
 === "Gradle (Kotlin DSL)"
 
     ```kotlin
-    implementation("kr.devslab:devslab-kit-spring-boot-starter:0.4.1")
+    implementation("kr.devslab:devslab-kit-spring-boot-starter:0.4.2")
     ```
 
 === "Gradle (Groovy)"
 
     ```groovy
-    implementation 'kr.devslab:devslab-kit-spring-boot-starter:0.4.1'
+    implementation 'kr.devslab:devslab-kit-spring-boot-starter:0.4.2'
     ```
 
 === "Maven"
@@ -32,7 +32,7 @@
     <dependency>
       <groupId>kr.devslab</groupId>
       <artifactId>devslab-kit-spring-boot-starter</artifactId>
-      <version>0.4.1</version>
+      <version>0.4.2</version>
     </dependency>
     ```
 
@@ -43,10 +43,10 @@
 물러납니다(`@ConditionalOnMissingBean`).
 
 ```kotlin
-implementation("kr.devslab:devslab-kit-access-core:0.4.1")   // RBAC + 그룹 + ABAC
-implementation("kr.devslab:devslab-kit-cache-core:0.4.1")    // 플러그형 캐시
+implementation("kr.devslab:devslab-kit-access-core:0.4.2")   // RBAC + 그룹 + ABAC
+implementation("kr.devslab:devslab-kit-cache-core:0.4.2")    // 플러그형 캐시
 // …또는 계약만:
-implementation("kr.devslab:devslab-kit-access-api:0.4.1")
+implementation("kr.devslab:devslab-kit-access-api:0.4.2")
 ```
 
 동작하는 앱을 부팅하려면 [빠른 시작](quick-start.md)을 참고하세요.

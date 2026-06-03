@@ -65,7 +65,7 @@ specific product's domain.
 **Gradle (Kotlin DSL)**
 
 ```kotlin
-implementation("kr.devslab:devslab-kit-spring-boot-starter:0.4.1")
+implementation("kr.devslab:devslab-kit-spring-boot-starter:0.4.2")
 ```
 
 **Maven**
@@ -74,7 +74,7 @@ implementation("kr.devslab:devslab-kit-spring-boot-starter:0.4.1")
 <dependency>
   <groupId>kr.devslab</groupId>
   <artifactId>devslab-kit-spring-boot-starter</artifactId>
-  <version>0.4.1</version>
+  <version>0.4.2</version>
 </dependency>
 ```
 

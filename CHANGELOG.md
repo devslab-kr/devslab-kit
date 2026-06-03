@@ -11,6 +11,15 @@ The library major aligns with the Spring Boot major: `4.x.y` targets Spring Boot
 
 ## [Unreleased]
 
+## [0.4.2] — 2026-06-03
+
+### Added
+- **List a user's roles and groups.** `GET /admin/api/v1/users/{id}/roles` and
+  `GET /admin/api/v1/users/{id}/groups` return the role / group ids assigned to a user, so the
+  admin console can manage a user's access from the user side (assign/revoke continue to live
+  on the role and group resources: `POST/DELETE /roles/{roleId}/users/{userId}` and
+  `/groups/{groupId}/members/{userId}`). Returned as a stable `[{ "value": "<uuid>" }]` array.
+
 ## [0.4.1] — 2026-06-03
 
 ### Fixed

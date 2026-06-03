@@ -3,7 +3,11 @@ package kr.devslab.kit.admin.user;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
+import kr.devslab.kit.access.core.service.GroupMembershipService;
+import kr.devslab.kit.access.core.service.UserRoleService;
 import kr.devslab.kit.admin.AdminApiPaths;
+import kr.devslab.kit.core.id.GroupId;
+import kr.devslab.kit.core.id.RoleId;
 import kr.devslab.kit.core.id.TenantId;
 import kr.devslab.kit.core.id.UserId;
 import kr.devslab.kit.identity.UserAccountView;
@@ -26,13 +30,19 @@ public class UserAdminController {
 
     private final PlatformUserAccountAdminService adminService;
     private final PlatformUserAccountService readService;
+    private final UserRoleService userRoles;
+    private final GroupMembershipService groupMemberships;
 
     public UserAdminController(
             PlatformUserAccountAdminService adminService,
-            PlatformUserAccountService readService
+            PlatformUserAccountService readService,
+            UserRoleService userRoles,
+            GroupMembershipService groupMemberships
     ) {
         this.adminService = adminService;
         this.readService = readService;
+        this.userRoles = userRoles;
+        this.groupMemberships = groupMemberships;
     }
 
     @PostMapping
@@ -57,6 +67,20 @@ public class UserAdminController {
     @GetMapping
     public List<UserAccountView> list(@RequestParam String tenantId) {
         return adminService.listByTenant(TenantId.of(tenantId));
+    }
+
+    /** Roles assigned directly to this user. Assign/revoke live on the role resource
+     *  ({@code POST/DELETE /roles/{roleId}/users/{userId}}). */
+    @GetMapping("/{id}/roles")
+    public List<RoleId> roles(@PathVariable UUID id) {
+        return userRoles.findRoleIdsForUser(UserId.of(id));
+    }
+
+    /** Groups this user belongs to. Membership is managed on the group resource
+     *  ({@code POST/DELETE /groups/{groupId}/members/{userId}}). */
+    @GetMapping("/{id}/groups")
+    public List<GroupId> groups(@PathVariable UUID id) {
+        return groupMemberships.findGroupsForUser(UserId.of(id));
     }
 
     @PutMapping("/{id}/lock")

@@ -11,6 +11,15 @@ English: [CHANGELOG.md](CHANGELOG.md)
 
 ## [Unreleased]
 
+## [0.4.2] — 2026-06-03
+
+### Added
+- **사용자의 역할·그룹 조회.** `GET /admin/api/v1/users/{id}/roles`,
+  `GET /admin/api/v1/users/{id}/groups` 가 사용자에게 부여된 역할/그룹 id 를 반환합니다.
+  이로써 admin 콘솔이 **사용자 화면에서** 그 사용자의 접근권한을 관리할 수 있습니다(부여/회수는
+  기존대로 역할·그룹 리소스에: `POST/DELETE /roles/{roleId}/users/{userId}`,
+  `/groups/{groupId}/members/{userId}`). 안정적인 `[{ "value": "<uuid>" }]` 배열로 반환.
+
 ## [0.4.1] — 2026-06-03
 
 ### Fixed
