@@ -11,6 +11,30 @@ The library major aligns with the Spring Boot major: `4.x.y` targets Spring Boot
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-06-03
+
+### Added
+- **Config sync across environments (ADR 0003).** Promote definitional platform config —
+  permissions, roles (+ their permission codes) and menus — from one environment to another as
+  a portable, code-keyed bundle, instead of hand-editing each target database.
+  - `GET /admin/api/v1/config/export` and `POST /admin/api/v1/config/import`.
+  - **merge** (default, additive — creates and updates, never deletes) and **mirror** (makes the
+    target match the bundle: reconciles each role's grants and deletes definitional entities
+    absent from the bundle — menus leaf-first; a role still assigned to a user is skipped;
+    permissions revoked then deleted).
+  - **dry-run by default** — the import returns a per-section diff (created / updated / deleted /
+    skipped) and writes nothing unless `dryRun=false`.
+  - **Opt-in user sync** (`includeUsers`, default off): export carries users by login id with
+    **no password**; import is create-only and never overwrites an existing user.
+  - **Off by default** (`devslab.kit.config-sync.enabled`) and **refused under a production
+    profile** (`prod`/`production`, ADR 0003 §5) — promote config via the committed bundle on
+    deploy, not an ad-hoc push to prod.
+  - A **Config Sync** page in the [admin console](https://github.com/devslab-kr/devslab-kit-admin-ui)
+    drives export / import / dry-run diff / apply.
+
+### Notes
+- No migration required: config sync adds no tables and is inert unless explicitly enabled.
+
 ## [0.3.0] — 2026-06-02
 
 ### Changed

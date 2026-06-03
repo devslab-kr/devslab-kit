@@ -45,6 +45,11 @@
     `in-memory`, `redis`, `none`. Redis 백엔드가 JSON 직렬화를 직접 책임집니다 —
     `Serializable`도, 직렬화기 배선도 필요 없습니다.
 
+-   :material-sync: **설정 동기화**
+
+    권한·역할·메뉴를 환경 간에 코드 기준 export/import 번들로 승격 — `merge` 또는
+    `mirror`, 먼저 dry-run ([가이드](guides/config-sync.ko.md)).
+
 </div>
 
 ## 왜 스타터인가? { #why-a-starter }

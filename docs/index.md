@@ -48,6 +48,11 @@ product's domain.
     `in-memory`, `redis`, or `none`. The Redis backend owns JSON serialization — no
     `Serializable`, no serializer wiring.
 
+-   :material-sync: **Config sync**
+
+    Promote permissions, roles and menus across environments as a code-keyed
+    export/import bundle — `merge` or `mirror`, dry-run first ([guide](guides/config-sync.md)).
+
 </div>
 
 ## Why a starter? { #why-a-starter }

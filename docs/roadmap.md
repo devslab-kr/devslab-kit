@@ -23,6 +23,13 @@ The current focus: ship the platform that's already feature-complete.
   (the "pull, don't push" rule — extract when there's a second consumer).
 - **Hardening** — more integration coverage, security review, performance passes.
 
+## Shipped since 0.1.0
+
+- **Config sync across environments** (`0.4.0`) — export/import definitional config
+  (permissions, roles, menus; opt-in users) as a code-keyed bundle, `merge`/`mirror`,
+  dry-run by default. See the [guide](guides/config-sync.md) and
+  [ADR 0003](adr/0003-config-sync.md).
+
 ## Versioning
 
 The library major tracks the Spring Boot major: **`4.x.y` targets Spring Boot

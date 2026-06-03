@@ -128,7 +128,7 @@ Two ways to turn it off:
     === "Gradle (Kotlin DSL)"
 
         ```kotlin
-        implementation("kr.devslab:devslab-kit-spring-boot-starter:0.3.0") {
+        implementation("kr.devslab:devslab-kit-spring-boot-starter:0.4.0") {
             exclude(group = "org.springdoc")
         }
         ```
@@ -139,7 +139,7 @@ Two ways to turn it off:
         <dependency>
           <groupId>kr.devslab</groupId>
           <artifactId>devslab-kit-spring-boot-starter</artifactId>
-          <version>0.3.0</version>
+          <version>0.4.0</version>
           <exclusions>
             <exclusion>
               <groupId>org.springdoc</groupId>
