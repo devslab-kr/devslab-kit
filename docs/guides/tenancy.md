@@ -1,26 +1,44 @@
 # Multi-tenancy
 
-`devslab-kit` always runs inside a **tenant context** — even single-tenant
-deployments resolve a default tenant rather than skipping the abstraction, so your
-code never special-cases "no tenant".
+A **tenant** is an isolated workspace — one customer/org and all of its data. In
+`devslab-kit` there is **always a tenant in context**, even in a single-tenant app: a
+single-tenant deployment resolves a `default` tenant instead of skipping the abstraction,
+so **your code is identical** whether you ship to one customer or thousands. You never
+write a "no tenant" special case.
 
-## Modes
+This guide assumes no prior knowledge. New here? Do the
+[Tutorial](../getting-started/tutorial.md) first — Step 8 shows tenancy in a running app.
 
-| `tenant.mode` | Behaviour |
-| --- | --- |
-| `single` | One tenant (`tenant.default-tenant-id`). The resolver always returns it. |
-| `multi` | The tenant is resolved per request by the chosen resolver. |
+## Pick a mode
 
-## Resolvers
+```yaml
+# src/main/resources/application.yml
+devslab:
+  kit:
+    tenant:
+      mode: single            # single | multi
+      resolver: fixed         # fixed | header | jwt | subdomain
+      default-tenant-id: default
+```
 
-Pick one with `tenant.resolver`:
+| `mode` | When to use | Behaviour |
+| --- | --- | --- |
+| `single` | One customer / an internal tool | Every request resolves `default-tenant-id`. |
+| `multi`  | A SaaS serving many customers | The **resolver** picks the tenant per request. |
 
-| Resolver | Resolves the tenant from |
-| --- | --- |
-| `fixed` | Always `tenant.default-tenant-id` (the single-tenant default). |
-| `header` | A request header (e.g. `X-Tenant-Id`). |
-| `jwt` | A claim on the authenticated JWT. |
-| `subdomain` | The request host's subdomain (`acme.app.com` → `acme`). |
+Start with `single` + `fixed`. Switch to `multi` when you actually onboard a second
+tenant — no code changes, only config.
+
+## Resolvers (multi-tenant)
+
+In `multi` mode the **resolver** decides whose request this is:
+
+| `resolver` | Resolves the tenant from | Example |
+| --- | --- | --- |
+| `fixed` | always `default-tenant-id` | (the single-tenant default) |
+| `header` | a request header (default `X-Tenant-Id`) | `X-Tenant-Id: acme` |
+| `jwt` | a claim on the authenticated JWT | the signed-in user's tenant |
+| `subdomain` | the request host's subdomain | `acme.app.com` → `acme` |
 
 ```yaml
 devslab:
@@ -28,39 +46,117 @@ devslab:
     tenant:
       mode: multi
       resolver: header
+      header: X-Tenant-Id     # only used by the header resolver
 ```
 
-## Using it
+```bash
+# with the header resolver, every request carries the tenant:
+curl localhost:8080/api/invoices -H 'X-Tenant-Id: acme'
+```
 
-Inject `TenantResolver` to resolve the active tenant (or `TenantContextHolder` to
-read the one bound to the current request):
+## Use it in your code
+
+### Read the current tenant
+
+`TenantContextHolder` holds the tenant bound to the current request (set by the kit
+before your code runs):
 
 ```java
-import kr.devslab.kit.tenant.TenantResolver;
+// src/main/java/com/example/myapp/InvoiceService.java
+import kr.devslab.kit.tenant.TenantContextHolder;
 
 @Service
-class ReportService {
-    private final TenantResolver tenants;
+class InvoiceService {
 
-    ReportService(TenantResolver tenants) { this.tenants = tenants; }
+    private final TenantContextHolder tenantContext;
+    private final InvoiceRepository invoices;
 
-    void run() {
-        String tenantId = tenants.resolve().tenantId().value();
-        // … scope your query to tenantId …
+    InvoiceService(TenantContextHolder tenantContext, InvoiceRepository invoices) {
+        this.tenantContext = tenantContext;
+        this.invoices = invoices;
+    }
+
+    private String currentTenant() {
+        return tenantContext.current()
+                .orElseThrow(() -> new IllegalStateException("no tenant in context"))
+                .tenantId().value();
+    }
+
+    List<Invoice> list() {
+        return invoices.findByTenantId(currentTenant());   // never leak across tenants
+    }
+
+    Invoice create(String amount) {
+        return invoices.save(new Invoice(UUID.randomUUID(), currentTenant(), amount));
     }
 }
 ```
 
-## Override
+(There's also `TenantResolver` — inject it to resolve the tenant *outside* a web request,
+e.g. in a scheduled job: `tenantResolver.resolve().tenantId().value()`.)
 
-Need a custom resolution strategy (a database lookup, a composite of header +
-path, …)? Declare your own `TenantResolver` bean and the kit's default backs off:
+### Scope your data by tenant
+
+The rule is simple: **put `tenant_id` on every tenant-owned entity and filter every query
+by it.**
 
 ```java
-@Bean
-TenantResolver tenantResolver() {
-    return () -> /* your TenantContext */;
+// src/main/java/com/example/myapp/Invoice.java
+@Entity
+class Invoice {
+    @Id private UUID id;
+    @Column(name = "tenant_id", nullable = false) private String tenantId;
+    private String amount;
+    // constructor + getters …
 }
 ```
 
-See the [Configuration reference](../reference/configuration.md#tenant) for all keys.
+```java
+// src/main/java/com/example/myapp/InvoiceRepository.java
+interface InvoiceRepository extends JpaRepository<Invoice, UUID> {
+    List<Invoice> findByTenantId(String tenantId);
+    Optional<Invoice> findByIdAndTenantId(UUID id, String tenantId);   // look-ups too
+}
+```
+
+That's the whole pattern — identical in `single` and `multi` mode.
+
+## Custom resolver
+
+Need a strategy the built-ins don't cover (a DB lookup, header-or-path, an API key →
+tenant map)? Declare your own `TenantResolver` bean and the kit's default backs off
+(every kit bean is `@ConditionalOnMissingBean`):
+
+```java
+// src/main/java/com/example/myapp/ApiKeyTenantResolver.java
+import kr.devslab.kit.tenant.TenantResolver;
+import kr.devslab.kit.tenant.TenantContext;
+import kr.devslab.kit.core.id.TenantId;
+
+@Component
+class ApiKeyTenantResolver implements TenantResolver {
+
+    private final HttpServletRequest request;   // request-scoped
+    private final TenantDirectory directory;     // your own lookup
+
+    ApiKeyTenantResolver(HttpServletRequest request, TenantDirectory directory) {
+        this.request = request;
+        this.directory = directory;
+    }
+
+    @Override
+    public TenantContext resolve() {
+        String apiKey = request.getHeader("X-Api-Key");
+        String tenantId = directory.tenantForApiKey(apiKey);   // e.g. a DB lookup
+        return TenantContext.of(TenantId.of(tenantId));
+    }
+}
+```
+
+## Manage tenants
+
+Create / suspend / archive tenants from the admin console's **Tenants** screen
+(or the `tenants` REST endpoint) — see the
+[Admin Console guide](admin-console.md#tenants).
+
+See the [Configuration reference](../reference/configuration.md#tenant) for every key.
