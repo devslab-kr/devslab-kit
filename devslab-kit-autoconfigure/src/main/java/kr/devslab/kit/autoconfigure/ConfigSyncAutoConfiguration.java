@@ -4,6 +4,7 @@ import kr.devslab.kit.access.core.service.PermissionAdminService;
 import kr.devslab.kit.access.core.service.RoleAdminService;
 import kr.devslab.kit.access.core.service.RolePermissionService;
 import kr.devslab.kit.admin.config.ConfigExportService;
+import kr.devslab.kit.admin.config.ConfigImportService;
 import kr.devslab.kit.admin.config.ConfigSyncController;
 import kr.devslab.kit.menu.core.service.MenuAdminService;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -36,5 +37,15 @@ public class ConfigSyncAutoConfiguration {
             MenuAdminService menus
     ) {
         return new ConfigExportService(permissions, roles, rolePermissions, menus);
+    }
+
+    @Bean
+    ConfigImportService configImportService(
+            PermissionAdminService permissions,
+            RoleAdminService roles,
+            RolePermissionService rolePermissions,
+            MenuAdminService menus
+    ) {
+        return new ConfigImportService(permissions, roles, rolePermissions, menus);
     }
 }
