@@ -16,7 +16,7 @@ devslab:
   kit:
     tenant:
       mode: single            # single | multi
-      resolver: fixed         # fixed | header | jwt | subdomain
+      resolver: fixed         # fixed | header | subdomain  (jwt: 예약 — 아래 참고)
       default-tenant-id: default
 ```
 
@@ -36,8 +36,14 @@ devslab:
 | --- | --- | --- |
 | `fixed` | 항상 `default-tenant-id` | (싱글 테넌트 기본) |
 | `header` | 요청 헤더(기본 `X-Tenant-Id`) | `X-Tenant-Id: acme` |
-| `jwt` | 인증된 JWT의 클레임 | 로그인 사용자의 테넌트 |
 | `subdomain` | 요청 호스트의 서브도메인 | `acme.app.com` → `acme` |
+| `jwt` | _예약 — 아직 미출시_ | (노트 참고) |
+
+!!! warning "`jwt`는 예약됨 (아직 미출시)"
+    `resolver: jwt`를 선택하면 부팅 시 즉시 실패합니다 — 예정된
+    `devslab-kit-oauth2-resource-server-starter`를 기다리는 중입니다. 로그인 JWT는 이미 `tenant`
+    클레임을 싣고 있으니, 그때까지는 **커스텀 `TenantResolver` 빈**으로 읽으세요
+    (아래 [커스텀 리졸버](#custom-resolver)).
 
 ```yaml
 devslab:
@@ -118,7 +124,7 @@ interface InvoiceRepository extends JpaRepository<Invoice, UUID> {
 
 이게 패턴의 전부 — `single`/`multi` 동일합니다.
 
-## 커스텀 리졸버
+## 커스텀 리졸버 { #custom-resolver }
 
 내장으로 안 되는 전략(DB 조회, header-or-path, API 키 → 테넌트 매핑)이 필요하면, 자신의
 `TenantResolver` 빈을 선언하면 kit 기본이 물러납니다(모든 kit 빈이 `@ConditionalOnMissingBean`):
