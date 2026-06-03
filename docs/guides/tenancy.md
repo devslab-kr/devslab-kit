@@ -17,7 +17,7 @@ devslab:
   kit:
     tenant:
       mode: single            # single | multi
-      resolver: fixed         # fixed | header | jwt | subdomain
+      resolver: fixed         # fixed | header | subdomain  (jwt: reserved — see below)
       default-tenant-id: default
 ```
 
@@ -37,8 +37,14 @@ In `multi` mode the **resolver** decides whose request this is:
 | --- | --- | --- |
 | `fixed` | always `default-tenant-id` | (the single-tenant default) |
 | `header` | a request header (default `X-Tenant-Id`) | `X-Tenant-Id: acme` |
-| `jwt` | a claim on the authenticated JWT | the signed-in user's tenant |
 | `subdomain` | the request host's subdomain | `acme.app.com` → `acme` |
+| `jwt` | _reserved — not yet shipped_ | (see note) |
+
+!!! warning "`jwt` is reserved (not yet shipped)"
+    Selecting `resolver: jwt` fails fast at startup — it awaits the planned
+    `devslab-kit-oauth2-resource-server-starter`. The login JWT already carries a
+    `tenant` claim, so until then resolve it from a **custom `TenantResolver` bean**
+    ([Custom resolver](#custom-resolver) below).
 
 ```yaml
 devslab:
