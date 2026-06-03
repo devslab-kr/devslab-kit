@@ -17,16 +17,28 @@ No prior knowledge of the kit is assumed. Every command and file is shown in ful
 ## Step 1 — Create a Spring Boot project
 
 Generate a minimal Spring Boot 4 project (e.g. at [start.spring.io](https://start.spring.io)
-choose Gradle + Java 21 + Spring Boot 4.x), or just create these two files in an
-empty folder `myapp/`.
+choose Gradle + Java 21 + Spring Boot 4.x), or create the files below by hand in an
+empty folder `myapp/`. By the end your project looks exactly like this — each file's full
+path is shown above its contents in every step:
 
-**`settings.gradle.kts`**
+```text
+myapp/
+├─ settings.gradle.kts
+├─ build.gradle.kts
+├─ compose.yaml
+└─ src/
+   └─ main/
+      ├─ java/com/example/myapp/MyappApplication.java
+      └─ resources/application.yml
+```
+
+**`myapp/settings.gradle.kts`**
 
 ```kotlin
 rootProject.name = "myapp"
 ```
 
-**`build.gradle.kts`**
+**`myapp/build.gradle.kts`**
 
 ```kotlin
 plugins {
@@ -68,7 +80,7 @@ dependencies {
 Add the Gradle wrapper if you don't have one: `gradle wrapper` (or copy `gradlew`
 from any Spring project).
 
-You also need a main class — **`src/main/java/com/example/myapp/MyappApplication.java`**:
+You also need a main class — **`myapp/src/main/java/com/example/myapp/MyappApplication.java`**:
 
 ```java
 package com.example.myapp;
@@ -88,7 +100,7 @@ public class MyappApplication {
 
 ## Step 2 — Start PostgreSQL with Docker
 
-The kit stores everything in PostgreSQL. Create **`compose.yaml`** in the project root:
+The kit stores everything in PostgreSQL. Create **`myapp/compose.yaml`**:
 
 ```yaml
 services:
@@ -109,7 +121,7 @@ for you** when you run the app — you don't need to `docker compose up` yoursel
 
 ## Step 3 — Configure the app
 
-Create **`src/main/resources/application.yml`**:
+Create **`myapp/src/main/resources/application.yml`**:
 
 ```yaml
 spring:
