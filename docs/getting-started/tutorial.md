@@ -157,7 +157,7 @@ devslab:
     In production: set a real `identity.jwt.secret`, and for the bootstrap either
     set a strong `admin-password` (with `must-change-password: true`) or leave it
     blank to have a random one generated and logged once. See
-    [Configuration](../reference/configuration.md#first-admin-bootstrap-devslabkitbootstrap).
+    [Configuration](../reference/configuration.md#bootstrap).
 
 ---
 

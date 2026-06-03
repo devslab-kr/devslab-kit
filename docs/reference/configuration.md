@@ -87,7 +87,7 @@ See the [Menus guide](../guides/menus.md).
 
 See the [Caching guide](../guides/cache.md) and [ADR 0002](../adr/0002-distributed-cache.md).
 
-## First-admin bootstrap — `devslab.kit.bootstrap.*`
+## First-admin bootstrap — `devslab.kit.bootstrap.*` { #bootstrap }
 
 Provisions the first admin on a fresh database (ADR 0001). **Off by default**;
 opt in explicitly.

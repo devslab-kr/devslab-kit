@@ -17,6 +17,7 @@ to move it. See [ADR 0003](../adr/0003-config-sync.md) for the rationale and des
 ## Enable it
 
 ```yaml
+# src/main/resources/application.yml
 devslab:
   kit:
     config-sync:
@@ -44,6 +45,34 @@ environment applies cleanly to another whose ids differ.
 | --- | --- |
 | `GET /admin/api/v1/config/export?tenantId={t}&includeUsers=false` | Returns the bundle as JSON. |
 | `POST /admin/api/v1/config/import?mode=merge&dryRun=true&includeUsers=false` | Applies a bundle; returns a per-section diff. |
+
+## A full round trip
+
+Move config from your local box to staging — copy-paste:
+
+```bash
+# 1. on LOCAL — export the definitional bundle to a file
+curl -G localhost:8080/admin/api/v1/config/export \
+  -H 'Authorization: Bearer <local-token>' \
+  --data-urlencode 'tenantId=default' \
+  --data-urlencode 'includeUsers=false' \
+  -o config-bundle.json
+
+# 2. commit it so the promotion is reviewable + versioned
+git add config-bundle.json && git commit -m "chore: rbac bundle"
+
+# 3. on STAGING — DRY-RUN first (writes nothing, returns the diff)
+curl -X POST 'https://staging.example.com/admin/api/v1/config/import?mode=merge&dryRun=true' \
+  -H 'Authorization: Bearer <staging-token>' \
+  -H 'Content-Type: application/json' \
+  --data-binary @config-bundle.json
+
+# 4. review the diff, then apply for real
+curl -X POST 'https://staging.example.com/admin/api/v1/config/import?mode=merge&dryRun=false' \
+  -H 'Authorization: Bearer <staging-token>' \
+  -H 'Content-Type: application/json' \
+  --data-binary @config-bundle.json
+```
 
 ## Modes
 
@@ -94,6 +123,6 @@ accounts into a fresh environment.
 
 ## Admin console
 
-The [admin console](https://github.com/devslab-kr/devslab-kit-admin-ui) has a **Config Sync**
-page that drives the whole flow: export (view / download / copy), import (paste or upload →
-dry-run diff → apply), the `merge`/`mirror` switch, and the user-sync toggle.
+The [admin console](admin-console.md#config-sync) has a **Config Sync** page that drives the
+whole flow: export (view / download / copy), import (paste or upload → dry-run diff → apply),
+the `merge`/`mirror` switch, and the user-sync toggle.
