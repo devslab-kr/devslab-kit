@@ -11,6 +11,15 @@ English: [CHANGELOG.md](CHANGELOG.md)
 
 ## [Unreleased]
 
+## [0.4.1] — 2026-06-03
+
+### Fixed
+- **감사 로그 검색이 안정적인 페이지 구조를 반환.** `GET /admin/api/v1/audit-logs` 가 raw
+  `PageImpl` 대신 Spring Data `PagedModel`(`{ content, page: { size, number, totalElements,
+  totalPages } }`)로 직렬화됩니다. "Serializing PageImpl instances as-is is not supported" 경고가
+  사라지고 JSON 계약이 안정화됩니다. kit 자체 엔드포인트에만 적용(전역 `@EnableSpringDataWebSupport`
+  없음)이라 소비자 앱의 자체 페이징엔 영향이 없습니다.
+
 ## [0.4.0] — 2026-06-03
 
 ### Added

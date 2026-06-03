@@ -121,7 +121,7 @@
     === "Gradle (Kotlin DSL)"
 
         ```kotlin
-        implementation("kr.devslab:devslab-kit-spring-boot-starter:0.4.0") {
+        implementation("kr.devslab:devslab-kit-spring-boot-starter:0.4.1") {
             exclude(group = "org.springdoc")
         }
         ```
@@ -132,7 +132,7 @@
         <dependency>
           <groupId>kr.devslab</groupId>
           <artifactId>devslab-kit-spring-boot-starter</artifactId>
-          <version>0.4.0</version>
+          <version>0.4.1</version>
           <exclusions>
             <exclusion>
               <groupId>org.springdoc</groupId>
