@@ -1,9 +1,13 @@
 # Caching
 
-`devslab-kit` ships a **pluggable cache** behind Spring's `CacheManager`. You pick
-the backend with one property; the kit wires the rest — including JSON
-serialization for Redis, so you never implement `Serializable` or configure a
-serializer. (Background: [ADR 0002](../adr/0002-distributed-cache.md).)
+A **cache** stores the result of an expensive call so the next identical call returns
+instantly instead of recomputing. `devslab-kit` ships a **pluggable cache** behind
+Spring's `CacheManager`: you pick the backend with **one property**, and the kit wires
+the rest — including JSON serialization for Redis, so you never implement
+`Serializable` or configure a serializer. (Background: [ADR 0002](../adr/0002-distributed-cache.md).)
+
+New here? Do the [Tutorial](../getting-started/tutorial.md) first. This guide assumes
+you have a running app.
 
 ## Backends
 
@@ -13,33 +17,62 @@ serializer. (Background: [ADR 0002](../adr/0002-distributed-cache.md).)
 | `redis` | `RedisCacheManager` | Multiple replicas — entries are shared and correct across instances. |
 | `none` | `NoOpCacheManager` | Disable caching entirely (every read recomputes). |
 
+The rule of thumb: **`in-memory` until you run more than one instance**, then `redis`
+so a value cached by one replica is seen by the others.
+
+## Configure
+
 ```yaml
+# src/main/resources/application.yml
 devslab:
   kit:
     cache:
       type: redis
       ttl: PT10M
       key-prefix: "myapp:"
+
+# the redis backend also needs Spring pointed at Redis:
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
 ```
 
-With `redis`, also point Spring at Redis (`spring.data.redis.*`).
+With `type: in-memory` (the default) you need none of the `spring.data.redis` block.
 
-## Using it
+## Use it
 
 It's a standard Spring cache, so `@Cacheable` / `@CacheEvict` and an injected
 `CacheManager` all work:
 
 ```java
+// src/main/java/com/example/myapp/PriceService.java
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+
 @Service
 class PriceService {
 
-    @Cacheable("prices")
+    @Cacheable("prices")                 // computed only on a miss, then cached
     public Price lookup(String sku) {
-        // computed only on a miss; cached per the configured backend + TTL
-        return expensiveLookup(sku);
+        return expensiveLookup(sku);     // e.g. a slow DB or upstream call
+    }
+
+    @CacheEvict(value = "prices", key = "#sku")   // drop one entry on change
+    public void priceChanged(String sku) {
+        // next lookup(sku) recomputes and re-caches
     }
 }
 ```
+
+The first `lookup("ABC")` runs the method; the second returns the cached `Price`
+without entering the method body, until the TTL expires or `priceChanged("ABC")`
+evicts it.
+
+!!! tip "Confirm it's actually caching"
+    Log inside `expensiveLookup` — it should print on the **first** call only. With
+    `redis`, you can also watch the keys appear: `redis-cli KEYS 'myapp:prices*'`.
 
 The kit's own per-user [menu](menus.md) tree rides this same cache manager.
 
