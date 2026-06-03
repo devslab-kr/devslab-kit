@@ -3,9 +3,11 @@ package kr.devslab.kit.autoconfigure;
 import kr.devslab.kit.access.core.service.PermissionAdminService;
 import kr.devslab.kit.access.core.service.RoleAdminService;
 import kr.devslab.kit.access.core.service.RolePermissionService;
+import kr.devslab.kit.access.core.service.UserRoleService;
 import kr.devslab.kit.admin.config.ConfigExportService;
 import kr.devslab.kit.admin.config.ConfigImportService;
 import kr.devslab.kit.admin.config.ConfigSyncController;
+import kr.devslab.kit.identity.core.service.PlatformUserAccountAdminService;
 import kr.devslab.kit.menu.core.service.MenuAdminService;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -35,9 +37,11 @@ public class ConfigSyncAutoConfiguration {
             PermissionAdminService permissions,
             RoleAdminService roles,
             RolePermissionService rolePermissions,
-            MenuAdminService menus
+            MenuAdminService menus,
+            PlatformUserAccountAdminService userAccounts,
+            UserRoleService userRoles
     ) {
-        return new ConfigExportService(permissions, roles, rolePermissions, menus);
+        return new ConfigExportService(permissions, roles, rolePermissions, menus, userAccounts, userRoles);
     }
 
     @Bean
@@ -45,9 +49,11 @@ public class ConfigSyncAutoConfiguration {
             PermissionAdminService permissions,
             RoleAdminService roles,
             RolePermissionService rolePermissions,
-            MenuAdminService menus
+            MenuAdminService menus,
+            PlatformUserAccountAdminService userAccounts,
+            UserRoleService userRoles
     ) {
-        return new ConfigImportService(permissions, roles, rolePermissions, menus);
+        return new ConfigImportService(permissions, roles, rolePermissions, menus, userAccounts, userRoles);
     }
 
     /** Refuses to start if config sync is enabled under a production profile (ADR 0003 §5). */

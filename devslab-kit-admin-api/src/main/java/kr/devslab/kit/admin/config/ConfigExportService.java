@@ -11,10 +11,14 @@ import kr.devslab.kit.access.core.entity.PlatformPermissionEntity;
 import kr.devslab.kit.access.core.service.PermissionAdminService;
 import kr.devslab.kit.access.core.service.RoleAdminService;
 import kr.devslab.kit.access.core.service.RolePermissionService;
+import kr.devslab.kit.access.core.service.UserRoleService;
 import kr.devslab.kit.admin.config.ConfigBundle.MenuDef;
 import kr.devslab.kit.admin.config.ConfigBundle.PermissionDef;
 import kr.devslab.kit.admin.config.ConfigBundle.RoleDef;
+import kr.devslab.kit.admin.config.ConfigBundle.UserDef;
 import kr.devslab.kit.core.id.TenantId;
+import kr.devslab.kit.identity.UserAccountView;
+import kr.devslab.kit.identity.core.service.PlatformUserAccountAdminService;
 import kr.devslab.kit.menu.core.entity.PlatformMenuEntity;
 import kr.devslab.kit.menu.core.service.MenuAdminService;
 
@@ -22,6 +26,10 @@ import kr.devslab.kit.menu.core.service.MenuAdminService;
  * Builds a {@link ConfigBundle} from the live database for a tenant, translating every
  * DB id into the corresponding natural code so the result is portable across environments
  * (ADR 0003). Read-only.
+ *
+ * <p>Definitional config (permissions, roles, menus) is always exported. Users are
+ * exported only when {@code includeUsers} is set, and even then carry no password —
+ * just login id, email, status and assigned role codes.
  */
 public class ConfigExportService {
 
@@ -29,20 +37,31 @@ public class ConfigExportService {
     private final RoleAdminService roles;
     private final RolePermissionService rolePermissions;
     private final MenuAdminService menus;
+    private final PlatformUserAccountAdminService userAccounts;
+    private final UserRoleService userRoles;
 
     public ConfigExportService(
             PermissionAdminService permissions,
             RoleAdminService roles,
             RolePermissionService rolePermissions,
-            MenuAdminService menus
+            MenuAdminService menus,
+            PlatformUserAccountAdminService userAccounts,
+            UserRoleService userRoles
     ) {
         this.permissions = permissions;
         this.roles = roles;
         this.rolePermissions = rolePermissions;
         this.menus = menus;
+        this.userAccounts = userAccounts;
+        this.userRoles = userRoles;
     }
 
+    /** Definitional-only export (no users). */
     public ConfigBundle export(TenantId tenantId) {
+        return export(tenantId, false);
+    }
+
+    public ConfigBundle export(TenantId tenantId, boolean includeUsers) {
         List<PlatformPermissionEntity> permEntities = permissions.listAll();
         Map<UUID, String> permIdToCode = permEntities.stream()
                 .collect(Collectors.toMap(PlatformPermissionEntity::getId, PlatformPermissionEntity::getCode));
@@ -74,7 +93,10 @@ public class ConfigExportService {
                         menu.getSortOrder()))
                 .toList();
 
-        return new ConfigBundle(ConfigBundle.CURRENT_VERSION, tenantId.value(), permissionDefs, roleDefs, menuDefs);
+        List<UserDef> userDefs = includeUsers ? exportUsers(tenantId) : List.of();
+
+        return new ConfigBundle(
+                ConfigBundle.CURRENT_VERSION, tenantId.value(), permissionDefs, roleDefs, menuDefs, userDefs);
     }
 
     private List<String> permissionCodesFor(Role role, Map<UUID, String> permIdToCode) {
@@ -82,6 +104,23 @@ public class ConfigExportService {
                 .map(id -> permIdToCode.get(id.value()))
                 .filter(Objects::nonNull)
                 .sorted()
+                .toList();
+    }
+
+    private List<UserDef> exportUsers(TenantId tenantId) {
+        Map<UUID, String> roleCodeById = roles.listByTenant(tenantId).stream()
+                .collect(Collectors.toMap(role -> role.id().value(), Role::code));
+        return userAccounts.listByTenant(tenantId).stream()
+                .sorted(Comparator.comparing(UserAccountView::loginId))
+                .map(user -> new UserDef(
+                        user.loginId(),
+                        user.email(),
+                        user.status().name(),
+                        userRoles.findRoleIdsForUser(user.id()).stream()
+                                .map(roleId -> roleCodeById.get(roleId.value()))
+                                .filter(Objects::nonNull)
+                                .sorted()
+                                .toList()))
                 .toList();
     }
 }

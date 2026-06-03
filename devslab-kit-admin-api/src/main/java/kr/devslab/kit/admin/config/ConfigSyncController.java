@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
  * {@code ConfigSyncAutoConfiguration} — the whole surface is off unless
  * {@code devslab.kit.config-sync.enabled=true}.
  *
- * <p>Prototype scope: {@code export} + {@code import} ({@code merge} mode, dry-run by
- * default). {@code mirror} mode, optional user sync, and the dev-profile / prod fail-fast
- * gating follow per the ADR's PR breakdown.
+ * <p>{@code export} + {@code import} support {@code merge} / {@code mirror} modes (dry-run by
+ * default) and optional user sync ({@code includeUsers}). The whole surface is refused under
+ * a production profile (ADR 0003 §5).
  */
 @RestController
 @RequestMapping(AdminApiPaths.BASE + "/config")
@@ -30,22 +30,32 @@ public class ConfigSyncController {
         this.importService = importService;
     }
 
-    /** Export a tenant's definitional config as a portable, code-keyed bundle. */
+    /**
+     * Export a tenant's config as a portable, code-keyed bundle. Definitional config
+     * (permissions, roles, menus) is always included; users only when
+     * {@code includeUsers=true} (and even then with no password).
+     */
     @GetMapping("/export")
-    public ConfigBundle export(@RequestParam String tenantId) {
-        return exportService.export(TenantId.of(tenantId));
+    public ConfigBundle export(
+            @RequestParam String tenantId,
+            @RequestParam(defaultValue = "false") boolean includeUsers
+    ) {
+        return exportService.export(TenantId.of(tenantId), includeUsers);
     }
 
     /**
      * Apply a bundle by natural code. {@code dryRun=true} (the default) returns the diff
-     * without writing. {@code mode=merge} (the default) is additive and never deletes.
+     * without writing. {@code mode=merge} (the default) is additive and never deletes;
+     * {@code mode=mirror} also deletes entities absent from the bundle. {@code includeUsers=true}
+     * additionally creates missing users from the bundle (existing users are never overwritten).
      */
     @PostMapping("/import")
     public ImportResult importConfig(
             @RequestBody ConfigBundle bundle,
             @RequestParam(defaultValue = "merge") String mode,
-            @RequestParam(defaultValue = "true") boolean dryRun
+            @RequestParam(defaultValue = "true") boolean dryRun,
+            @RequestParam(defaultValue = "false") boolean includeUsers
     ) {
-        return importService.apply(bundle, mode, dryRun);
+        return importService.apply(bundle, mode, dryRun, includeUsers);
     }
 }
