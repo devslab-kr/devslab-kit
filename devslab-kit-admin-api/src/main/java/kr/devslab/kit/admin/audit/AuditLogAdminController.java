@@ -7,10 +7,10 @@ import java.util.UUID;
 import kr.devslab.kit.admin.AdminApiPaths;
 import kr.devslab.kit.audit.core.service.AuditLogQueryService;
 import kr.devslab.kit.audit.core.service.AuditLogQueryService.AuditLogSearchCriteria;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +38,7 @@ public class AuditLogAdminController {
      * by {@code occurredAt DESC}. {@code page} is 0-based.
      */
     @GetMapping
-    public Page<AuditLogResponse> search(
+    public PagedModel<AuditLogResponse> search(
             @RequestParam(required = false) String tenantId,
             @RequestParam(required = false) String actorLogin,
             @RequestParam(required = false) String action,
@@ -55,7 +55,8 @@ public class AuditLogAdminController {
                 Math.max(0, page),
                 Math.clamp(size == 0 ? DEFAULT_PAGE_SIZE : size, 1, MAX_PAGE_SIZE),
                 Sort.by(Sort.Direction.DESC, "occurredAt"));
-        return service.search(criteria, pageable).map(entity -> AuditLogResponse.from(entity, objectMapper));
+        return new PagedModel<>(
+                service.search(criteria, pageable).map(entity -> AuditLogResponse.from(entity, objectMapper)));
     }
 
     /**

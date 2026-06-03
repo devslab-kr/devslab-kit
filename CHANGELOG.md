@@ -11,6 +11,15 @@ The library major aligns with the Spring Boot major: `4.x.y` targets Spring Boot
 
 ## [Unreleased]
 
+## [0.4.1] — 2026-06-03
+
+### Fixed
+- **Audit log search returns a stable paged structure.** `GET /admin/api/v1/audit-logs` now
+  serializes via Spring Data's `PagedModel` (`{ content, page: { size, number, totalElements,
+  totalPages } }`) instead of a raw `PageImpl`, removing the "Serializing PageImpl instances
+  as-is is not supported" warning and giving a stable JSON contract. Contained to the kit's own
+  endpoint — no global `@EnableSpringDataWebSupport`, so a consumer's own pagination is unaffected.
+
 ## [0.4.0] — 2026-06-03
 
 ### Added
