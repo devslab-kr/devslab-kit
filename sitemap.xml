@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <url>
+        <loc>https://devslab-kit.devslab.kr/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/"/>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/changelog/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/changelog/"/>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/changelog/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/roadmap/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/roadmap/"/>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/roadmap/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/adr/0001-bootstrap-admin/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/adr/0001-bootstrap-admin/"/>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/adr/0001-bootstrap-admin/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/adr/0002-distributed-cache/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/adr/0002-distributed-cache/"/>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/adr/0002-distributed-cache/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/adr/0003-config-sync/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/adr/0003-config-sync/"/>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/adr/0003-config-sync/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/getting-started/installation/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/getting-started/installation/"/>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/getting-started/installation/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/getting-started/quick-start/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/getting-started/quick-start/"/>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/getting-started/quick-start/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/getting-started/tutorial/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/getting-started/tutorial/"/>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/getting-started/tutorial/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/guides/access/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/guides/access/"/>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/guides/access/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/guides/admin-console/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/guides/admin-console/"/>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/guides/admin-console/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/guides/audit/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/guides/audit/"/>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/guides/audit/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/guides/bootstrap/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/guides/bootstrap/"/>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/guides/bootstrap/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/guides/cache/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/guides/cache/"/>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/guides/cache/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/guides/config-sync/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/guides/config-sync/"/>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/guides/config-sync/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/guides/menus/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/guides/menus/"/>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/guides/menus/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/guides/tenancy/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/guides/tenancy/"/>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/guides/tenancy/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/reference/admin-api/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/reference/admin-api/"/>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/reference/admin-api/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/reference/configuration/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/reference/configuration/"/>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/reference/configuration/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/ko/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/ko/changelog/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/changelog/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/changelog/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/ko/roadmap/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/roadmap/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/roadmap/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/ko/adr/0001-bootstrap-admin/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/adr/0001-bootstrap-admin/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/adr/0001-bootstrap-admin/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/ko/adr/0002-distributed-cache/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/adr/0002-distributed-cache/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/adr/0002-distributed-cache/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/ko/adr/0003-config-sync/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/adr/0003-config-sync/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/adr/0003-config-sync/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/ko/getting-started/installation/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/getting-started/installation/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/getting-started/installation/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/ko/getting-started/quick-start/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/getting-started/quick-start/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/getting-started/quick-start/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/ko/getting-started/tutorial/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/getting-started/tutorial/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/getting-started/tutorial/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/ko/guides/access/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/guides/access/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/guides/access/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/ko/guides/admin-console/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/guides/admin-console/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/guides/admin-console/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/ko/guides/audit/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/guides/audit/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/guides/audit/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/ko/guides/bootstrap/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/guides/bootstrap/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/guides/bootstrap/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/ko/guides/cache/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/guides/cache/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/guides/cache/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/ko/guides/config-sync/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/guides/config-sync/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/guides/config-sync/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/ko/guides/menus/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/guides/menus/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/guides/menus/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/ko/guides/tenancy/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/guides/tenancy/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/guides/tenancy/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/ko/reference/admin-api/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/reference/admin-api/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/reference/admin-api/"/>
+    </url>
+    <url>
+        <loc>https://devslab-kit.devslab.kr/ko/reference/configuration/</loc>
+        <lastmod>2026-06-03</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="ko" href="https://devslab-kit.devslab.kr/ko/reference/configuration/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://devslab-kit.devslab.kr/reference/configuration/"/>
+    </url>
+</urlset>
