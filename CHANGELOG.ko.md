@@ -32,6 +32,10 @@ English: [CHANGELOG.md](CHANGELOG.md)
   추가형(additive)입니다 — 매 부팅 시 없는 것을 만들고 나열된 grant를 추가하되, 회수·삭제는
   하지 않습니다. 역할이 참조하는 권한은 자동 생성됩니다. 권한은 전역, 역할은
   `bootstrap.tenant-id`에 생성됩니다. [부트스트랩 가이드](guides/bootstrap.md#seed) 참고.
+- **JWT 테넌트 리졸버.** `devslab.kit.tenant.resolver: jwt`가 이제 부팅 시 실패하는 대신, kit이
+  발급한 bearer 토큰의 `tenant` 클레임에서 활성 테넌트를 resolve합니다(토큰이 없으면
+  `default-tenant-id`로 폴백). kit 자체 HS256 토큰을 읽으며, 외부 OAuth2 / OIDC 토큰 검증은 별도
+  과제입니다. [멀티테넌시 가이드](guides/tenancy.md) 참고.
 
 ## [0.4.2] — 2026-06-03
 

@@ -30,9 +30,8 @@
 - `fixed` — 항상 `default-tenant-id` 반환. `single` 모드의 자연스러운 선택.
 - `header` — 요청 헤더(`header` 속성, 기본 `X-Tenant-Id`)에서 테넌트 id를 읽음.
 - `subdomain` — 요청 호스트의 서브도메인에서 유도(`acme.example.com` → `acme`).
-- `jwt` — _예약, 아직 미출시_: 선택하면 부팅 시 즉시 실패합니다
-  (`devslab-kit-oauth2-resource-server-starter` 대기). 로그인 JWT는 이미 `tenant` 클레임을
-  실으니, 그때까지는 커스텀 `TenantResolver` 빈으로 읽으세요.
+- `jwt` — kit이 발급한 bearer 토큰의 `tenant` 클레임을 읽음(토큰이 없으면 `default-tenant-id`로
+  폴백). 외부 OAuth2/OIDC 토큰 검증은 범위 밖 — 그건 커스텀 리졸버로.
 
 [멀티테넌시 가이드](../guides/tenancy.md) 참고.
 

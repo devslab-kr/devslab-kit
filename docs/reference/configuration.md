@@ -33,9 +33,9 @@ are viewable at runtime via `GET /admin/api/v1/settings` (secrets masked).
   default `X-Tenant-Id`).
 - `subdomain` — derives it from the request host's subdomain (`acme.example.com`
   → `acme`).
-- `jwt` — _reserved, not yet shipped_: selecting it fails fast at startup (it awaits
-  the `devslab-kit-oauth2-resource-server-starter`). The login JWT already carries a
-  `tenant` claim, so resolve it from a custom `TenantResolver` bean meanwhile.
+- `jwt` — reads the `tenant` claim from the kit-issued bearer token, falling back to
+  `default-tenant-id` when there's no token. Validating external OAuth2/OIDC tokens is
+  out of scope — supply a custom resolver for that.
 
 See the [Multi-tenancy guide](../guides/tenancy.md).
 
