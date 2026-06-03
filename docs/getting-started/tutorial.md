@@ -161,11 +161,26 @@ devslab:
 
 ---
 
-## Step 4 — Run it
+## Step 4 — Run the app
 
-```bash
-./gradlew bootRun
-```
+Run it the way you normally develop:
+
+=== "IntelliJ IDEA (typical)"
+
+    Open the `myapp` folder as a Gradle project, let the import finish, then **Run**
+    `MyappApplication` (the green ▶ by `main`).
+
+    !!! tip "If Run fails right after adding/bumping the kit"
+        A `ClassNotFoundException: kr.devslab.kit.*` means IntelliJ's project model is
+        stale — **reload Gradle** (Gradle tool window → the ↻ *Reload* button) so it
+        picks up the new jars, then Run again. (Gradle `bootRun` always works because it
+        resolves fresh.)
+
+=== "Terminal"
+
+    ```bash
+    ./gradlew bootRun
+    ```
 
 On first start the kit:
 
@@ -177,66 +192,82 @@ On first start the kit:
 4. serves the **admin REST API** at `/admin/api/v1/**` and **Swagger UI** at
    `/swagger-ui.html`.
 
-Leave it running and open a second terminal for the next steps.
+The app is now listening on `http://localhost:8080`.
 
 ---
 
-## Step 5 — Log in
+## Step 5 — Open the admin console
 
-Every admin call needs a token. Log in as the bootstrap admin:
-
-```bash
-curl -s localhost:8080/admin/api/v1/auth/login \
-  -H 'Content-Type: application/json' \
-  -d '{"tenantId":"default","loginId":"admin","rawPassword":"admin"}'
-```
-
-The response contains a JWT — copy it into a shell variable so the next commands can reuse it:
+Day to day you manage the platform from the **web console**, not curl. Clone and run it
+(in its own folder, alongside your app):
 
 ```bash
-TOKEN=$(curl -s localhost:8080/admin/api/v1/auth/login \
-  -H 'Content-Type: application/json' \
-  -d '{"tenantId":"default","loginId":"admin","rawPassword":"admin"}' | sed -E 's/.*"token":"([^"]+)".*/\1/')
-echo "$TOKEN"
+git clone https://github.com/devslab-kr/devslab-kit-admin-ui.git
+cd devslab-kit-admin-ui
+npm install
+npm run dev
 ```
 
-!!! tip "Prefer a UI?"
-    Point the [admin console](https://github.com/devslab-kr/devslab-kit-admin-ui) at
-    `http://localhost:8080` and do all of Step 6 by clicking instead of curl.
+Open **http://localhost:5173** — the dev server proxies `/admin/api` to your app on
+`:8080`. Sign in with the bootstrap admin: tenant `default`, login `admin`, password
+`admin`. From here everything in the next steps is a few clicks — the
+[Admin Console guide](../guides/admin-console.md) walks through every screen.
+
+!!! note "Prefer the API / scripting it?"
+    Everything also works over REST. Log in to get a JWT and reuse it as `$TOKEN`:
+    ```bash
+    TOKEN=$(curl -s localhost:8080/admin/api/v1/auth/login \
+      -H 'Content-Type: application/json' \
+      -d '{"tenantId":"default","loginId":"admin","rawPassword":"admin"}' | sed -E 's/.*"token":"([^"]+)".*/\1/')
+    echo "$TOKEN"
+    ```
 
 ---
 
 ## Step 6 — Create a permission, a role, and a user
 
-A **permission** is a string code (`resource.action`). A **role** is a bundle of
-permissions. A **user** holds roles. Let's give a new user the ability to read books.
+A **permission** is a string code (`resource.action`); a **role** bundles permissions; a
+**user** holds roles. Let's give a new user the ability to read books — do it whichever way
+suits you:
 
-```bash
-# 1) create a permission  ->  note its "id" in the response
-curl -s -X POST localhost:8080/admin/api/v1/permissions \
-  -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
-  -d '{"code":"book.read","description":"Read books"}'
+=== "In the admin console (clicks)"
 
-# 2) create a role  ->  note its "id"
-curl -s -X POST localhost:8080/admin/api/v1/roles \
-  -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
-  -d '{"tenantId":"default","code":"LIBRARIAN","name":"Librarian"}'
+    1. **Permissions → Create** — resource `book`, action `read`; the code previews as `book.read`. **Create**.
+    2. **Roles → Create** — code `LIBRARIAN`, name `Librarian`. Then on its row click **Manage permissions** (key icon) and move `book.read` to *Assigned* → **Save**.
+    3. **Users → Create** — login `alice`, a password. Then on her row click **Manage roles** (id-card icon) and add `LIBRARIAN` → **Save**.
 
-# 3) grant the permission to the role  (use the ids from steps 1 & 2)
-curl -s -X POST "localhost:8080/admin/api/v1/roles/<ROLE_ID>/permissions/<PERMISSION_ID>" \
-  -H "Authorization: Bearer $TOKEN"
+    Every screen/button is detailed in the [Admin Console guide](../guides/admin-console.md).
 
-# 4) create a user
-curl -s -X POST localhost:8080/admin/api/v1/users \
-  -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
-  -d '{"tenantId":"default","loginId":"alice","rawPassword":"alice-password","email":"alice@example.com"}'
+=== "Via the API (curl)"
 
-# 5) assign the role to the user  (ids from steps 2 & 4)
-curl -s -X POST "localhost:8080/admin/api/v1/roles/<ROLE_ID>/users/<USER_ID>?tenantId=default" \
-  -H "Authorization: Bearer $TOKEN"
-```
+    Uses the `$TOKEN` from Step 5.
 
-Now `alice` can log in (Step 5 with her credentials) and holds `book.read`.
+    ```bash
+    # 1) create a permission  ->  note its "id" in the response
+    curl -s -X POST localhost:8080/admin/api/v1/permissions \
+      -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+      -d '{"code":"book.read","description":"Read books"}'
+
+    # 2) create a role  ->  note its "id"
+    curl -s -X POST localhost:8080/admin/api/v1/roles \
+      -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+      -d '{"tenantId":"default","code":"LIBRARIAN","name":"Librarian"}'
+
+    # 3) grant the permission to the role  (use the ids from steps 1 & 2)
+    curl -s -X POST "localhost:8080/admin/api/v1/roles/<ROLE_ID>/permissions/<PERMISSION_ID>" \
+      -H "Authorization: Bearer $TOKEN"
+
+    # 4) create a user
+    curl -s -X POST localhost:8080/admin/api/v1/users \
+      -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+      -d '{"tenantId":"default","loginId":"alice","rawPassword":"alice-password","email":"alice@example.com"}'
+
+    # 5) assign the role to the user  (ids from steps 2 & 4)
+    curl -s -X POST "localhost:8080/admin/api/v1/roles/<ROLE_ID>/users/<USER_ID>?tenantId=default" \
+      -H "Authorization: Bearer $TOKEN"
+    ```
+
+Now `alice` can sign in (console or API) and holds `book.read`.
 
 ---
 

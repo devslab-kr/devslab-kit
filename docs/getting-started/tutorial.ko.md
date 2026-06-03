@@ -157,11 +157,24 @@ devslab:
 
 ---
 
-## 4단계 — 실행
+## 4단계 — 앱 실행
 
-```bash
-./gradlew bootRun
-```
+평소 개발하던 방식으로 실행하세요:
+
+=== "IntelliJ IDEA (일반적)"
+
+    `myapp` 폴더를 Gradle 프로젝트로 열고 import가 끝나면 `MyappApplication` 의 **Run**(▶) 실행.
+
+    !!! tip "kit 추가/버전 변경 직후 Run이 실패하면"
+        `ClassNotFoundException: kr.devslab.kit.*` 는 IntelliJ 프로젝트 모델이 옛것이라는 뜻 —
+        **Gradle 리로드**(Gradle 툴 윈도우 → ↻ *Reload*)로 새 jar를 잡게 한 뒤 다시 Run.
+        (Gradle `bootRun` 은 매번 새로 해소해서 항상 됨.)
+
+=== "터미널"
+
+    ```bash
+    ./gradlew bootRun
+    ```
 
 첫 실행 시 kit은:
 
@@ -171,66 +184,80 @@ devslab:
 3. 테넌트, 모든 `admin.*` 권한을 가진 `PLATFORM_ADMIN` 역할, `admin` 사용자를 **부트스트랩**,
 4. `/admin/api/v1/**` 에 **관리자 REST API**, `/swagger-ui.html` 에 **Swagger UI** 제공.
 
-이걸 띄워둔 채로 두 번째 터미널을 열어 다음 단계를 진행하세요.
+이제 앱이 `http://localhost:8080` 에서 동작합니다.
 
 ---
 
-## 5단계 — 로그인
+## 5단계 — admin 콘솔 띄우기
 
-모든 관리자 호출엔 토큰이 필요합니다. 부트스트랩 관리자로 로그인:
-
-```bash
-curl -s localhost:8080/admin/api/v1/auth/login \
-  -H 'Content-Type: application/json' \
-  -d '{"tenantId":"default","loginId":"admin","rawPassword":"admin"}'
-```
-
-응답에 JWT가 들어있습니다. 다음 명령에서 재사용하도록 셸 변수에 담으세요:
+실무에서는 플랫폼을 curl이 아니라 **웹 콘솔**로 관리합니다. (앱과 별도 폴더에) 클론해서 실행:
 
 ```bash
-TOKEN=$(curl -s localhost:8080/admin/api/v1/auth/login \
-  -H 'Content-Type: application/json' \
-  -d '{"tenantId":"default","loginId":"admin","rawPassword":"admin"}' | sed -E 's/.*"token":"([^"]+)".*/\1/')
-echo "$TOKEN"
+git clone https://github.com/devslab-kr/devslab-kit-admin-ui.git
+cd devslab-kit-admin-ui
+npm install
+npm run dev
 ```
 
-!!! tip "UI가 편하시면"
-    [admin 콘솔](https://github.com/devslab-kr/devslab-kit-admin-ui)을 `http://localhost:8080`
-    에 연결하면 6단계를 curl 대신 클릭으로 할 수 있습니다.
+**http://localhost:5173** 을 엽니다 — dev 서버가 `/admin/api` 를 `:8080` 의 앱으로 프록시합니다.
+부트스트랩 관리자로 로그인: 테넌트 `default`, 로그인 `admin`, 비밀번호 `admin`. 이제 다음
+단계들은 몇 번의 클릭으로 끝납니다 — [Admin 콘솔 가이드](../guides/admin-console.md)가 모든
+화면을 안내합니다.
+
+!!! note "API / 스크립트가 편하면"
+    전부 REST로도 됩니다. 로그인해 JWT를 받아 `$TOKEN` 으로 재사용:
+    ```bash
+    TOKEN=$(curl -s localhost:8080/admin/api/v1/auth/login \
+      -H 'Content-Type: application/json' \
+      -d '{"tenantId":"default","loginId":"admin","rawPassword":"admin"}' | sed -E 's/.*"token":"([^"]+)".*/\1/')
+    echo "$TOKEN"
+    ```
 
 ---
 
 ## 6단계 — 권한·역할·사용자 만들기
 
 **권한**은 문자열 코드(`resource.action`), **역할**은 권한 묶음, **사용자**는 역할을 가집니다.
-새 사용자에게 "책 읽기" 권한을 줘봅시다.
+새 사용자에게 "책 읽기" 권한을 줘봅시다 — 편한 방식으로:
 
-```bash
-# 1) 권한 생성  ->  응답의 "id" 기록
-curl -s -X POST localhost:8080/admin/api/v1/permissions \
-  -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
-  -d '{"code":"book.read","description":"책 읽기"}'
+=== "admin 콘솔에서 (클릭)"
 
-# 2) 역할 생성  ->  "id" 기록
-curl -s -X POST localhost:8080/admin/api/v1/roles \
-  -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
-  -d '{"tenantId":"default","code":"LIBRARIAN","name":"사서"}'
+    1. **Permissions → Create** — resource `book`, action `read`; 코드가 `book.read` 로 미리보기. **Create**.
+    2. **Roles → Create** — code `LIBRARIAN`, 이름 `사서`. 그 행의 **권한 관리**(열쇠 아이콘) → `book.read` 를 *할당* 으로 옮기고 **저장**.
+    3. **Users → Create** — 로그인 `alice`, 비밀번호. 그 행의 **역할 관리**(신분증 아이콘) → `LIBRARIAN` 추가 → **저장**.
 
-# 3) 역할에 권한 부여  (1·2의 id 사용)
-curl -s -X POST "localhost:8080/admin/api/v1/roles/<ROLE_ID>/permissions/<PERMISSION_ID>" \
-  -H "Authorization: Bearer $TOKEN"
+    각 화면·버튼은 [Admin 콘솔 가이드](../guides/admin-console.md)에 자세히 있습니다.
 
-# 4) 사용자 생성
-curl -s -X POST localhost:8080/admin/api/v1/users \
-  -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
-  -d '{"tenantId":"default","loginId":"alice","rawPassword":"alice-password","email":"alice@example.com"}'
+=== "API로 (curl)"
 
-# 5) 사용자에게 역할 할당  (2·4의 id 사용)
-curl -s -X POST "localhost:8080/admin/api/v1/roles/<ROLE_ID>/users/<USER_ID>?tenantId=default" \
-  -H "Authorization: Bearer $TOKEN"
-```
+    5단계의 `$TOKEN` 사용.
 
-이제 `alice`로 로그인(5단계, alice 자격증명)하면 `book.read` 권한을 가집니다.
+    ```bash
+    # 1) 권한 생성  ->  응답의 "id" 기록
+    curl -s -X POST localhost:8080/admin/api/v1/permissions \
+      -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+      -d '{"code":"book.read","description":"책 읽기"}'
+
+    # 2) 역할 생성  ->  "id" 기록
+    curl -s -X POST localhost:8080/admin/api/v1/roles \
+      -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+      -d '{"tenantId":"default","code":"LIBRARIAN","name":"사서"}'
+
+    # 3) 역할에 권한 부여  (1·2의 id 사용)
+    curl -s -X POST "localhost:8080/admin/api/v1/roles/<ROLE_ID>/permissions/<PERMISSION_ID>" \
+      -H "Authorization: Bearer $TOKEN"
+
+    # 4) 사용자 생성
+    curl -s -X POST localhost:8080/admin/api/v1/users \
+      -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+      -d '{"tenantId":"default","loginId":"alice","rawPassword":"alice-password","email":"alice@example.com"}'
+
+    # 5) 사용자에게 역할 할당  (2·4의 id 사용)
+    curl -s -X POST "localhost:8080/admin/api/v1/roles/<ROLE_ID>/users/<USER_ID>?tenantId=default" \
+      -H "Authorization: Bearer $TOKEN"
+    ```
+
+이제 `alice`로 로그인(콘솔 또는 API)하면 `book.read` 권한을 가집니다.
 
 ---
 
