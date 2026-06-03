@@ -1,11 +1,11 @@
 # ADR 0003 — 환경 간 플랫폼 설정 동기화 (라이브 push가 아니라 export/import)
 
-- **상태:** 제안됨(Proposed)
+- **상태:** 채택됨(Accepted)
 - **날짜:** 2026-06-03
-- **구현(제안):** `devslab-kit-admin-api`의 설정 엔드포인트(`config/export`,
+- **구현:** `devslab-kit-admin-api`의 설정 엔드포인트(`config/export`,
   `config/import`), `-core`의 export/import 서비스, `devslab-kit-autoconfigure`의 게이팅
   (`devslab.kit.config-sync.*`), 그리고 `devslab-kit-admin-ui`의 "Config Sync" 페이지.
-  `0.4.0` 목표. 아래 PR 분해 참고.
+  `0.4.0` 목표. #53, #54, #55 (kit) 와 devslab-kit-admin-ui #20 으로 머지됨. 아래 PR 분해 참고.
 
 ## 배경 (Context)
 
@@ -124,6 +124,10 @@ UUID는 환경마다 독립적으로 부여되며 경계를 넘지 않는다.
 4. **admin-ui "Config Sync" 페이지**(export / import / dry-run diff / 적용) + 선택적 server-to-server push.
 5. **`mirror` 모드 + 선택적 사용자 동기화**(가드) — `merge` 검증 후 별도 PR.
 6. **문서**: 가이드("환경 간 플랫폼 설정 승격"), 배포 시드 사용법 문서화, 이 ADR을 **Accepted**로 전환.
+
+**상태:** 1–5 머지 완료 — export/import (#53), 게이팅 + 운영 fail-fast (#54),
+`mirror` 모드 + 옵트인 사용자 동기화 (#55), admin-ui "Config Sync" 페이지
+(devslab-kit-admin-ui #20). 6번의 ADR 전환은 이 노트로 반영되며, 별도 how-to 가이드가 남은 작업.
 
 ## 검토한 대안 (Alternatives considered)
 
