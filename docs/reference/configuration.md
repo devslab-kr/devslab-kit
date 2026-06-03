@@ -31,9 +31,11 @@ are viewable at runtime via `GET /admin/api/v1/settings` (secrets masked).
 - `fixed` — always returns `default-tenant-id`. The natural pick for `single` mode.
 - `header` — reads the tenant id from a request header (the `header` property,
   default `X-Tenant-Id`).
-- `jwt` — reads the tenant from a claim on the authenticated JWT.
 - `subdomain` — derives it from the request host's subdomain (`acme.example.com`
   → `acme`).
+- `jwt` — reads the `tenant` claim from the kit-issued bearer token, falling back to
+  `default-tenant-id` when there's no token. Validating external OAuth2/OIDC tokens is
+  out of scope — supply a custom resolver for that.
 
 See the [Multi-tenancy guide](../guides/tenancy.md).
 
@@ -100,6 +102,26 @@ opt in explicitly.
 | `admin-password` | string | — | The admin's password. **Leave blank** to have a strong random one generated and logged **once** at startup. |
 | `admin-email` | string | — | Optional email for the seeded admin. |
 | `must-change-password` | boolean | `true` | Force the admin to set a new password on first login. |
+| `seed.permissions` | list | `[]` | Permission codes to create on boot (idempotent). |
+| `seed.roles` | map | `{}` | Role code → permission codes; the role is created and the listed permissions granted. |
+
+The seed is **idempotent and additive** — on every boot it creates missing
+permissions/roles and adds the listed grants, but never revokes or deletes (and a
+permission a role references is auto-created). Ship starter roles so consumers don't
+hand-create them:
+
+```yaml
+devslab:
+  kit:
+    bootstrap:
+      enabled: true
+      seed:
+        permissions: [tasks.read, tasks.write, tasks.update, tasks.delete]
+        roles:
+          viewer: [tasks.read]
+          editor: [tasks.read, tasks.write, tasks.update]
+          owner:  [tasks.read, tasks.write, tasks.update, tasks.delete]
+```
 
 !!! warning "Production"
     Always set a strong `identity.jwt.secret`. For the bootstrap, either set a
@@ -128,7 +150,7 @@ Two ways to turn it off:
     === "Gradle (Kotlin DSL)"
 
         ```kotlin
-        implementation("kr.devslab:devslab-kit-spring-boot-starter:0.4.2") {
+        implementation("kr.devslab:devslab-kit-spring-boot-starter:0.5.0") {
             exclude(group = "org.springdoc")
         }
         ```
@@ -139,7 +161,7 @@ Two ways to turn it off:
         <dependency>
           <groupId>kr.devslab</groupId>
           <artifactId>devslab-kit-spring-boot-starter</artifactId>
-          <version>0.4.2</version>
+          <version>0.5.0</version>
           <exclusions>
             <exclusion>
               <groupId>org.springdoc</groupId>

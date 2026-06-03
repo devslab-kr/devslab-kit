@@ -4,6 +4,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import kr.devslab.kit.access.core.repository.JpaPlatformPermissionRepository;
 import kr.devslab.kit.access.core.repository.JpaPlatformRoleRepository;
@@ -152,6 +153,8 @@ public class DevslabKitBootstrapRunner implements ApplicationRunner {
 
         userRoleService.assign(adminUser, adminRole, tenant); // idempotent
 
+        seedDeclaredRbac(tenant);
+
         log.info("[devslab-kit bootstrap] complete: tenant={} role={} user={}",
                 tenant.value(), props.getRoleCode(), props.getAdminLoginId());
     }
@@ -167,27 +170,70 @@ public class DevslabKitBootstrapRunner implements ApplicationRunner {
     }
 
     private RoleId ensureAdminRole(TenantId tenant) {
-        return roleRepository.findByTenantIdAndCode(tenant.value(), props.getRoleCode())
+        return ensureRoleId(tenant, props.getRoleCode(), props.getRoleName());
+    }
+
+    private RoleId ensureRoleId(TenantId tenant, String code, String name) {
+        return roleRepository.findByTenantIdAndCode(tenant.value(), code)
                 .map(entity -> RoleId.of(entity.getId()))
                 .orElseGet(() -> {
-                    var role = roleAdminService.create(tenant, props.getRoleCode(), props.getRoleName());
-                    log.info("[devslab-kit bootstrap] created role {}", props.getRoleCode());
+                    var role = roleAdminService.create(tenant, code, name);
+                    log.info("[devslab-kit bootstrap] created role {}", code);
                     return role.id();
                 });
     }
 
     private void ensureAdminPermissionsAndGrants(RoleId adminRole) {
         for (PermissionSeed perm : ADMIN_PERMISSIONS) {
-            PermissionId permId = permissionRepository.findByCode(perm.code())
-                    .map(entity -> PermissionId.of(entity.getId()))
-                    .orElseGet(() -> {
-                        permissionAdminService.create(perm.code(), perm.description());
-                        log.info("[devslab-kit bootstrap] created permission {}", perm.code());
-                        return permissionRepository.findByCode(perm.code())
-                                .map(e -> PermissionId.of(e.getId()))
-                                .orElseThrow();
-                    });
-            rolePermissionService.grant(adminRole, permId); // idempotent
+            rolePermissionService.grant(adminRole, ensurePermissionId(perm.code(), perm.description())); // idempotent
+        }
+    }
+
+    private PermissionId ensurePermissionId(String code, String description) {
+        return permissionRepository.findByCode(code)
+                .map(entity -> PermissionId.of(entity.getId()))
+                .orElseGet(() -> {
+                    permissionAdminService.create(code, description);
+                    log.info("[devslab-kit bootstrap] created permission {}", code);
+                    return permissionRepository.findByCode(code)
+                            .map(e -> PermissionId.of(e.getId()))
+                            .orElseThrow();
+                });
+    }
+
+    /**
+     * Idempotently apply the declarative RBAC seed (permissions + roles + grants)
+     * from {@code devslab.kit.bootstrap.seed}. Additive only: missing entities are
+     * created and listed grants added; nothing is revoked or deleted. A permission
+     * referenced by a seeded role is auto-created if absent. Roles live in the
+     * bootstrap tenant; permissions are global.
+     */
+    private void seedDeclaredRbac(TenantId tenant) {
+        DevslabKitProperties.Bootstrap.Seed seed = props.getSeed();
+
+        for (String code : seed.getPermissions()) {
+            if (code != null && !code.isBlank()) {
+                ensurePermissionId(code.trim(), "");
+            }
+        }
+
+        for (Map.Entry<String, List<String>> entry : seed.getRoles().entrySet()) {
+            String roleCode = entry.getKey();
+            if (roleCode == null || roleCode.isBlank()) {
+                continue;
+            }
+            RoleId role = ensureRoleId(tenant, roleCode.trim(), roleCode.trim());
+            List<String> grants = entry.getValue() == null ? List.of() : entry.getValue();
+            for (String permCode : grants) {
+                if (permCode != null && !permCode.isBlank()) {
+                    rolePermissionService.grant(role, ensurePermissionId(permCode.trim(), "")); // idempotent
+                }
+            }
+        }
+
+        if (!seed.getPermissions().isEmpty() || !seed.getRoles().isEmpty()) {
+            log.info("[devslab-kit bootstrap] seeded RBAC: {} permission(s), {} role(s)",
+                    seed.getPermissions().size(), seed.getRoles().size());
         }
     }
 

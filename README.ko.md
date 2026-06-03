@@ -63,7 +63,7 @@
 **Gradle (Kotlin DSL)**
 
 ```kotlin
-implementation("kr.devslab:devslab-kit-spring-boot-starter:0.4.2")
+implementation("kr.devslab:devslab-kit-spring-boot-starter:0.5.0")
 ```
 
 **Maven**
@@ -72,7 +72,7 @@ implementation("kr.devslab:devslab-kit-spring-boot-starter:0.4.2")
 <dependency>
   <groupId>kr.devslab</groupId>
   <artifactId>devslab-kit-spring-boot-starter</artifactId>
-  <version>0.4.2</version>
+  <version>0.5.0</version>
 </dependency>
 ```
 

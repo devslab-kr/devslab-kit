@@ -1,5 +1,9 @@
 package kr.devslab.kit.autoconfigure;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import kr.devslab.kit.tenant.TenantMode;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -288,6 +292,9 @@ public class DevslabKitProperties {
          */
         private boolean failOnDefaultPasswordInProd = true;
 
+        /** Optional starter RBAC (permissions + roles) seeded on boot — see {@link Seed}. */
+        private final Seed seed = new Seed();
+
         public boolean isEnabled() {
             return enabled;
         }
@@ -358,6 +365,61 @@ public class DevslabKitProperties {
 
         public void setFailOnDefaultPasswordInProd(boolean failOnDefaultPasswordInProd) {
             this.failOnDefaultPasswordInProd = failOnDefaultPasswordInProd;
+        }
+
+        public Seed getSeed() {
+            return seed;
+        }
+
+        /**
+         * Optional starter RBAC, seeded idempotently on boot alongside the admin:
+         * declare your domain permissions and the roles that group them, and the kit
+         * creates whatever is missing and grants it. Re-applied every boot and
+         * <strong>additive only</strong> — it never revokes or deletes, so adding a
+         * permission/role here and redeploying picks it up, while destructive
+         * reconciliation stays the job of dev-only config-sync mirror.
+         *
+         * <pre>
+         * devslab:
+         *   kit:
+         *     bootstrap:
+         *       enabled: true
+         *       seed:
+         *         permissions: [tasks.read, tasks.write, tasks.update, tasks.delete]
+         *         roles:
+         *           viewer: [tasks.read]
+         *           editor: [tasks.read, tasks.write, tasks.update]
+         *           owner:  [tasks.read, tasks.write, tasks.update, tasks.delete]
+         * </pre>
+         *
+         * <p>Permissions are global; roles are created in {@link #getTenantId()}. A
+         * permission code referenced by a role but absent from {@code permissions} is
+         * created automatically, so the explicit {@code permissions} list is only
+         * needed for codes you want to exist without granting them anywhere yet.
+         */
+        public static class Seed {
+
+            /** Permission codes to ensure exist (created if absent). */
+            private List<String> permissions = new ArrayList<>();
+
+            /** Role code &rarr; the permission codes that role should grant. */
+            private Map<String, List<String>> roles = new LinkedHashMap<>();
+
+            public List<String> getPermissions() {
+                return permissions;
+            }
+
+            public void setPermissions(List<String> permissions) {
+                this.permissions = permissions;
+            }
+
+            public Map<String, List<String>> getRoles() {
+                return roles;
+            }
+
+            public void setRoles(Map<String, List<String>> roles) {
+                this.roles = roles;
+            }
         }
     }
 

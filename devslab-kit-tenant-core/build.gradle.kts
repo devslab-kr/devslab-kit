@@ -8,6 +8,11 @@ dependencies {
     compileOnly("org.springframework:spring-web")
     compileOnly("jakarta.servlet:jakarta.servlet-api")
 
+    // Only the `jwt` resolver needs identity (to read the bearer token's tenant
+    // claim); compileOnly so tenant-core never forces identity on a consumer that
+    // uses a different resolver.
+    compileOnly(project(":devslab-kit-identity-api"))
+
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 }

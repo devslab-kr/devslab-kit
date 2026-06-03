@@ -5,7 +5,7 @@
 
 ## 현재 상태
 
-`devslab-kit`은 Maven Central에 배포돼 있고 — 최신 **0.4.2** — 이 문서 사이트와 동반
+`devslab-kit`은 Maven Central에 배포돼 있고 — 최신 **0.5.0** — 이 문서 사이트와 동반
 [관리자 콘솔](https://github.com/devslab-kr/devslab-kit-admin-ui)을 함께 제공합니다. 플랫폼은
 그 범위 안에서 기능이 완성돼 있습니다:
 

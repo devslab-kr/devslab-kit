@@ -59,7 +59,7 @@ repositories { mavenCentral() }
 dependencies {
     // The platform: authentication, RBAC + groups + ABAC, multi-tenancy,
     // dynamic menus, audit logging, and an admin REST API — all auto-configured.
-    implementation("kr.devslab:devslab-kit-spring-boot-starter:0.4.2")
+    implementation("kr.devslab:devslab-kit-spring-boot-starter:0.5.0")
 
     // devslab-kit is unopinionated about which Spring starters you bring.
     // For this tutorial we want web + security + JPA + Flyway + PostgreSQL.

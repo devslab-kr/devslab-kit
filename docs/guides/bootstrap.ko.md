@@ -33,6 +33,38 @@ devslab:
 
 모든 키는 [설정 레퍼런스](../reference/configuration.md#bootstrap) 참고.
 
+## 스타터 역할·권한 시드 { #seed }
+
+빈 데이터베이스에는 관리자만 있고 애플리케이션 역할은 없습니다. consumer가 콘솔에서 일일이
+만들게 하는 대신 **설정으로 시드**하세요 — kit이 부팅 시 권한·역할을 멱등하게 생성하고 각 역할에
+권한을 부여합니다:
+
+```yaml
+# src/main/resources/application.yml
+devslab:
+  kit:
+    bootstrap:
+      enabled: true
+      seed:
+        permissions: [tasks.read, tasks.write, tasks.update, tasks.delete]
+        roles:
+          viewer: [tasks.read]
+          editor: [tasks.read, tasks.write, tasks.update]
+          owner:  [tasks.read, tasks.write, tasks.update, tasks.delete]
+```
+
+`tasks.*`는 placeholder입니다 — **당신** 도메인의 권한 코드를 나열하세요. 참고:
+
+- **멱등 + 추가형.** 매 부팅 시 없는 것을 만들고 나열된 grant를 추가하되, 회수·삭제는 안 합니다.
+  여기에 권한/역할을 추가하고 재배포하면 반영됩니다. (파괴적 동기화는 dev 전용
+  [설정 동기화](config-sync.md) `mirror` 담당.)
+- 역할이 나열했지만 `permissions` 블록엔 없는 권한은 **자동 생성**됩니다 — 그래서
+  `permissions`는 아직 아무 데도 부여하지 않을 코드를 위한 것입니다.
+- 권한은 전역, 역할은 `tenant-id`에 생성됩니다.
+
+[관리자 콘솔](admin-console.md)에서 계속 만들고 관리할 수 있습니다 — 시드는 빈 상태 대신 합리적인
+출발점을 줄 뿐입니다.
+
 ## 비밀번호
 
 - 알려진 값이 필요하면 **명시 설정**(예: 로컬 개발 `admin`/`admin`).

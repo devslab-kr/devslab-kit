@@ -16,7 +16,7 @@ devslab:
   kit:
     tenant:
       mode: single            # single | multi
-      resolver: fixed         # fixed | header | subdomain  (jwt: 예약 — 아래 참고)
+      resolver: fixed         # fixed | header | jwt | subdomain
       default-tenant-id: default
 ```
 
@@ -36,14 +36,14 @@ devslab:
 | --- | --- | --- |
 | `fixed` | 항상 `default-tenant-id` | (싱글 테넌트 기본) |
 | `header` | 요청 헤더(기본 `X-Tenant-Id`) | `X-Tenant-Id: acme` |
+| `jwt` | kit이 발급한 bearer 토큰의 `tenant` 클레임 | 로그인 사용자의 테넌트 |
 | `subdomain` | 요청 호스트의 서브도메인 | `acme.app.com` → `acme` |
-| `jwt` | _예약 — 아직 미출시_ | (노트 참고) |
 
-!!! warning "`jwt`는 예약됨 (아직 미출시)"
-    `resolver: jwt`를 선택하면 부팅 시 즉시 실패합니다 — 예정된
-    `devslab-kit-oauth2-resource-server-starter`를 기다리는 중입니다. 로그인 JWT는 이미 `tenant`
-    클레임을 싣고 있으니, 그때까지는 **커스텀 `TenantResolver` 빈**으로 읽으세요
-    (아래 [커스텀 리졸버](#custom-resolver)).
+!!! note "`jwt` 리졸버가 읽는 것"
+    **kit 자체** bearer 토큰(`/auth/login`이 발급하며 `tenant` 클레임을 실음)을 파싱하고,
+    토큰이 없으면 `default-tenant-id`로 폴백합니다(예: 로그인 요청 자체). *외부* OAuth2 / OIDC
+    토큰 검증(JWKS, issuer 확인, 설정 가능한 클레임명)은 여기서 다루지 않는 별도 과제입니다 —
+    그건 아래 [커스텀 리졸버](#custom-resolver)로 처리하세요.
 
 ```yaml
 devslab:
