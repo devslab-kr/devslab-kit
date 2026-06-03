@@ -21,6 +21,12 @@
   ("pull, don't push" 원칙 — 두 번째 소비자가 생기면 추출).
 - **하드닝** — 통합 커버리지 확대, 보안 리뷰, 성능 개선.
 
+## 0.1.0 이후 출시됨
+
+- **환경 간 설정 동기화** (`0.4.0`) — 정의성 설정(권한·역할·메뉴; 옵트인 사용자)을 코드 기준
+  번들로 export/import, `merge`/`mirror`, 기본 dry-run. [가이드](guides/config-sync.ko.md) 와
+  [ADR 0003](adr/0003-config-sync.ko.md) 참고.
+
 ## 버전 정책
 
 라이브러리 메이저는 Spring Boot 메이저를 따릅니다: **`4.x.y`는 Spring Boot 4.x 대상**.

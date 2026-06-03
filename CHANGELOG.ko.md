@@ -11,6 +11,28 @@ English: [CHANGELOG.md](CHANGELOG.md)
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-06-03
+
+### Added
+- **환경 간 설정 동기화 (ADR 0003).** 정의성 플랫폼 설정 — 권한, 역할(+ 권한 코드), 메뉴 —
+  을 대상 DB를 직접 손대지 않고, 이식 가능한 코드 기준 번들로 한 환경에서 다른 환경으로 승격.
+  - `GET /admin/api/v1/config/export`, `POST /admin/api/v1/config/import`.
+  - **merge**(기본, 추가형 — 생성·수정만, 삭제 없음) 와 **mirror**(대상을 번들과 일치: 역할
+    권한 재조정 + 번들에 없는 정의성 엔터티 삭제 — 메뉴 leaf-first; 사용자에게 할당된 역할은
+    skip; 권한은 revoke 후 삭제).
+  - **기본 dry-run** — import 는 섹션별 diff(생성 / 수정 / 삭제 / 건너뜀)를 반환하고
+    `dryRun=false` 가 아니면 아무것도 기록하지 않음.
+  - **옵트인 사용자 동기화**(`includeUsers`, 기본 off): export 는 사용자를 login id 기준으로
+    **비밀번호 없이** 내보내고, import 는 생성 전용이라 기존 사용자를 절대 덮어쓰지 않음.
+  - **기본 off**(`devslab.kit.config-sync.enabled`) + **운영 프로파일**(`prod`/`production`)
+    에서 **기동 거부**(ADR 0003 §5) — 설정은 배포 시 커밋된 번들로 승격하지, 운영에 즉석
+    push 하지 않음.
+  - [admin 콘솔](https://github.com/devslab-kr/devslab-kit-admin-ui)의 **Config Sync** 페이지가
+    export / import / dry-run diff / 적용을 담당.
+
+### Notes
+- 마이그레이션 불필요: 설정 동기화는 테이블을 추가하지 않으며, 명시적으로 켜기 전까지 비활성.
+
 ## [0.3.0] — 2026-06-02
 
 ### 변경됨 (Changed)
