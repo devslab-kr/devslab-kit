@@ -7,6 +7,7 @@ kr.devslab.kit.autoconfigure.MenuAutoConfiguration
 kr.devslab.kit.autoconfigure.AuditAutoConfiguration
 kr.devslab.kit.autoconfigure.AdminApiAutoConfiguration
 kr.devslab.kit.autoconfigure.AdminApiWebAutoConfiguration
+kr.devslab.kit.autoconfigure.ConfigSyncAutoConfiguration
 kr.devslab.kit.autoconfigure.OpenApiAutoConfiguration
 kr.devslab.kit.autoconfigure.BootstrapAutoConfiguration
 kr.devslab.kit.autoconfigure.MetricsAutoConfiguration
