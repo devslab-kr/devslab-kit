@@ -1,5 +1,10 @@
 # devslab-kit
 
+<a class="oss-project-intro" data-atmosphere="project" href="https://devslab.kr/brand/open-source/" aria-label="devslab-kit, DevsLab 오픈소스. DevsLab OSS 브랜드 가이드 보기.">
+  <img src="assets/logo.svg" alt="" aria-hidden="true">
+  <span><strong>devslab-kit</strong><small>DevsLab 오픈소스</small></span>
+</a>
+
 재사용 가능한 **Spring Boot 4 플랫폼 스타터**. 애플리케이션에 끼워 넣으면 인증, 인가,
 멀티테넌시, 동적 메뉴, 감사 로깅이 자동 구성으로 제공되고, 관리자 REST API와 바로 쓰는
 관리자 콘솔까지 딸려옵니다. 매번 플랫폼 계층을 다시 만드는 대신 각 제품은 자기 도메인에만
