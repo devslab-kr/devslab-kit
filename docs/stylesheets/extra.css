@@ -241,3 +241,72 @@ html[lang="ko"] .md-header [aria-label="Select language"]::before,
 html[lang="ko"] .md-header [aria-label*="언어"]::before {
   content: "한";
 }
+
+/* === O10 project identity =============================================== */
+.oss-project-intro {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0.25rem 0 1.5rem;
+  padding: 0.75rem 1rem;
+  color: inherit;
+  border: 1px solid color-mix(in srgb, var(--md-accent-fg-color) 32%, transparent);
+  border-radius: 0.35rem;
+  text-decoration: none;
+}
+
+.oss-project-intro[data-atmosphere="project"]::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: "";
+  background: linear-gradient(135deg, rgb(14 116 144 / 0.10), transparent 66%);
+  pointer-events: none;
+}
+
+[data-md-color-scheme="slate"] .oss-project-intro[data-atmosphere="project"]::before {
+  background: linear-gradient(135deg, rgb(34 211 238 / 0.10), transparent 66%);
+}
+
+.oss-project-intro img {
+  flex: 0 0 auto;
+  width: 2rem;
+  height: 2rem;
+}
+
+.oss-project-intro span {
+  display: grid;
+  min-width: 0;
+}
+
+.oss-project-intro strong,
+.oss-project-intro small {
+  overflow-wrap: anywhere;
+}
+
+.oss-project-intro small {
+  color: var(--md-default-fg-color--light);
+  font-size: 0.78rem;
+}
+
+.oss-project-intro:hover,
+.oss-project-intro:focus-visible {
+  border-color: var(--md-accent-fg-color);
+  text-decoration: none;
+}
+
+@media (max-width: 28rem) {
+  .oss-project-intro {
+    align-items: flex-start;
+  }
+}
+
+@media (forced-colors: active), print {
+  .oss-project-intro[data-atmosphere="project"]::before {
+    display: none;
+  }
+}

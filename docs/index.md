@@ -1,5 +1,10 @@
 # devslab-kit
 
+<a class="oss-project-intro" data-atmosphere="project" href="https://devslab.kr/brand/open-source/" aria-label="devslab-kit, Open source by DevsLab. Read the DevsLab OSS brand guide.">
+  <img src="assets/logo.svg" alt="" aria-hidden="true">
+  <span><strong>devslab-kit</strong><small>Open source by DevsLab</small></span>
+</a>
+
 A reusable **Spring Boot 4 platform starter**. Drop it into an application and get
 authentication, authorization, multi-tenancy, dynamic menus and audit logging from
 auto-configuration — plus an admin REST API and a ready-made admin console — so each
