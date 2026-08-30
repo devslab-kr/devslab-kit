@@ -52,6 +52,10 @@ assert(metadata.includes('og:image:alt') && metadata.includes('twitter:image:alt
 
 const styles = read('docs/stylesheets/extra.css');
 assert(styles.includes('.oss-project-intro') && styles.includes('data-atmosphere="project"'), 'docs need the O10 identity panel and scoped atmosphere');
+const slateAtmosphere = `[data-md-color-scheme="slate"] .oss-project-intro[data-atmosphere="project"]::before {
+  background: linear-gradient(135deg, rgb(34 211 238 / 0.10), transparent 66%);
+}`;
+assert(styles.includes(slateAtmosphere), 'Material slate must apply the O10 cyan atmosphere directly at the 0.10 opacity cap');
 assert(styles.includes('pointer-events: none'), 'atmosphere decoration must not intercept input');
 assert(styles.includes('@media (forced-colors: active), print'), 'atmosphere must be suppressed for forced colors and print');
 
