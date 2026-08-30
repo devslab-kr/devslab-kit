@@ -4,14 +4,14 @@ import { resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
 const expectedHashes = new Map([
-  ['.github/assets/readme-header.png', '181bb155b383789b0e88454a4ff9d16dafd22d5083140fa83255bb4e306785a2'],
-  ['.github/assets/social-preview.png', '4666515df130b8d85a5e4ac3fa38c5699af938c9a30eeab98a3ace0d5d301e2c'],
-  ['docs/assets/logo.svg', '927af7009de24040ac94c0586f3d93dac30c28b08c1d29b2a83c1bf74f1c4248'],
-  ['docs/assets/favicon.svg', '927af7009de24040ac94c0586f3d93dac30c28b08c1d29b2a83c1bf74f1c4248'],
-  ['docs/assets/social-preview.png', '4666515df130b8d85a5e4ac3fa38c5699af938c9a30eeab98a3ace0d5d301e2c'],
+  ['.github/assets/readme-header.png', 'c6b02c166edda405a2b9636e4d932014755762b197c78aa8a3af9bbb33172658'],
+  ['.github/assets/social-preview.png', 'd8029fc8ff1eada727f59452bc9970f61d375c1990735e47860a86f7ca54bbfc'],
+  ['docs/assets/logo.svg', 'bc292ca3fa5b19c0e736fb070147c58c1ef4e79a6156d7cc88d1c9e4c4e99cd3'],
+  ['docs/assets/favicon.svg', 'bc292ca3fa5b19c0e736fb070147c58c1ef4e79a6156d7cc88d1c9e4c4e99cd3'],
+  ['docs/assets/social-preview.png', 'd8029fc8ff1eada727f59452bc9970f61d375c1990735e47860a86f7ca54bbfc'],
 ]);
 
-const read = (file) => readFileSync(resolve(root, file), 'utf8');
+const read = (file) => readFileSync(resolve(root, file), 'utf8').replace(/\r\n/g, '\n');
 const assert = (condition, message) => {
   if (!condition) throw new Error(message);
 };
@@ -20,12 +20,13 @@ for (const [file, expected] of expectedHashes) {
   const absolute = resolve(root, file);
   assert(existsSync(absolute), `missing required O10 source asset: ${file}`);
   const actual = createHash('sha256').update(readFileSync(absolute)).digest('hex');
-  assert(actual === expected, `${file} has ${actual}; expected the oss-brand v0.1.1 hash ${expected}`);
+  assert(actual === expected, `${file} has ${actual}; expected the oss-brand v0.2.0 hash ${expected}`);
 }
 
 const logo = read('docs/assets/logo.svg');
 assert(logo.includes('data-oss-project="O10"'), 'docs logo must identify the O10 project asset');
-assert(logo.includes('M5 5H13V13H5Z') && logo.includes('M13 10H19V22H13Z'), 'docs logo must use the O10 lattice geometry');
+assert(logo.includes('data-layer="q-frame"') && logo.includes('<rect x="5" y="5" width="16" height="16" rx="2"') && logo.includes('<rect x="11" y="11" width="16" height="16" rx="2"'), 'docs logo must use the shared Q frame');
+assert(logo.includes('M19 13V23') && logo.includes('M14 18H24'), 'docs logo must use the O10 kit route');
 assert(!logo.includes('M 4 4 L 28 4'), 'docs logo must not retain the former shared backend mark');
 assert(!logo.includes('M7 6H21V20H7Z'), 'docs logo must not use the O08 geometry');
 assert(!logo.includes('M5 8H13V14H5Z'), 'docs logo must not use the O09 geometry');
