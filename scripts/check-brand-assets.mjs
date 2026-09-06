@@ -32,8 +32,8 @@ assert(!logo.includes('M7 6H21V20H7Z'), 'docs logo must not use the O08 geometry
 assert(!logo.includes('M5 8H13V14H5Z'), 'docs logo must not use the O09 geometry');
 
 for (const [file, endorsement] of [
-  ['README.md', 'Open source by [DevsLab](https://devslab.kr/)'],
-  ['README.ko.md', '[DevsLab](https://devslab.kr/) 오픈소스'],
+  ['README.md', 'Open source by [데브스랩(DevsLab)](https://devslab.kr/)'],
+  ['README.ko.md', 'Open source by [데브스랩(DevsLab)](https://devslab.kr/)'],
   ['docs/index.md', 'Open source by DevsLab'],
   ['docs/index.ko.md', 'DevsLab 오픈소스'],
 ]) {

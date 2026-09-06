@@ -4,7 +4,11 @@
   <a href="https://devslab.kr/brand/open-source/"><img src=".github/assets/readme-header.png" alt="devslab-kit - DevsLab 오픈소스" width="100%" /></a>
 </p>
 
-**[DevsLab](https://devslab.kr/) 오픈소스** · [OSS 브랜드 가이드](https://devslab.kr/brand/open-source/) · 레지스트리 O10
+<!-- publisher:start -->
+Open source by [데브스랩(DevsLab)](https://devslab.kr/).
+<!-- publisher:end -->
+
+[OSS 브랜드 가이드](https://devslab.kr/brand/open-source/) · 레지스트리 O10
 
 [![Maven Central](https://img.shields.io/maven-central/v/kr.devslab/devslab-kit-spring-boot-starter?logo=apachemaven)](https://central.sonatype.com/artifact/kr.devslab/devslab-kit-spring-boot-starter)
 [![Build](https://github.com/devslab-kr/devslab-kit/actions/workflows/build.yml/badge.svg)](https://github.com/devslab-kr/devslab-kit/actions/workflows/build.yml)

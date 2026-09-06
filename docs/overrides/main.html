@@ -8,3 +8,8 @@
   <meta name="twitter:image" content="https://devslab-kit.devslab.kr/assets/social-preview.png">
   <meta name="twitter:image:alt" content="devslab-kit, Open source by DevsLab">
 {% endblock %}
+
+{% block footer %}
+  <div class="md-grid">{% include "publisher.html" %}</div>
+  {{ super() }}
+{% endblock %}
