@@ -15,6 +15,7 @@ permissions:
 
 jobs:
   build:
+    timeout-minutes: 45
     name: Gradle build (Java 21, Testcontainers)
     runs-on: ubuntu-latest
 
